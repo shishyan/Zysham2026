@@ -1,0 +1,23 @@
+const $ = (s) => document.querySelector(s);
+const views = [...document.querySelectorAll('.view')];
+const state = { mentor: 'cat', name: '', selections: new Set() };
+const labels = { dashboard: 'Home', signup: 'Home / Profile', companion: 'Home / Profile / Companion', stream: 'Home / Stream selection', workspace: 'Home / Mid-11th bewilderment', career: 'Home / Career selection' };
+const mentorCopy = { cat: 'Pick a path with your eyes open. The hard bits are manageable once they are visible.', dog: 'We can make a plan for this. One small, honest step at a time is enough to start.' };
+function go(id) { views.forEach(v => v.classList.toggle('active', v.id === id)); $('#crumbs').textContent = labels[id]; $('#mentorPop').classList.toggle('show', ['stream','workspace'].includes(id)); if (['stream','workspace'].includes(id)) showMentor(); window.scrollTo({top:0,behavior:'smooth'}); }
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+let dragging = false, startY = 0;
+const zipper = $('#zipper');
+function unzip(){ $('#zipperScreen').classList.add('open'); setTimeout(()=>$('#zipperScreen').style.display='none',1000); }
+zipper.addEventListener('dblclick', unzip); zipper.addEventListener('pointerdown', e => { dragging=true; startY=e.clientY; zipper.setPointerCapture(e.pointerId); }); zipper.addEventListener('pointermove', e => { if(!dragging)return; const d=Math.max(0,e.clientY-startY); zipper.style.transform=`translateX(-50%) translateY(${Math.min(d,120)}px)`; if(d>100) unzip(); }); zipper.addEventListener('pointerup',()=>{dragging=false;zipper.style.transform='translateX(-50%)'});
+$('#signupForm').addEventListener('submit', e => { e.preventDefault(); state.name = $('#displayName').value.trim(); go('companion'); });
+document.querySelectorAll('.companion-card').forEach(card => card.addEventListener('click', () => { document.querySelectorAll('.companion-card').forEach(x=>x.classList.remove('selected')); card.classList.add('selected'); state.mentor=card.dataset.mentor; }));
+function showMentor(){ const name = state.name ? `${state.name}, ` : ''; $('#mentorName').textContent = state.mentor === 'cat' ? 'MISO / STRAIGHT TALK' : 'OLLIE / WITH YOU'; $('#mentorText').textContent = name + mentorCopy[state.mentor]; }
+$('#closeMentor').onclick=()=>$('#mentorPop').classList.remove('show'); $('#reset').onclick=()=>go('dashboard');
+const subjects=['Physics','Chemistry','Maths','Biology','Economics','Business studies','History','Psychology'];
+$('#subjects').innerHTML=subjects.map(s=>`<button class="subject" data-subject="${s}">${s}</button>`).join('');
+document.querySelectorAll('.subject').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('selected'); state.selections.has(b.dataset.subject)?state.selections.delete(b.dataset.subject):state.selections.add(b.dataset.subject); updateStreams()}));
+function updateStreams(){ const x=[...state.selections]; const science=x.filter(s=>['Physics','Chemistry','Maths','Biology'].includes(s)).length; const commerce=x.filter(s=>['Economics','Business studies','Maths'].includes(s)).length; const humanities=x.filter(s=>['History','Psychology','Economics'].includes(s)).length; if(!x.length){$('#streamResult').innerHTML='<p class="eyebrow">YOUR STARTING POINT</p><h3>Choose a few subjects to see a path.</h3>';return} const cards=[['Science',science,'Deep concepts, lab work, and entrance paths.'],['Commerce',commerce,'Systems, markets, business, and numbers.'],['Humanities',humanities,'People, ideas, culture, and society.']].sort((a,b)=>b[1]-a[1]); $('#streamResult').innerHTML=`<p class="eyebrow">YOUR STARTING POINT</p><h3>These paths are worth exploring.</h3><div class="stream-cards">${cards.map((c,i)=>`<article><h4>${c[0]} ${i===0?'*':''}</h4><p>${c[2]} ${c[1]?'You selected '+c[1]+' related subjects.':'Explore it beyond your current favourites.'}</p></article>`).join('')}</div>`; }
+const syllabus=[['Units & dimensions','high'],['Kinematics','high'],['Newton’s laws','high'],['Work, energy & power','medium'],['Rotational mechanics','high'],['Thermodynamics','medium']];
+$('#syllabus').innerHTML=syllabus.map(([x,y])=>`<label class="syllabus-item"><input type="checkbox"><b>${x}</b><span class="tag ${y==='medium'?'low':''}">${y} yield</span></label>`).join('');
+$('#stickyToggle').onclick=()=>$('#stickyPanel').classList.add('show'); $('#closeSticky').onclick=()=>$('#stickyPanel').classList.remove('show');
+$('#taskForm').addEventListener('submit',e=>{e.preventDefault();const val=$('#taskInput').value.trim();if(!val)return;const li=document.createElement('li');li.innerHTML=`<label><input type="checkbox"> ${val}</label>`;$('#taskList').prepend(li);$('#taskInput').value='';});
