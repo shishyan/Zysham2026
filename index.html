@@ -8,51 +8,73 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="theme.css" />
   </head>
   <body>
     <div id="app">
       <section class="zipper-screen" id="zipperScreen">
         <div class="zipper-panel zipper-left"><span>ARE YOU</span><span>READY TO</span><strong>FIGURE<br>YOUR</strong></div>
-        <div class="zipper-panel zipper-right"><span>YOUR</span><span>HIGH SCHOOL</span><strong>LIFE<br>OUT?</strong></div>
-        <button class="zipper" id="zipper" aria-label="Open ZYSHAM"><i></i><b>?</b></button>
+        <div class="zipper-panel zipper-right"><span>HIGH SCHOOL</span><strong>LIFE<br>OUT?</strong></div>
+        <button class="zipper" id="zipper" aria-label="Open ZYSHAM"><img src="assets/zipper-logo-cropped.png" alt="ZYSHAM sticker logo" /></button>
         <p class="zipper-hint">drag down or double click to enter</p>
-        <div class="brand corner-brand">ZYSHAM<span>.</span></div>
+        <div class="brand corner-brand">ZYSHAM</div>
       </section>
 
       <main class="main-shell" id="mainShell">
         <nav class="topbar"><button class="brand" data-go="dashboard">ZYSHAM<span>.</span></button><div id="crumbs" class="crumbs">Home</div><button class="quiet-button" id="reset">Start over</button></nav>
+        <div class="breadcrumb-bar" id="breadcrumbBar"></div>
 
-        <section class="view active" id="welcome">
-          <div class="welcome-copy"><p class="eyebrow">CBSE / INDIA / FOR THE IN-BETWEEN YEARS</p><h1>Confused about your high school experience or next steps?</h1><p class="lede">ZYSHAM helps you map a path that fits. No phone number, no performance theatre, and no pretending the hard parts are easy.</p><button class="primary" data-go="signup">Build my path <span>-></span></button></div>
-          <div class="welcome-art"><img src="assets/companions.png" alt="Two ZYSHAM mentor companions at a study desk" /><p>Direct advice. Useful tools.<br>Someone in your corner.</p></div>
+        <section class="view active" id="onboarding">
+          <div style="max-width: 960px; margin: 0 auto; padding: 64px 32px 40px;">
+            <h2 class="mentor-heading">Introducing the mentors</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;">
+              <button class="companion-card selected" data-mentor="cat" style="border: 0; background: none; padding: 0; text-align: left; cursor: pointer;">
+                  <div style="background: linear-gradient(135deg, #e9d8c5 0%, #d8b894 100%); border-radius: 24px; padding: 28px 24px; color: #4d3426;">
+                  <h3 style="margin: 0 0 16px; font-size: 28px; line-height: 1.1; color: #5f3f2b;">Milo the Cat</h3>
+                  <div style="width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #f3e6d4 0%, #cda07a 100%); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: #79553a; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">profile</div>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #6d4a35;">Soft, observant, and gently steady when things feel blurry.</p>
+                </div>
+              </button>
+              <button class="companion-card" data-mentor="dog" style="border: 0; background: none; padding: 0; text-align: left; cursor: pointer;">
+                <div style="background: linear-gradient(135deg, #e9d8c5 0%, #d8b894 100%); border-radius: 24px; padding: 28px 24px; color: #4d3426;">
+                  <h3 style="margin: 0 0 16px; font-size: 28px; line-height: 1.1; color: #5f3f2b;">Pepper the Dog</h3>
+                  <div style="width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #f1e3d2 0%, #b98963 100%); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: #79553a; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">profile</div>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #6d4a35;">Warm, grounded, and full of calm practical energy.</p>
+                </div>
+              </button>
+            </div>
+            <div style="margin-top: 28px; text-align: center;">
+              <button class="primary" data-go="signup">Continue <span>-></span></button>
+            </div>
+          </div>
         </section>
 
         <section class="view" id="signup">
-          <div class="form-wrap"><p class="eyebrow">01 / YOUR BASICS</p><h2>Tell us only what helps.</h2><p>We use this to build a relevant track and introduce you to people a little ahead of you.</p><form id="signupForm"><label>Email<input type="email" placeholder="you@gmail.com" required></label><label>What should we call you?<input id="displayName" type="text" placeholder="Preferred display name" required></label><div class="two-col"><label>Gender<select><option>Prefer not to say</option><option>Girl</option><option>Boy</option><option>Non-binary</option></select></label><label>Current grade<select id="grade"><option value="10">10th</option><option value="11">11th</option><option value="12">12th</option></select></label></div><fieldset><legend>Status: what do you need right now?</legend><label class="check"><input type="checkbox" checked> I need clarity about my stream or career</label><label class="check"><input type="checkbox"> I need a way to manage my syllabus</label><label class="check"><input type="checkbox"> I want to talk to someone who has done this</label></fieldset><div class="locked">India / CBSE only for the first version</div><button class="primary" type="submit">Choose a companion <span>-></span></button></form></div>
+          <div class="form-wrap"><p class="eyebrow">01 / CREATE ACCOUNT</p><h2>Confused about your school-to-college path?</h2><p>Build a simple profile with Gmail and your preferred display name. No password, no phone number — just the basics to help us personalize guidance for Indian CBSE students.</p><form id="signupForm"><label>Gmail ID<input type="email" placeholder="you@gmail.com" required></label><label>Profile name<input id="displayName" type="text" placeholder="Name or ID for your profile" required></label><div class="two-col"><label>Current grade<select id="grade"><option value="10">10th</option><option value="11">11th</option><option value="12">12th</option></select></label><label>Gender (optional)<select id="gender"><option value="">Prefer not to say</option><option>Girl</option><option>Boy</option><option>Non-binary</option></select></label></div><div class="help-note">We ask your grade so the guidance fits your school year. You can skip gender if you want.</div><div class="locked">India / CBSE only for the first version</div><button class="primary" type="submit">Create profile <span>-></span></button></form></div>
         </section>
 
         <section class="view" id="companion">
-          <div class="companion-intro"><p class="eyebrow">02 / YOUR COMPANION</p><h2>Choose your guide.</h2><p>Same truth. Different delivery.</p></div><div class="companion-choices"><button class="companion-card selected" data-mentor="cat"><span class="portrait crop-cat"><img src="assets/companions.png" alt="Cat mentor"></span><span><b>Miso</b><small>Radically candid, strategic, direct.</small></span><em>CAT MENTOR</em></button><button class="companion-card" data-mentor="dog"><span class="portrait crop-dog"><img src="assets/companions.png" alt="Dog mentor"></span><span><b>Ollie</b><small>Grounded, encouraging, relentlessly practical.</small></span><em>DOG MENTOR</em></button></div><button class="primary companion-next" data-go="dashboard">Enter ZYSHAM <span>-></span></button>
+          <div class="companion-intro"><p class="eyebrow">02 / YOUR COMPANION</p><h2 class="guide-heading">Choose your guide.</h2><p>Same truth. Different delivery.</p></div><div class="companion-choices"><button class="companion-card selected" data-mentor="cat"><span class="portrait crop-cat"><img src="assets/companions.png" alt="Cat mentor"></span><span><b>Miso</b><small>Radically candid, strategic, direct.</small></span><em>CAT MENTOR</em></button><button class="companion-card" data-mentor="dog"><span class="portrait crop-dog"><img src="assets/companions.png" alt="Dog mentor"></span><span><b>Ollie</b><small>Grounded, encouraging, relentlessly practical.</small></span><em>DOG MENTOR</em></button></div><button class="primary companion-next" data-go="dashboard">Enter ZYSHAM <span>-></span></button>
         </section>
 
         <section class="view" id="dashboard">
           <header class="dashboard-head"><div><p class="eyebrow" id="greeting">YOUR PERSONAL DASHBOARD</p><h2>Where are you<br>right now?</h2></div><p class="dashboard-note">Pick the phase that feels most like your current reality. You can move between them any time.</p></header>
-          <div class="gates">
-            <button class="gate terracotta" data-go="stream"><span class="gate-number">01</span><span class="gate-title">Stream<br>selection</span><span class="gate-sub">Post 10th / discover what fits</span><span class="gate-arrow">-></span><aside><b>Explore</b><p>Science, Commerce, Humanities. Start with what you actually enjoy, then hear from students who chose it.</p></aside></button>
-            <button class="gate charcoal" data-go="workspace"><span class="gate-number">02</span><span class="gate-title">Mid-11th<br>bewilderment</span><span class="gate-sub">The catch-up and keep-going zone</span><span class="gate-arrow">-></span><aside><b>Get operational</b><p>See your backlog, set a small next step, and keep the syllabus from becoming a black hole.</p></aside></button>
-            <button class="gate caramel" data-go="career"><span class="gate-number">03</span><span class="gate-title">Career<br>selection</span><span class="gate-sub">Boards, entrance, and what comes next</span><span class="gate-arrow">-></span><aside><b>Plan the exit</b><p>Balance board prep with entrances, review your mocks, and meet people who went first.</p></aside></button>
-          </div>
+          <div class="guidance-grid" id="guidanceCards"></div>
         </section>
 
-        <section class="view" id="stream"><div class="section-head"><p class="eyebrow">STREAM SELECTION / POST 10TH</p><h2>What do you genuinely enjoy studying?</h2><p>Not what scores you got once. Not what sounds impressive. Start with the work you would want to keep coming back to.</p></div><div class="subject-grid" id="subjects"></div><div class="stream-result" id="streamResult"><p class="eyebrow">YOUR STARTING POINT</p><h3>Choose a few subjects to see a path.</h3></div></section>
+        <section class="view" id="stream">
+          <div class="section-head"><p class="eyebrow">STREAM SELECTION / POST 10TH</p><h2>What do you genuinely enjoy studying?</h2><p>Not what scores you got once. Not what sounds impressive. Start with the work you would want to keep coming back to.</p></div>
+          <div class="stream-workflow" id="streamWorkflow"></div>
+        </section>
 
-        <section class="view" id="workspace"><div class="workspace-layout"><aside class="workspace-side"><p class="eyebrow">MID-11TH / WORKSPACE</p><h3>Make the next move obvious.</h3><button class="tool active">Syllabus vault</button><button class="tool">Weightage matrix</button><button class="tool">Macro calendar</button><button class="sticky-toggle" id="stickyToggle">+ Quick task</button></aside><div class="workspace-main"><div class="progress-row"><div><span>Physics progress</span><b>42%</b></div><div class="bar"><i style="width:42%"></i></div></div><div class="syllabus-list" id="syllabus"></div></div></div></section>
+        <section class="view" id="workspace"><div class="workspace-layout"><aside class="workspace-side"><p class="eyebrow">MID-11TH / WORKSPACE</p><h3>Make the next move obvious.</h3><div id="plannerSidebar"></div><button class="sticky-toggle" id="stickyToggle">+ Quick task</button></aside><div class="workspace-main"><div class="progress-row"><div><span>Physics progress</span><b>42%</b></div><div class="bar"><i style="width:42%"></i></div></div><div class="planner-shell" id="plannerShell"></div></div></div></section>
 
         <section class="view" id="career"><div class="career-head"><p class="eyebrow">CAREER SELECTION / 12TH</p><h2>Make the final year count.</h2><p>Hold boards and entrances in the same frame. Use results as feedback, not a verdict.</p></div><div class="career-grid"><article><span>MOCK HUB</span><b>04</b><h3>Mocks logged</h3><p>Last score: 128/300. Review the 12 questions that cost you most.</p><button class="text-button">Open error log -></button></article><article><span>DUAL CALENDAR</span><b>08</b><h3>Key dates ahead</h3><p>Pre-board maths, mock cycle 3, application shortlist.</p><button class="text-button">View calendar -></button></article><article><span>ALUMNI MATCH</span><b>03</b><h3>Mentors available</h3><p>Students from your target branches who can answer the real questions.</p><button class="text-button">Meet seniors -></button></article></div></section>
       </main>
       <aside class="mentor-pop" id="mentorPop"><button id="closeMentor" aria-label="Close">x</button><div class="mentor-name" id="mentorName">MISO / STRAIGHT TALK</div><p id="mentorText">Pick a path with your eyes open. The hard bits are manageable once they are visible.</p></aside>
       <aside class="sticky-panel" id="stickyPanel"><button id="closeSticky" aria-label="Close">x</button><p class="eyebrow">QUICK TASKS</p><form id="taskForm"><input id="taskInput" placeholder="e.g. finish kinematics notes"><button aria-label="Add task">+</button></form><ul id="taskList"><li><label><input type="checkbox"> Revise mole concept</label></li><li><label><input type="checkbox"> Solve 10 kinematics problems</label></li></ul></aside>
     </div>
-    <script src="app.js"></script>
+    <aside class="mascot-widget" id="mascotWidget"></aside>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
