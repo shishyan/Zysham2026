@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="theme.css" />
   </head>
-  <body data-theme="brown-violet">
+  <body data-theme="violet">
     <a class="skip-link" href="#workspace">Skip to workspace</a>
 
     <section class="entry-gate" id="entryGate" aria-label="Welcome to ZYSHAM">
@@ -72,17 +72,17 @@
 
         <nav class="primary-nav" aria-label="Career workspace">
           <p class="nav-label">Your workspace</p>
-          <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" aria-hidden="true">✦</span><span><strong>Find Your Calling</strong><small>Begin here</small></span></button>
-          <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" aria-hidden="true">◆</span><span>My Journey</span><span class="nav-badge" id="compassBadge">0%</span></button>
-          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" aria-hidden="true">◉</span><span>Discussions</span><span class="nav-badge">532</span></button>
-          <button class="nav-item" data-view="research" data-menu="research"><span class="nav-icon" aria-hidden="true">⌕</span><span>Research</span></button>
+          <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" data-icon="calling" aria-hidden="true"></span><span><strong>Find Your Calling</strong><small>Begin here</small></span></button>
+          <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" data-icon="journey" aria-hidden="true"></span><span>My Journey</span><span class="nav-badge" id="compassBadge">0%</span></button>
+          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Discussions</span><span class="nav-badge">532</span></button>
+          <button class="nav-item" data-view="research" data-menu="research"><span class="nav-icon" data-icon="research" aria-hidden="true"></span><span>Research</span></button>
         </nav>
 
         <nav class="learning-nav" aria-label="Learning and skill building">
           <p class="nav-label">Learn & practise</p>
-          <button class="nav-item" data-view="study-guide" data-menu="study"><span class="nav-icon" aria-hidden="true">▤</span><span>Study Guide</span></button>
-          <button class="nav-item" data-view="certifications" data-menu="certifications"><span class="nav-icon" aria-hidden="true">✪</span><span>Certification Courses</span></button>
-          <button class="nav-item" data-view="traditional" data-menu="traditional"><span class="nav-icon" aria-hidden="true">❋</span><span>Traditional Courses</span></button>
+          <button class="nav-item" data-view="study-guide" data-menu="study"><span class="nav-icon" data-icon="study" aria-hidden="true"></span><span>Study Guide</span></button>
+          <button class="nav-item" data-view="certifications" data-menu="certifications"><span class="nav-icon" data-icon="certificate" aria-hidden="true"></span><span>Certification Courses</span></button>
+          <button class="nav-item" data-view="traditional" data-menu="traditional"><span class="nav-icon" data-icon="traditional" aria-hidden="true"></span><span>Traditional Courses</span></button>
         </nav>
 
         <div class="sidebar-note">
@@ -91,10 +91,10 @@
         </div>
 
         <div class="sidebar-footer">
-          <a href="prompts.html"><span>⌘</span> Prompt journal</a>
-          <button id="settingsButton"><span>⚙</span> Settings</button>
-          <button id="signOutButton"><span>⇥</span> Return to sign in</button>
-          <button id="resetData"><span>↺</span> Reset workspace</button>
+          <a href="prompts.html"><span class="utility-icon" data-icon="journal" aria-hidden="true"></span> Prompt journal</a>
+          <button id="settingsButton"><span class="utility-icon" data-icon="settings" aria-hidden="true"></span> Settings</button>
+          <button id="signOutButton"><span class="utility-icon" data-icon="signout" aria-hidden="true"></span> Return to sign in</button>
+          <button id="resetData"><span class="utility-icon" data-icon="reset" aria-hidden="true"></span> Reset workspace</button>
         </div>
       </aside>
 
@@ -139,15 +139,15 @@
         <section class="settings-section appearance-settings">
           <p class="eyebrow">APPEARANCE</p><h2>Default or make it yours.</h2><p>Use the calm Zysham default, or keep a personal theme and campus background override on this device.</p>
           <div class="appearance-mode" role="radiogroup" aria-label="Appearance behavior">
-            <button type="button" data-appearance-mode="default" role="radio"><strong>Zysham default</strong><small>Dark brown-violet · Campus walk</small></button>
+            <button type="button" data-appearance-mode="default" role="radio"><strong>Zysham default</strong><small>Violet-purple · Campus walk</small></button>
             <button type="button" data-appearance-mode="override" role="radio"><strong>My override</strong><small>Use the choices below</small></button>
           </div>
           <div class="appearance-overrides" id="appearanceOverrides">
             <div class="settings-subsection"><span class="settings-label">THEME</span><div class="settings-theme-options" aria-label="Choose theme">
+              <button class="theme-choice" data-theme-choice="violet" title="Violet-purple theme"><span></span><em>Violet-purple</em></button>
               <button class="theme-choice" data-theme-choice="brown-violet" title="Dark brown-violet theme"><span></span><em>Dark brown-violet</em></button>
               <button class="theme-choice" data-theme-choice="aurora" title="Aurora Light theme"><span></span><em>Aurora Light</em></button>
               <button class="theme-choice" data-theme-choice="teal" title="Green-teal theme"><span></span><em>Green-teal</em></button>
-              <button class="theme-choice" data-theme-choice="violet" title="Violet-purple theme"><span></span><em>Violet-purple</em></button>
             </div></div>
             <div class="settings-subsection"><span class="settings-label">APP BACKGROUND</span><p>Built-in and personal backgrounds are dimmed to keep content readable.</p><div class="background-options" id="backgroundOptions"></div></div>
             <form class="background-add-form" id="backgroundAddForm">
@@ -192,6 +192,11 @@
           </select>
           <small id="mentorContextSummary"></small>
         </section>
+        <section class="mentor-model" aria-label="Local AI model">
+          <div><span id="mentorModelDot"></span><strong id="mentorModelStatus">Local SLM not loaded</strong><small id="mentorModelDetail">Runs privately in this browser using the Zysham knowledge layer.</small></div>
+          <button type="button" data-mentor-action="load-model" id="mentorModelButton">Load local AI</button>
+          <div class="mentor-model-progress" id="mentorModelProgress" hidden><span></span></div>
+        </section>
         <section class="mentor-recommendation" id="mentorRecommendation" aria-label="Current recommendation"></section>
         <div class="mentor-chat-log" id="mentorMessages" role="log" aria-live="polite" aria-label="Conversation with career counsellor"></div>
         <div class="mentor-suggestions" id="mentorSuggestions" aria-label="Suggested questions"></div>
@@ -204,7 +209,7 @@
           <button data-mentor-action="switch">Switch to Ollie</button>
           <button data-mentor-action="clear">Clear chat</button>
         </div>
-        <p class="mentor-disclosure">Immediate, private, context-aware guidance in this prototype. No external AI model or human counsellor is connected. Verify high-stakes decisions with current official sources and qualified people.</p>
+        <p class="mentor-disclosure">When loaded, the small language model runs locally and receives only the Zysham context shown in this drawer. First use downloads model files to browser storage. Verify high-stakes decisions with current official sources and qualified people.</p>
       </div>
     </aside>
 
