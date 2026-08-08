@@ -1619,6 +1619,36 @@ body[data-theme="aurora"] .student-directory-filters { backdrop-filter: blur(8px
   .study-schedule article button { grid-column: 2; grid-row: 1 / 3; }
 }
 
+/* Find Your Calling — the three questions are the page, not secondary tabs. */
+.calling-intro { display: grid; grid-template-columns: minmax(0,1fr) minmax(240px,.48fr) auto; gap: 24px; align-items: end; margin: 2px 0 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.calling-intro h2 { margin: 5px 0 0; color: var(--ink); font: 800 clamp(29px,4vw,48px)/1 'Manrope',sans-serif; letter-spacing: -.045em; }
+.calling-intro > p { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.55; }
+.calling-intro > strong { color: var(--secondary); font: 850 34px/1 'Manrope',sans-serif; white-space: nowrap; }
+.calling-intro > strong span { display: block; margin-top: 4px; color: var(--muted); font: 700 7px 'DM Mono',monospace; letter-spacing: .06em; text-transform: uppercase; }
+.calling-question-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin: 0 0 20px; border: 1px solid var(--line-strong); border-radius: 16px; overflow: hidden; }
+.calling-question-tabs button { position: relative; display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; gap: 18px; min-height: 230px; padding: clamp(22px,3vw,38px); border: 0; border-right: 1px solid var(--line-strong); border-radius: 0; background: transparent; }
+.calling-question-tabs button:last-child { border-right: 0; }
+.calling-question-tabs button::after { content: ''; position: absolute; inset: auto 0 0; height: 5px; background: var(--question-accent,var(--primary)); transform: scaleX(0); transform-origin: left; transition: transform .18s ease; }
+.calling-question-tabs button:nth-child(1) { --question-accent: var(--primary); }
+.calling-question-tabs button:nth-child(2) { --question-accent: var(--highlight); }
+.calling-question-tabs button:nth-child(3) { --question-accent: var(--secondary); }
+.calling-question-tabs button:hover::after, .calling-question-tabs button.active::after { transform: scaleX(1); }
+.calling-question-tabs button.active { border-color: transparent; background: color-mix(in srgb,var(--question-accent) 7%,transparent); box-shadow: none; }
+.calling-question-tabs span { grid-row: auto; color: var(--question-accent); font: 800 12px 'DM Mono',monospace; letter-spacing: .08em; }
+.calling-question-tabs strong { max-width: 16ch; color: var(--ink); font: 750 clamp(20px,2.2vw,31px)/1.18 'Manrope',sans-serif; letter-spacing: -.035em; }
+.calling-question-tabs em { align-self: end; color: var(--question-accent); font-size: 9px; font-weight: 750; }
+.calling-layout { grid-template-columns: minmax(0,1.55fr) minmax(310px,.55fr); }
+.calling-question.panel, .calling-reflection.panel { background: color-mix(in srgb,var(--surface) 72%,transparent); box-shadow: none; }
+
+@media (max-width: 900px) {
+  .calling-intro { grid-template-columns: 1fr auto; }
+  .calling-intro > p { grid-column: 1 / -1; grid-row: 2; }
+  .calling-question-tabs { grid-template-columns: 1fr; }
+  .calling-question-tabs button { min-height: 150px; border-right: 0; border-bottom: 1px solid var(--line-strong); }
+  .calling-question-tabs button:last-child { border-bottom: 0; }
+  .calling-question-tabs strong { max-width: 28ch; }
+}
+
 /* One shared right drawer for journey, research, settings, and counselling */
 .right-drawer { --drawer-width: 470px; position: fixed; z-index: 72; inset: 0 0 0 auto; display: grid; grid-template-rows: 68px minmax(0,1fr); width: min(var(--drawer-width), 100vw); height: 100dvh; border-left: 1px solid var(--line); background: var(--surface); box-shadow: -18px 0 42px rgba(30,18,31,.18); opacity: 0; visibility: hidden; transform: translateX(100%); transition: transform .22s ease, opacity .18s ease, visibility .18s ease; }
 body.right-drawer-open .right-drawer { opacity: 1; visibility: visible; transform: none; }
