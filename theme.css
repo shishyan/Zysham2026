@@ -9,9 +9,9 @@
   --chrome-text: #fff8fb;
   --chrome-muted: #d8c6d2;
   --app-bg: #f4eff4;
-  --surface: rgba(255,252,254,.90);
-  --surface-soft: rgba(244,235,243,.90);
-  --surface-strong: rgba(234,220,232,.94);
+  --surface: rgba(255,252,254,.97);
+  --surface-soft: rgba(244,235,243,.96);
+  --surface-strong: rgba(234,220,232,.98);
   --ink: #2a1e2b;
   --ink-soft: #574652;
   --muted: #766570;
@@ -42,9 +42,9 @@
   --chrome-text: #2d2341;
   --chrome-muted: #625773;
   --app-bg: #f7f5fc;
-  --surface: rgba(255,255,255,.90);
-  --surface-soft: rgba(245,241,252,.88);
-  --surface-strong: rgba(235,228,248,.92);
+  --surface: rgba(255,255,255,.97);
+  --surface-soft: rgba(245,241,252,.96);
+  --surface-strong: rgba(235,228,248,.98);
   --ink: #201a2d;
   --ink-soft: #4f465f;
   --muted: #6d647b;
@@ -74,7 +74,7 @@
   --chrome-text: #f5fbf8;
   --chrome-muted: #b9d0c9;
   --app-bg: #f3f8f6;
-  --surface: rgba(255,255,255,.90);
+  --surface: rgba(255,255,255,.97);
   --surface-soft: #e5f2ed;
   --surface-strong: #d5e9e1;
   --ink: #14251f;
@@ -102,7 +102,7 @@
   --chrome-text: #faf8ff;
   --chrome-muted: #c9c0dd;
   --app-bg: #f8f6fb;
-  --surface: rgba(255,255,255,.90);
+  --surface: rgba(255,255,255,.97);
   --surface-soft: #f0ecf7;
   --surface-strong: #e7e0f2;
   --ink: #211a31;

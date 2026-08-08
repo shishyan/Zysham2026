@@ -206,7 +206,7 @@ const defaultState = {
   },
   view: 'calling',
   activeJourneyStage: 'grade10',
-  theme: 'brown-violet',
+  theme: 'violet',
   regionScope: 'All',
   background: 'campus-walk',
   appearance: { mode: 'default', customBackgrounds: [] },
@@ -440,13 +440,32 @@ function sidebarMenuDefinitions() {
   };
 }
 
+const uiIconPaths = {
+  calling: '<path d="M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3Z"/><path d="M9 21h6M9 17h6"/>',
+  journey: '<path d="M4 19V5m0 0 4 4M4 5 8 1M4 12h7l3-4h6M14 8l3-3m-3 3 3 3M11 12l3 4h6m-6 0 3-3m-3 3 3 3"/>',
+  discussions: '<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/>',
+  research: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6M11 8v6"/>',
+  study: '<path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H11v17H7.5A3.5 3.5 0 0 0 4 22Z"/><path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H13v17h3.5A3.5 3.5 0 0 1 20 22Z"/>',
+  certificate: '<path d="M6 3h12v13H6z"/><path d="m9 21 3-2 3 2v-5H9zM9 7h6M9 11h4"/>',
+  traditional: '<path d="M12 3c3 3 5 5 5 8a5 5 0 0 1-10 0c0-3 2-5 5-8Z"/><path d="M5 21h14M8 17l-2 4m10-4 2 4M12 8v6"/>',
+  journal: '<path d="M5 3h14v18H5zM9 3v18M12 8h4M12 12h4"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
+  signout: '<path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/>',
+  reset: '<path d="M4 4v6h6M5.5 15a8 8 0 1 0 .5-7"/>',
+  overview: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>',
+  community: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2"/><path d="M3 20a6 6 0 0 1 12 0m0-5a5 5 0 0 1 6 5"/>',
+  tool: '<path d="m14 6 4-4 4 4-4 4M2 18l8-8 4 4-8 8H2z"/>',
+  dot: '<circle cx="12" cy="12" r="4"/>',
+};
+
+function iconMarkup(name) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${uiIconPaths[name] || uiIconPaths.dot}</svg>`;
+}
+
+$$('[data-icon]').forEach((node) => { node.innerHTML = iconMarkup(node.dataset.icon); });
+
 function initialiseSidebarMenus() {
   const definitions = sidebarMenuDefinitions();
-  const submenuIcons = {
-    overview: '◇', grade10: '10', grade11: '11', grade12: '12', college1: 'Ⅰ', college2: 'Ⅱ', college3: 'Ⅲ', collegeFinal: 'Ⅳ', firstJob: '↗', dreamJob: '★',
-    compass: '⌁', explore: '✦', compare: '⇄', roadmap: '✓', 'ai-journey': '✧', evidence: '▣', discussions: '#', experiences: '◌', saved: '♥',
-    latest: '●', archive: '▤', subscribe: '+',
-  };
   $$('[data-menu]').forEach((parent) => {
     const key = parent.dataset.menu;
     const group = document.createElement('div');
@@ -467,7 +486,7 @@ function initialiseSidebarMenus() {
       }
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'nav-subitem'; button.dataset.submenuKind = item.kind; button.dataset.value = item.value;
-      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.textContent = submenuIcons[item.value] || ({ research: '⌕', study: '▤', certification: '✪', traditional: '❋', calling: '✦', blog: '✎', newsletter: '✉', community: '◉' }[item.kind] || '•'); marker.setAttribute('aria-hidden', 'true');
+      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.innerHTML = iconMarkup(item.kind === 'community' ? 'community' : item.kind === 'research' ? 'research' : item.kind === 'study' ? 'study' : item.kind === 'certification' ? 'certificate' : item.kind === 'traditional' ? 'traditional' : item.kind === 'calling' ? 'calling' : item.value === 'overview' ? 'overview' : 'tool'); marker.setAttribute('aria-hidden', 'true');
       const copy = document.createElement('span'); const strong = document.createElement('strong'); strong.textContent = item.label; copy.append(strong);
       if (item.meta) { const small = document.createElement('small'); small.textContent = item.meta; copy.append(small); }
       button.append(marker, copy); submenu.append(button);
@@ -655,6 +674,7 @@ function showToast(message) {
 
 function updateShell() {
   const [eyebrow, title] = viewMeta[state.view];
+  document.body.dataset.view = state.view;
   $('#pageEyebrow').textContent = eyebrow;
   $('#pageTitle').textContent = state.view === 'journey-stage' ? yearMilestoneConfig[state.activeJourneyStage]?.title || title : title;
   $$('.nav-item').forEach((button) => {
@@ -694,7 +714,7 @@ function allBackgrounds() {
 function effectiveAppearance() {
   const useDefault = state.appearance?.mode !== 'override';
   const background = useDefault ? campusBackgrounds[0] : allBackgrounds().find((item) => item.id === state.background) || campusBackgrounds[0];
-  return { theme: useDefault ? 'brown-violet' : state.theme, background };
+  return { theme: useDefault ? 'violet' : state.theme, background };
 }
 
 function renderBackgroundOptions() {
@@ -1632,7 +1652,7 @@ function renderCalling() {
   const themes = [...new Set(allSelected.map((option) => option.category))].slice(0, 8);
   const synthesis = callingSynthesis();
   return `<div class="view-enter calling-view">
-    <header class="calling-intro"><div><p class="eyebrow">FIND YOUR CALLING</p><h2>Begin with three honest questions.</h2></div><p>No score. No ideal answer. Notice what creates relief, resistance, or recognition.</p><strong>${answered}<span>/ 3 reflected</span></strong></header>
+    <header class="calling-intro"><p class="eyebrow">FIND YOUR CALLING</p><strong>${answered}<span>/ 3 reflected</span></strong></header>
     <nav class="calling-question-tabs" aria-label="Three calling questions">${callingQuestions.map((question) => { const done = state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim(); return `<button data-action="calling-question" data-value="${question.id}" class="${active.id === question.id ? 'active' : ''}" aria-current="${active.id === question.id ? 'step' : 'false'}"><span>${question.number}</span><strong>“${escapeHtml(question.question)}”</strong><em>${done ? '✓ Reflection added' : 'Answer this question'} →</em></button>`; }).join('')}</nav>
     <div class="calling-layout"><main class="calling-question panel"><header><span>QUESTION ${active.number}</span><h2>“${active.question}”</h2><p>${active.guidance}</p></header><div class="calling-tools"><label>Search ${callingMetadata.optionsPerQuestion} possibilities<input id="callingSearch" type="search" value="${escapeHtml(state.calling.search)}" placeholder="Family, creating, service, health, integrity…"></label><span>${selected.length} selected · choose any that feel true</span></div><section class="calling-option-list" aria-label="Possible answers">${visible.map((option) => { const on = selected.includes(option.id); return `<button data-action="calling-option" data-id="${option.id}" class="${on ? 'selected' : ''}" aria-pressed="${on}"><span>${on ? '✓' : '+'}</span><div><small>${escapeHtml(option.category)}</small><strong>${escapeHtml(option.text)}</strong></div></button>`; }).join('') || '<div class="calling-empty">No possibilities match that search. Try a broader word—or write your own answer below.</div>'}</section>${filtered.length > state.calling.limit ? `<button class="button-secondary calling-more" data-action="calling-more">Show ${Math.min(18, filtered.length - state.calling.limit)} more · ${filtered.length - state.calling.limit} remaining</button>` : ''}<label class="calling-custom">Your own answer<textarea data-calling-custom="${active.id}" maxlength="800" ${isGuest() ? 'disabled' : ''} placeholder="Write in your own words. It can be uncertain, unfinished or different from every option above.">${escapeHtml(state.calling.custom[active.id])}</textarea><small>${isGuest() ? 'Create a profile to save a private answer.' : 'Saved privately on this device.'}</small></label></main>
       <aside class="calling-reflection panel"><p class="eyebrow">YOUR CALLING COMPASS</p><h3>${themes.length ? (synthesis.complete ? 'Your strongest directions' : 'A provisional pattern is emerging') : 'Select what feels true—not what sounds admirable.'}</h3>${themes.length ? `<div class="calling-themes">${themes.map((theme) => `<span>${escapeHtml(theme)}</span>`).join('')}</div><div class="calling-recommendations">${synthesis.ranked.map((direction, index) => `<article class="calling-recommendation ${index === 0 ? 'primary' : ''}"><span>${index === 0 ? 'STRONGEST DIRECTION' : `ALTERNATIVE ${index + 1}`}</span><h4>${escapeHtml(direction.title)}</h4><p><strong>Why:</strong> ${escapeHtml(direction.reasons.length ? direction.reasons.join(', ') : 'your own written reflection')} recur in your answers.</p><p><strong>Possible arenas:</strong> ${escapeHtml(direction.arenas)}.</p><p><strong>Test it:</strong> ${escapeHtml(direction.experiment)}</p><small>${escapeHtml(direction.caution)}</small></article>`).join('')}</div>${synthesis.boundaries.length ? `<div class="calling-guardrails"><strong>Your work must protect</strong>${synthesis.boundaries.map((item) => `<span>${escapeHtml(item.guidance)}</span>`).join('')}</div>` : ''}` : '<p>Look for three kinds of signal: what gives relief, what creates a firm boundary, and whose life becomes better because of your work.</p>'}<div class="calling-summary">${callingQuestions.map((question) => { const count = state.calling.selections[question.id]?.length || 0; const custom = state.calling.custom[question.id]?.trim(); return `<section><span>${question.number}</span><div><strong>${question.short}</strong><p>${count ? `${count} possibilities selected` : 'No possibilities selected'}${custom ? ' · own answer added' : ''}</p></div></section>`; }).join('')}</div><p class="calling-caution">These are hypotheses, not a psychological diagnosis. Test the strongest direction in real life, discuss it with people who know you, and revise it when evidence changes.</p>${answered ? '<button class="button-quiet" data-action="calling-clear">Clear my calling reflections</button>' : ''}</aside>
@@ -2578,10 +2598,10 @@ $('#backgroundAddForm').addEventListener('submit', async (event) => {
 
 $('#appearanceReset').addEventListener('click', () => {
   state.appearance.mode = 'default';
-  state.theme = 'brown-violet';
+  state.theme = 'violet';
   state.background = 'campus-walk';
   saveState(); updateShell(); renderBackgroundOptions();
-  showToast('Dark brown-violet and Campus walk restored. Personal backgrounds remain available.');
+  showToast('Violet-purple and Campus walk restored. Personal backgrounds remain available.');
 });
 
 let entryRole = 'student';
@@ -2789,6 +2809,11 @@ $('#resetData').addEventListener('click', () => {
   showToast('Workspace choices reset.');
 });
 
+let mentorSLMEngine = null;
+let mentorSLMModule = null;
+let mentorSLMBusy = false;
+let mentorSLMStatus = { state: 'idle', label: 'Local SLM not loaded', detail: 'Runs privately in this browser using the Zysham knowledge layer.', progress: 0, modelId: '' };
+
 const mentorCopy = {
   miso: {
     name: 'Miso', role: 'RADICALLY CANDID',
@@ -2846,6 +2871,144 @@ function mentorSharedNeeds() {
   return patterns.filter(([, pattern]) => pattern.test(shared)).map(([label]) => label).slice(0, 4);
 }
 
+function mentorKnowledgeDocuments() {
+  const stageDocs = Object.entries(yearMilestoneConfig).map(([id, item]) => ({
+    id: `stage:${id}`, title: `${item.step} · ${item.title}`,
+    text: `${item.purpose} ${item.copy} Milestones: ${item.milestones.join('; ')}. Reflection: ${item.noteLabel}`,
+  }));
+  const careerDocs = careers.map((item) => ({ id: `career:${item.id}`, title: item.title, text: `${item.cluster}. ${item.summary} Daily work: ${item.day} Education: ${item.education}. Reality: ${item.reality}. Try: ${item.experiment}.` }));
+  const researchDocs = researchCatalog.map((item) => ({ id: `research:${item.id}`, title: item.title, text: `${item.researchDomain}. ${item.summary} ${item.facts.map((fact) => `${fact.label}: ${fact.value}`).join('. ')} Checks: ${item.checks.join('; ')} Caveat: ${item.caveat}. Official sources: ${item.sources.map((source) => source.label).join(', ')}.` }));
+  const callingDocs = callingQuestions.map((item) => ({ id: `calling:${item.id}`, title: item.question, text: `${item.guidance} Answer themes: ${[...new Set(item.options.map((option) => option.category))].join(', ')}.` }));
+  const studyDocs = Object.values(studyTracks).map((item) => ({ id: `study:${item.id}`, title: item.label, text: `${item.short}. Subjects: ${Object.keys(item.subjects).join(', ')}. Official source: ${item.sourceLabel}.` }));
+  const certificationDocs = certificationCourses.map((item) => ({ id: `certification:${item.id}`, title: item.title, text: `${item.provider}. ${item.category}. ${item.level}. ${item.skills}. Cost: ${item.learningCost}. Credential: ${item.credential}.` }));
+  const traditionalDocs = traditionalCourses.map((item) => ({ id: `traditional:${item.id}`, title: item.title, text: `${item.provider}. ${item.category}. Path: ${item.path}. Develops: ${item.skills}. Reality: ${item.reality}.` }));
+  return [...stageDocs, ...careerDocs, ...researchDocs, ...callingDocs, ...studyDocs, ...certificationDocs, ...traditionalDocs];
+}
+
+function mentorRetrieve(query, stageId, limit = 8) {
+  const tokens = [...new Set(`${query} ${yearMilestoneConfig[stageId]?.title || ''}`.toLowerCase().match(/[a-z0-9]{3,}/g) || [])].filter((token) => !['what', 'with', 'this', 'that', 'your', 'have', 'from', 'should', 'could', 'would'].includes(token));
+  return mentorKnowledgeDocuments().map((doc) => {
+    const haystack = `${doc.title} ${doc.text}`.toLowerCase();
+    const score = tokens.reduce((sum, token) => sum + (haystack.includes(token) ? (doc.title.toLowerCase().includes(token) ? 4 : 1) : 0), 0) + (doc.id === `stage:${stageId}` ? 7 : 0);
+    return { ...doc, score };
+  }).filter((doc) => doc.score > 0).sort((a, b) => b.score - a.score).slice(0, limit);
+}
+
+function mentorStudentContext(stageId) {
+  const evidence = mentorEvidence(stageId);
+  const work = workRealityResult();
+  const calling = callingQuestions.map((question) => {
+    const chosen = (state.calling.selections[question.id] || []).map((id) => question.options.find((option) => option.id === id)?.text).filter(Boolean);
+    const own = state.calling.custom[question.id]?.trim();
+    return chosen.length || own ? `${question.short}: ${[...chosen.slice(0, 5), own].filter(Boolean).join('; ')}` : '';
+  }).filter(Boolean);
+  const savedCareers = careers.filter((career) => state.saved.includes(career.id)).map((career) => career.title);
+  const stageProgress = state.journey.milestoneProgress?.[stageId] || {};
+  return [
+    `Audience: ${state.audience}; active profile: ${state.session.activeRole}; stage: ${evidence.config.step}.`,
+    `NO-NOs: ${evidence.noNos.join(', ') || 'none recorded'}. Work-reality profile: ${work.label || 'not completed'}; ${work.answered || 0} answers.`,
+    `Completed milestones: ${evidence.milestones.join('; ') || 'none'}. In progress: ${Object.entries(stageProgress).filter(([, status]) => status === 'doing').map(([name]) => name).join('; ') || 'none'}.`,
+    `Stage reflection: ${state.journey.stageNotes[stageId]?.trim() || 'none'}. Performance context: ${state.journey.ranks[stageId] || 'not recorded'}.`,
+    `Calling reflections: ${calling.join(' | ') || 'none'}. Saved careers: ${savedCareers.join(', ') || 'none'}.`,
+    `Evidence wallet: ${state.evidence.slice(-8).map((item) => `${item.title} (${item.type})`).join('; ') || 'empty'}. Shared needs detected: ${mentorSharedNeeds().join(', ') || 'none'}.`,
+  ].join('\n');
+}
+
+function mentorSystemPrompt(message, stageId) {
+  const retrieved = mentorRetrieve(message, stageId);
+  const voice = state.mentor === 'miso' ? 'Direct, candid, concise, but never shaming.' : 'Calm, practical, encouraging, but never vague.';
+  return `You are ${mentorCopy[state.mentor].name}, Zysham's career counsellor for Indian students and parents. ${voice}
+Use only the STUDENT CONTEXT and ZYSHAM KNOWLEDGE below for personal claims. Do not invent marks, eligibility, fees, salaries, rankings, deadlines, placements, or user facts. Say when evidence is missing. Recommendations are hypotheses to test, never destiny, diagnosis, aptitude verdict, astrology, or prestige advice. Start from NO-NOs and constraints; protect student agency, family reality, health, integrity, accessibility, and purpose. For changing or high-stakes claims, explicitly ask the user to verify a current official source. Distinguish what the app knows, what the student shared, and what remains uncertain. Give at most three concrete next steps and one question. Cite grounding inline as [App: exact source title]. Do not cite a source you did not receive.
+
+STUDENT CONTEXT
+${mentorStudentContext(stageId)}
+
+ZYSHAM KNOWLEDGE
+${retrieved.map((doc) => `[App: ${doc.title}] ${doc.text}`).join('\n\n')}`;
+}
+
+function updateMentorModelUI() {
+  const status = $('#mentorModelStatus');
+  if (!status) return;
+  status.textContent = mentorSLMStatus.label;
+  $('#mentorModelDetail').textContent = mentorSLMStatus.detail;
+  $('#mentorModelDot').className = mentorSLMStatus.state;
+  const progress = $('#mentorModelProgress');
+  progress.hidden = !['loading', 'generating'].includes(mentorSLMStatus.state);
+  $('span', progress).style.width = `${Math.max(2, mentorSLMStatus.progress || 0)}%`;
+  const button = $('#mentorModelButton');
+  button.disabled = mentorSLMBusy || mentorSLMStatus.state === 'ready';
+  button.textContent = mentorSLMStatus.state === 'ready' ? 'Local AI ready' : mentorSLMStatus.state === 'loading' ? 'Loading…' : mentorSLMStatus.state === 'error' ? 'Retry local AI' : 'Load local AI';
+  $('#mentorChatInput').disabled = mentorSLMBusy;
+  $('#mentorChatForm button').disabled = mentorSLMBusy;
+}
+
+async function initialiseMentorSLM() {
+  if (mentorSLMEngine) return mentorSLMEngine;
+  if (!navigator.gpu) throw new Error('WebGPU is unavailable in this browser.');
+  mentorSLMBusy = true;
+  mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading local SLM', detail: 'Preparing the browser engine…', progress: 2 };
+  updateMentorModelUI();
+  try {
+    mentorSLMModule ||= await import('https://esm.run/@mlc-ai/web-llm');
+    const modelList = mentorSLMModule.prebuiltAppConfig?.model_list || [];
+    const preferences = [/Qwen2(?:\.5)?-0\.5B-Instruct-q4f16_1-MLC/i, /SmolLM2-1\.7B-Instruct-q4f16_1-MLC/i, /Qwen2(?:\.5)?-1\.5B-Instruct-q4f16_1-MLC/i];
+    const model = preferences.map((pattern) => modelList.find((item) => pattern.test(item.model_id))).find(Boolean) || modelList.find((item) => /0\.5B.*Instruct/i.test(item.model_id));
+    if (!model) throw new Error('No compatible small instruction model is available.');
+    mentorSLMStatus.modelId = model.model_id;
+    mentorSLMEngine = await mentorSLMModule.CreateMLCEngine(model.model_id, {
+      appConfig: { ...mentorSLMModule.prebuiltAppConfig, cacheBackend: 'indexeddb' },
+      initProgressCallback: (progress) => {
+        const fraction = Number(progress.progress || 0);
+        mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading local SLM', detail: progress.text || `Downloading ${model.model_id}`, progress: Math.round(fraction * 100) };
+        updateMentorModelUI();
+      },
+    });
+    mentorSLMStatus = { state: 'ready', label: 'Local SLM ready', detail: `${model.model_id} · private browser inference · Zysham grounded`, progress: 100, modelId: model.model_id };
+    return mentorSLMEngine;
+  } catch (error) {
+    mentorSLMEngine = null;
+    mentorSLMStatus = { ...mentorSLMStatus, state: 'error', label: 'Local SLM unavailable', detail: `${error.message} App-grounded guidance remains available.`, progress: 0 };
+    throw error;
+  } finally {
+    mentorSLMBusy = false;
+    updateMentorModelUI();
+  }
+}
+
+async function mentorSLMReply(message, stageId) {
+  const engine = await initialiseMentorSLM();
+  const history = state.mentorChat.messages.slice(-8).map((item) => ({ role: item.role, content: item.text }));
+  mentorSLMBusy = true;
+  mentorSLMStatus = { ...mentorSLMStatus, state: 'generating', label: 'Counsellor is reasoning', detail: `Grounded in ${mentorRetrieve(message, stageId).length} relevant Zysham records`, progress: 65 };
+  updateMentorModelUI();
+  try {
+    const completion = await engine.chat.completions.create({
+      messages: [{ role: 'system', content: mentorSystemPrompt(message, stageId) }, ...history],
+      temperature: 0.25, top_p: 0.85, max_tokens: 480, repetition_penalty: 1.08,
+    });
+    const reply = completion.choices?.[0]?.message?.content?.trim();
+    if (!reply) throw new Error('The local model returned no response.');
+    return reply;
+  } finally {
+    mentorSLMBusy = false;
+    mentorSLMStatus = { ...mentorSLMStatus, state: 'ready', label: 'Local SLM ready', detail: `${mentorSLMStatus.modelId} · private browser inference · Zysham grounded`, progress: 100 };
+    updateMentorModelUI();
+  }
+}
+
+async function runMentorTurn(message, stageId = mentorStageId()) {
+  addMentorMessage('user', message, stageId);
+  saveState(); updateMentor();
+  try {
+    const reply = await mentorSLMReply(message, stageId);
+    addMentorMessage('assistant', reply, stageId);
+  } catch (error) {
+    addMentorMessage('assistant', `The local model could not run (${error.message}). ${mentorReply(message, stageId)}`, stageId);
+  }
+  saveState(); updateMentor();
+}
+
 function mentorReply(message, stageId) {
   const evidence = mentorEvidence(stageId);
   const lower = message.toLowerCase();
@@ -2901,6 +3064,7 @@ function updateMentor() {
   if (canShowMentor) openRightDrawer('mentor', { title: `${mentor.name} · Career counsellor` });
   else if (!shouldOpen && drawerKind === 'mentor') closeRightDrawer('mentor');
   $('#mentorTrigger').setAttribute('aria-expanded', String(shouldOpen));
+  updateMentorModelUI();
   requestAnimationFrame(() => { const log = $('#mentorMessages'); log.scrollTop = log.scrollHeight; });
 }
 
@@ -2916,13 +3080,11 @@ $('#mentorClose').addEventListener('click', () => {
   saveState();
   updateMentor();
 });
-$('#mentorPanel').addEventListener('click', (event) => {
+$('#mentorPanel').addEventListener('click', async (event) => {
   const question = event.target.closest('[data-mentor-question]');
   if (question) {
     const text = question.dataset.mentorQuestion;
-    addMentorMessage('user', text);
-    addMentorMessage('assistant', mentorReply(text, mentorStageId()));
-    saveState(); updateMentor();
+    await runMentorTurn(text, mentorStageId());
     return;
   }
   const button = event.target.closest('[data-mentor-action]');
@@ -2933,6 +3095,9 @@ $('#mentorPanel').addEventListener('click', (event) => {
   } else if (button.dataset.mentorAction === 'open-stage') {
     state.activeJourneyStage = mentorStageId();
     setView('journey-stage');
+  } else if (button.dataset.mentorAction === 'load-model') {
+    try { await initialiseMentorSLM(); showToast('Local SLM is ready and grounded in Zysham.'); }
+    catch (error) { showToast(`Local SLM unavailable: ${error.message}`); }
   } else if (button.dataset.mentorAction === 'clear' && confirm('Clear this private counselling conversation?')) {
     state.mentorChat.messages = [];
     saveState(); updateMentor();
@@ -2944,16 +3109,14 @@ $('#mentorStage').addEventListener('change', (event) => {
   saveState(); updateMentor();
 });
 
-$('#mentorChatForm').addEventListener('submit', (event) => {
+$('#mentorChatForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const input = $('#mentorChatInput');
   const message = input.value.trim();
   if (!message) return;
   const stageId = mentorStageId();
-  addMentorMessage('user', message, stageId);
-  addMentorMessage('assistant', mentorReply(message, stageId), stageId);
   input.value = '';
-  saveState(); updateMentor();
+  await runMentorTurn(message, stageId);
 });
 
 matchMedia('(min-width: 1200px)').addEventListener('change', () => updateMentor());

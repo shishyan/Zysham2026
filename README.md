@@ -13,7 +13,7 @@ A student-led career guidance workspace for Indian students and their families.
 - Student/Parent perspectives and guided family conversations
 - Evidence Wallet and low-risk career experiments
 - Miso and Ollie mentor voices
-- Dark brown-violet (default), Aurora Light, Green–Teal, and Violet–Purple themes
+- Violet–Purple (default), Dark brown-violet, Aurora Light, and Green–Teal themes
 - Six original university-life backgrounds selectable in Settings and dimmed by 85%
 - A verbatim Prompt Journal documenting how the product was built
 - A colourful nine-stage chevron journey from Grade 10 through every college year, campus placement, first job, and a six-to-twelve-year dream-work horizon
