@@ -12,19 +12,27 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="theme.css" />
   </head>
-  <body data-theme="aurora">
+  <body data-theme="brown-violet">
     <a class="skip-link" href="#workspace">Skip to workspace</a>
 
     <section class="entry-gate" id="entryGate" aria-label="Welcome to ZYSHAM">
-      <div class="entry-visual" role="img" aria-label="Nine university-life scenes including campus learning, laboratories, mentoring, creative work, community projects, and a career fair">
-        <div class="entry-visual-copy"><span>ZYSHAM · CAREER EXPERIENCE PLATFORM</span><h1>Nine glimpses.<br>One path that is <em>yours.</em></h1><p>Learn from many journeys. Keep the final decision human.</p></div>
+      <div class="entry-visual" role="img" aria-label="A collage of university life, learning, mentoring, projects, and career discovery">
+        <div class="entry-visual-copy"><span>ZYSHAM · CAREER EXPERIENCE PLATFORM</span><h1>Figure your<br><em>life out.</em></h1><p>Who do you want to become?</p></div>
       </div>
       <div class="entry-zip-seam" aria-hidden="true"></div>
       <div class="entry-auth">
-        <div class="entry-auth-brand"><span class="brand-mark">Z</span><span><strong>ZYSHAM</strong><small>Career clarity, together</small></span></div>
+        <div class="entry-auth-brand"><span class="brand-mark" aria-hidden="true">Z</span><span><strong>ZYSHAM</strong><small>Career Experience Platform</small></span></div>
         <form class="entry-profile-form" id="profileForm">
-          <div><p class="eyebrow">ENTER YOUR WORKSPACE</p><h2>Whose perspective?</h2><p class="entry-auth-copy">Separate profiles keep student ownership and parent support clear. No password is required in this prototype.</p></div>
-          <div class="entry-role-tabs" role="tablist" aria-label="Choose profile type"><button type="button" class="active" role="tab" aria-selected="true" data-entry-role="student">Student</button><button type="button" role="tab" aria-selected="false" data-entry-role="parent">Parent</button></div>
+          <header class="entry-auth-heading"><p class="eyebrow">YOUR CAREER WORKSPACE</p><h2 id="entryTitle">Welcome back.</h2><p class="entry-auth-copy" id="entryAuthCopy">Sign in to continue your journey.</p></header>
+          <div class="entry-auth-tabs" role="tablist" aria-label="Account access"><button type="button" class="active" role="tab" aria-selected="true" data-auth-mode="signin">Sign in</button><button type="button" role="tab" aria-selected="false" data-auth-mode="create">Sign up</button></div>
+          <div class="entry-credentials">
+            <label><span id="entryIdentifierLabel">Email or user ID</span><input id="entryIdentifier" name="identifier" type="text" autocomplete="username" maxlength="120" placeholder="Email or profile name" required></label>
+            <label><span>Password</span><span class="entry-password-field"><input id="entryPassword" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="72" placeholder="Enter your password" required><button type="button" id="toggleEntryPassword" aria-label="Show password" aria-pressed="false">Show</button></span></label>
+          </div>
+          <div class="entry-signin-options" id="entrySigninOptions"><label><input type="checkbox" id="rememberEntry" checked> Keep me signed in</label><button type="button" class="entry-help" id="signinHelp">Forgot password?</button></div>
+          <div class="entry-create-fields" id="entryCreateFields" hidden>
+          <div class="entry-profile-intro"><strong>Set up your profile</strong><span>Shown only during sign up</span></div>
+          <div class="entry-role-tabs" role="tablist" aria-label="Choose profile type"><button type="button" class="active" role="tab" aria-selected="true" data-entry-role="student">Student</button><button type="button" role="tab" aria-selected="false" data-entry-role="parent">Parent</button><button type="button" role="tab" aria-selected="false" data-entry-role="admin">Team admin</button></div>
           <div class="entry-role-fields" data-role-fields="student">
             <label>Student name<input id="profileName" maxlength="40" placeholder="e.g. Anya" required></label>
             <div class="profile-field-row"><label>Current stage<select id="profileGrade"><option value="10">Grade 10</option><option value="11">Grade 11</option><option value="12">Grade 12</option><option value="college">College</option></select></label><label>Board / route<select id="profileBoard"><option>CBSE</option><option>CISCE / ICSE</option><option>State Board</option><option>IB</option><option>Cambridge</option><option>NIOS / Open School</option><option>College / Skills route</option><option>Other</option></select></label></div>
@@ -35,12 +43,15 @@
             <div class="profile-field-row"><label>Relationship<select id="parentRelationship"><option>Parent</option><option>Guardian</option><option>Older sibling</option><option>Mentor</option></select></label><label>Preferred language<select id="parentLanguage"><option>English</option><option>Hindi</option><option>Tamil</option><option>Telugu</option><option>Kannada</option><option>Malayalam</option><option>Bengali</option><option>Marathi</option><option>Other</option></select></label></div>
             <label>Student name or nickname being supported<input id="linkedStudentName" maxlength="40" placeholder="Keeps the student journey separate"></label>
           </div>
+          <div class="entry-role-fields" data-role-fields="admin" hidden><label>Team member name<input id="adminName" maxlength="40" placeholder="e.g. Kavya"></label><label>Editorial responsibility<select id="adminTeamRole"><option>Editor</option><option>Career researcher</option><option>Student community lead</option><option>Family guidance lead</option><option>Administrator</option></select></label></div>
           <fieldset class="entry-guide-picker"><legend>Choose a guide</legend><label class="entry-guide selected"><input type="radio" name="guide" value="miso" checked><span class="guide-portrait cat"></span><span><strong>Miso</strong><small>Direct & analytical</small></span></label><label class="entry-guide"><input type="radio" name="guide" value="ollie"><span class="guide-portrait dog"></span><span><strong>Ollie</strong><small>Warm & practical</small></span></label></fieldset>
-          <button class="button-primary entry-submit">Enter as <span id="entryRoleLabel">student</span> →</button>
+          </div>
+          <button class="button-primary entry-submit" id="entrySubmit">Sign in &rarr;</button>
+          <div class="entry-divider"><span>or</span></div>
           <button class="entry-guest" type="button" id="enterGuest">Continue as guest</button>
-          <p class="entry-guest-note">Guests can use the full exploration and discussion experience, but cannot create a personal journey or publish to the Experience Exchange.</p>
+          <p class="entry-guest-note">Explore without an account. Personal journeys and publishing require a profile.</p>
         </form>
-        <button class="entry-demo-link" type="button" id="enterDemo">Open a populated student demo →</button>
+        <details class="entry-sample-actions"><summary>Preview a sample workspace</summary><div><button class="entry-sample-link" type="button" id="enterSample">Student journey</button><button class="entry-sample-link" type="button" id="enterAdminSample">Team publishing</button></div></details>
       </div>
       <div class="entry-zip-pull" aria-hidden="true"><img src="assets/zipper-logo-cropped.png" alt=""><span>YOUR PATH</span></div>
     </section>
@@ -61,16 +72,17 @@
 
         <nav class="primary-nav" aria-label="Career workspace">
           <p class="nav-label">Your workspace</p>
-          <button class="nav-item active" data-view="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
-          <button class="nav-item" data-view="compass"><span class="nav-icon">◎</span><span>Career compass</span><span class="nav-badge" id="compassBadge">0%</span></button>
-          <button class="nav-item" data-view="explore"><span class="nav-icon">◇</span><span>Explore careers</span></button>
-          <button class="nav-item" data-view="experiences"><span class="nav-icon">◌</span><span>Experience exchange</span><span class="nav-badge">500</span></button>
-          <button class="nav-item" data-view="discussions"><span class="nav-icon">#</span><span>Discussions</span><span class="nav-badge">132</span></button>
-          <button class="nav-item" data-view="ai-journey"><span class="nav-icon">✦</span><span>AI Journey</span></button>
-          <button class="nav-item" data-view="compare"><span class="nav-icon">⇄</span><span>Compare paths</span><span class="nav-badge" id="compareBadge">0</span></button>
-          <button class="nav-item" data-view="roadmap"><span class="nav-icon">↗</span><span>My roadmap</span></button>
-          <button class="nav-item" data-view="family"><span class="nav-icon">⌁</span><span>Family room</span></button>
-          <button class="nav-item" data-view="evidence"><span class="nav-icon">▣</span><span>Evidence wallet</span></button>
+          <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" aria-hidden="true">✦</span><span><strong>Find Your Calling</strong><small>Begin here</small></span></button>
+          <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" aria-hidden="true">◆</span><span>My Journey</span><span class="nav-badge" id="compassBadge">0%</span></button>
+          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" aria-hidden="true">◉</span><span>Discussions</span><span class="nav-badge">532</span></button>
+          <button class="nav-item" data-view="research" data-menu="research"><span class="nav-icon" aria-hidden="true">⌕</span><span>Research</span></button>
+        </nav>
+
+        <nav class="learning-nav" aria-label="Learning and skill building">
+          <p class="nav-label">Learn & practise</p>
+          <button class="nav-item" data-view="study-guide" data-menu="study"><span class="nav-icon" aria-hidden="true">▤</span><span>Study Guide</span></button>
+          <button class="nav-item" data-view="certifications" data-menu="certifications"><span class="nav-icon" aria-hidden="true">✪</span><span>Certification Courses</span></button>
+          <button class="nav-item" data-view="traditional" data-menu="traditional"><span class="nav-icon" aria-hidden="true">❋</span><span>Traditional Courses</span></button>
         </nav>
 
         <div class="sidebar-note">
@@ -81,7 +93,8 @@
         <div class="sidebar-footer">
           <a href="prompts.html"><span>⌘</span> Prompt journal</a>
           <button id="settingsButton"><span>⚙</span> Settings</button>
-          <button id="resetData"><span>↺</span> Reset demo</button>
+          <button id="signOutButton"><span>⇥</span> Return to sign in</button>
+          <button id="resetData"><span>↺</span> Reset workspace</button>
         </div>
       </aside>
 
@@ -96,16 +109,13 @@
             </div>
 
             <div class="header-actions">
+              <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
+              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Newsletter"><span aria-hidden="true">✉</span><em>Newsletter</em></button>
+              <label class="global-region-picker" for="globalRegionSelect"><span>Region</span><select id="globalRegionSelect" aria-label="Filter regional content"><option value="All">All regions</option></select></label>
               <button class="research-button" id="researchButton" aria-label="Open research shelf"><span aria-hidden="true">⌕</span><em>Research</em></button>
-              <div class="theme-picker" aria-label="Choose theme">
-                <button class="theme-choice active" data-theme-choice="aurora" title="Aurora Light theme"><span></span><em>Aurora Light</em></button>
-                <button class="theme-choice" data-theme-choice="teal" title="Green-teal theme"><span></span><em>Teal</em></button>
-                <button class="theme-choice" data-theme-choice="violet" title="Violet-purple theme"><span></span><em>Violet</em></button>
-              </div>
               <button class="audience-switch" id="audienceSwitch" aria-label="Switch between student and parent view"><span>Student view</span><b>→</b></button>
             </div>
           </div>
-          <nav class="journey-rail" id="journeyRail" aria-label="Year-by-year career journey from Grade 10 through college, first job, and dream work"></nav>
         </header>
 
         <section class="view-host" id="viewHost" aria-live="polite"></section>
@@ -125,27 +135,76 @@
 
       <aside class="settings-panel" id="settingsPanel" aria-label="Settings" aria-hidden="true">
         <div class="settings-head"><div><span>PERSONALISE ZYSHAM</span><strong>Settings</strong></div><button class="icon-button" id="settingsClose" aria-label="Close settings">×</button></div>
-        <section class="settings-section"><p class="eyebrow">CAMPUS BACKGROUND</p><h2>Choose a place to imagine yourself.</h2><p>All backgrounds are dimmed by 85% so your plan stays readable.</p><div class="background-options" id="backgroundOptions"></div></section>
+        <section class="settings-section account-settings"><p class="eyebrow">PROFILE & COMMUNICATION</p><h2>Your account.</h2><p>Review identity, role, newsletter consent and communication preferences. Journey records remain separate from email choices.</p><div id="accountSettingsBody"></div></section>
+        <section class="settings-section appearance-settings">
+          <p class="eyebrow">APPEARANCE</p><h2>Default or make it yours.</h2><p>Use the calm Zysham default, or keep a personal theme and campus background override on this device.</p>
+          <div class="appearance-mode" role="radiogroup" aria-label="Appearance behavior">
+            <button type="button" data-appearance-mode="default" role="radio"><strong>Zysham default</strong><small>Dark brown-violet · Campus walk</small></button>
+            <button type="button" data-appearance-mode="override" role="radio"><strong>My override</strong><small>Use the choices below</small></button>
+          </div>
+          <div class="appearance-overrides" id="appearanceOverrides">
+            <div class="settings-subsection"><span class="settings-label">THEME</span><div class="settings-theme-options" aria-label="Choose theme">
+              <button class="theme-choice" data-theme-choice="brown-violet" title="Dark brown-violet theme"><span></span><em>Dark brown-violet</em></button>
+              <button class="theme-choice" data-theme-choice="aurora" title="Aurora Light theme"><span></span><em>Aurora Light</em></button>
+              <button class="theme-choice" data-theme-choice="teal" title="Green-teal theme"><span></span><em>Green-teal</em></button>
+              <button class="theme-choice" data-theme-choice="violet" title="Violet-purple theme"><span></span><em>Violet-purple</em></button>
+            </div></div>
+            <div class="settings-subsection"><span class="settings-label">APP BACKGROUND</span><p>Built-in and personal backgrounds are dimmed to keep content readable.</p><div class="background-options" id="backgroundOptions"></div></div>
+            <form class="background-add-form" id="backgroundAddForm">
+              <div><span class="settings-label">ADD A BACKGROUND</span><small>Choose an image from this device or paste a direct HTTPS image URL. Personal files are resized before being stored locally.</small></div>
+              <label>Display name<input name="name" maxlength="40" placeholder="e.g. Anna University courtyard"></label>
+              <label>Image from device<input name="file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+              <label class="background-url-label">Or direct image URL<input name="url" type="url" inputmode="url" placeholder="https://example.org/campus.jpg"></label>
+              <button class="button-secondary" type="submit">Add to background library</button>
+            </form>
+            <button class="button-quiet appearance-reset" id="appearanceReset" type="button">Clear override and restore Zysham default</button>
+          </div>
+        </section>
+        <section class="settings-section generated-names-settings"><p class="eyebrow">COMMUNITY IDENTITIES</p><h2>Generated Names</h2><p>Names attached to starter conversations are generated product fixtures, not user accounts. Choose the pool used when previewing community content.</p><label>Name pool<select id="generatedNameScope"><option>Tamil Nadu</option><option>India</option><option>International</option></select></label><div class="generated-name-preview" id="generatedNamePreview"></div><small>Defined here at product level. They never appear as registered students or a user directory.</small></section>
       </aside>
       <button class="settings-scrim" id="settingsScrim" aria-label="Close settings"></button>
     </div>
 
+    <aside class="right-drawer" id="rightDrawer" aria-label="Workspace drawer" aria-hidden="true">
+      <header class="right-drawer-head"><div class="right-drawer-identity"><span class="right-drawer-icon" id="rightDrawerIcon" hidden></span><span><small id="rightDrawerKicker">WORKSPACE TOOL</small><strong id="rightDrawerTitle">Details</strong></span></div><button class="icon-button" id="rightDrawerClose" aria-label="Close right drawer">×</button></header>
+      <div class="right-drawer-body" id="rightDrawerBody"></div>
+    </aside>
+    <button class="right-drawer-scrim" id="rightDrawerScrim" aria-label="Close right drawer"></button>
+
     <aside class="mentor-dock" id="mentorDock" aria-label="Career mentor">
       <button class="mentor-trigger" id="mentorTrigger" aria-expanded="false">
         <span class="mentor-face mentor-animal cat" id="mentorFace"></span>
-        <span><small>ASK YOUR GUIDE</small><strong id="mentorTriggerName">Miso</strong></span>
-        <b>↑</b>
+        <span><small>AI CAREER COUNSELLOR</small><strong><span id="mentorTriggerName">Miso</span> · Ask anything</strong></span>
+        <b>←</b>
       </button>
       <div class="mentor-panel" id="mentorPanel">
         <div class="mentor-panel-head">
-          <div><span class="mentor-face mentor-animal cat"></span><span><small>RADICALLY CANDID</small><strong id="mentorName">Miso</strong></span></div>
-          <button class="icon-button" id="mentorClose" aria-label="Close mentor">×</button>
+          <div><span class="mentor-face mentor-animal cat"></span><span><small id="mentorRole">RADICALLY CANDID</small><strong><span id="mentorName">Miso</span> · Career counsellor</strong></span></div>
+          <button class="icon-button" id="mentorClose" aria-label="Collapse career counsellor">×</button>
         </div>
-        <p id="mentorMessage">A match is a clue, not a command. The useful question is: what can you test next?</p>
+        <section class="mentor-context" aria-label="Counselling context">
+          <label for="mentorStage">Counselling stage</label>
+          <select id="mentorStage">
+            <option value="auto">Current stage · automatic</option>
+            <option value="grade10">Grade 10</option><option value="grade11">Grade 11</option><option value="grade12">Grade 12</option>
+            <option value="college1">College year 1</option><option value="college2">College year 2</option><option value="college3">College year 3</option>
+            <option value="collegeFinal">College final year</option><option value="firstJob">First job</option><option value="dreamJob">Dream work · years 1–12</option>
+          </select>
+          <small id="mentorContextSummary"></small>
+        </section>
+        <section class="mentor-recommendation" id="mentorRecommendation" aria-label="Current recommendation"></section>
+        <div class="mentor-chat-log" id="mentorMessages" role="log" aria-live="polite" aria-label="Conversation with career counsellor"></div>
+        <div class="mentor-suggestions" id="mentorSuggestions" aria-label="Suggested questions"></div>
+        <form class="mentor-chat-form" id="mentorChatForm">
+          <label class="sr-only" for="mentorChatInput">Share your needs or ask a career question</label>
+          <textarea id="mentorChatInput" rows="2" maxlength="1200" placeholder="Share what you need, fear, cannot compromise on, or want to test…" required></textarea>
+          <button type="submit" aria-label="Send message">Send</button>
+        </form>
         <div class="mentor-actions">
-          <button data-mentor-action="experiment">Give me one experiment</button>
           <button data-mentor-action="switch">Switch to Ollie</button>
+          <button data-mentor-action="clear">Clear chat</button>
         </div>
+        <p class="mentor-disclosure">Immediate, private, context-aware guidance in this prototype. No external AI model or human counsellor is connected. Verify high-stakes decisions with current official sources and qualified people.</p>
       </div>
     </aside>
 

@@ -148,8 +148,8 @@ function makeStory(i) {
   const lesson = pick(lessons, n, 9);
   const storyType = n % 4 === 0 ? "composite" : "simulated";
   const perspective = ["student", "parent-and-student", "mentor-observer", "first-generation-student", "career-switcher"][n % 5];
-  const title = `${location[2]} route ${String(n).padStart(3, "0")}: ${stage.replaceAll("-", " ")} toward ${career[0]}`;
-  const narrative = `This ${storyType} ${perspective} account follows a learner in ${location[2]}, ${location[0]}, at the ${stage.replaceAll("-", " ")} stage. Studying through ${route[0]} and ${route[1]}, the learner was drawn to ${career[0]} but had to weigh ${pressure}. The learner ${actionA} and ${actionB}. AI ${ai[1]}; however, ${ai[2]} was treated as a warning. Consequential information was checked with official material and people with direct experience. The result: ${outcome[1]}.`;
+  const title = `Journey ${String(n).padStart(3, "0")}: ${stage.replaceAll("-", " ")} toward ${career[0]}`;
+  const narrative = `At the ${stage.replaceAll("-", " ")} stage, this ${perspective} perspective follows a learner studying through ${route[0]} and ${route[1]}. The learner was drawn to ${career[0]} but had to weigh ${pressure}. They ${actionA} and ${actionB}. AI ${ai[1]}; however, ${ai[2]} was treated as a warning. Consequential information was checked with official material and people with direct experience. The result: ${outcome[1]}.`;
   return {
     id: `CXP-${String(n).padStart(4, "0")}`,
     storyType,

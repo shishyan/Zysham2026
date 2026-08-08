@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*
- * Deterministically creates fictional demo student profiles for Zysham.
+ * Deterministically creates generated-name context profiles for Zysham.
  *
  * These records are interface and discussion seed data—not people, surveys,
  * testimonials, or statistical claims. They deliberately use numbered aliases
@@ -15,6 +15,27 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT = path.join(__dirname, "..", "data", "demo-students.js");
 const GENERATED_AT = "2026-08-08T00:00:00.000Z";
+
+const indianFirstNames = [
+  "Aarav", "Aditi", "Aditya", "Akshara", "Aman", "Ananya", "Aniket", "Anjali", "Arjun", "Avani",
+  "Bhavna", "Charan", "Devika", "Dhruv", "Diya", "Farhan", "Gauri", "Harsh", "Ishaan", "Ishita",
+  "Jatin", "Kavya", "Kiran", "Lakshmi", "Manav", "Meera", "Nandini", "Neel", "Nisha", "Omkar",
+  "Pallavi", "Pranav", "Priya", "Rahul", "Rhea", "Rohan", "Saanvi", "Sahil", "Samira", "Sanjay",
+  "Shreya", "Siddharth", "Sneha", "Tanvi", "Tara", "Varun", "Vedika", "Vihaan", "Yash", "Zoya",
+];
+const indianFamilyNames = ["Das", "Devi", "Gupta", "Iyer", "Jain", "Joshi", "Khan", "Kumar", "Mehta", "Mishra", "Nair", "Patel", "Rao", "Reddy", "Roy", "Shah", "Sharma", "Singh"];
+const tamilFirstNames = ["Aadhavan", "Abinaya", "Akilan", "Ananya", "Arul", "Deepika", "Dharani", "Harini", "Iniya", "Karthik", "Kavin", "Keerthana", "Madhavan", "Malar", "Meena", "Naveen", "Nila", "Pranav", "Roshini", "Sanjay", "Surya", "Swetha", "Tharun", "Vignesh", "Yazhini"];
+const internationalFirstNames = ["Aiko", "Amara", "Ana", "Ari", "Camila", "Daniel", "Elena", "Ethan", "Fatima", "Hana", "Ibrahim", "Isla", "Jae", "Jonah", "Kenji", "Leila", "Lucas", "Maya", "Nadia", "Noah", "Olivia", "Rafael", "Sara", "Sofia", "Tariq", "Theo", "Yara", "Yuki", "Zane", "Zuri", "Chloe", "Diego", "Emma", "Felix", "Grace", "Hugo", "Lina", "Mateo", "Nora", "Sam"];
+const internationalFamilyNames = ["Lee", "Martin", "Garcia", "Okafor", "Silva"];
+
+function generatedAlias(index, region, international) {
+  if (region === "Tamil Nadu") return `${tamilFirstNames[index % tamilFirstNames.length]} ${String.fromCharCode(65 + (index % 26))}.`;
+  if (international) {
+    const relative = index - 900;
+    return `${internationalFirstNames[relative % internationalFirstNames.length]} ${internationalFamilyNames[Math.floor(relative / internationalFirstNames.length)]}`;
+  }
+  return `${indianFirstNames[index % indianFirstNames.length]} ${indianFamilyNames[Math.floor(index / indianFirstNames.length)]}`;
+}
 
 // Twenty-five profiles per region gives exact, even coverage of all 36
 // Indian states and union territories (900 profiles).
@@ -258,9 +279,9 @@ function makeProfile(index, location, international = false) {
 
   return {
     id,
-    alias: `Demo Student ${String(index + 1).padStart(4, "0")}`,
+    alias: generatedAlias(index, region, international),
     fictional: true,
-    disclosure: "Fictional composite profile generated for product demonstration; not a real person or testimonial.",
+    disclosure: "Generated context profile for interface testing; not a real person, account, or testimonial.",
     profile: {
       role: "student",
       pronouns,

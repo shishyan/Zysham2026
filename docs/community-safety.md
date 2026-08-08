@@ -1,11 +1,11 @@
-# Community demo, provenance, and safety
+# Community fixtures, provenance, and safety
 
-The Discussions and student-directory datasets are synthetic product fixtures. Their names, posts, replies, locations, backgrounds, and outcomes do not represent real people, survey respondents, testimonials, or community activity.
+The Discussions and generated-name datasets are product fixtures. Their names, starter posts, replies, locations, backgrounds, and outcomes do not represent real people, survey respondents, testimonials, or community activity.
 
-## Included demo coverage
+## Included generated coverage
 
 - 1,000 fictional student profiles: 900 across all 28 Indian states and 8 union territories, plus 100 across 20 other countries.
-- 132 fictional discussion topics, 528 substantive responses, and 132 nested replies.
+- 532 fictional discussion topics and 2,128 substantive responses, led by Tamil Nadu contexts and varied emotional, academic, family, access, project, internship, and campus-placement dilemmas.
 - Context tags for education stage and route, geography, languages, access, family responsibilities, accessibility, AI practice, and decision goals.
 
 The generators are deterministic and validate counts, identifiers, geographic coverage, disclosures, and reply relationships. Regenerate with:
@@ -17,7 +17,7 @@ node scripts/generate-discussions.mjs
 
 ## Product boundaries
 
-- Never present demo profiles or discussions as real users, popularity, testimonials, or population evidence.
+- Never present generated profiles or starter discussions as real users, popularity, testimonials, or population evidence.
 - Do not use synthetic profiles to predict success, rank routes, or infer what a demographic group believes.
 - Treat admissions rules, fees, eligibility, deadlines, policy, health, legal, financial, and labour-market claims as time-sensitive. Point readers to current official or qualified sources.
 - Use pseudonyms and age bands. Do not collect exact school, home address, phone number, exam ID, health record, or another person’s private information.

@@ -1,9 +1,43 @@
 :root,
+[data-theme="brown-violet"] {
+  color-scheme: light;
+  --chrome: #2d202d;
+  --chrome-2: #453044;
+  --chrome-gradient: linear-gradient(145deg, #261b27 0%, #3a293b 50%, #513849 100%);
+  --sidebar-bg: linear-gradient(145deg, rgba(38,27,39,.94) 0%, rgba(58,41,59,.94) 50%, rgba(81,56,73,.94) 100%);
+  --chrome-gradient-strong: linear-gradient(135deg, #241925 0%, #473044 56%, #684958 100%);
+  --chrome-text: #fff8fb;
+  --chrome-muted: #d8c6d2;
+  --app-bg: #f4eff4;
+  --surface: rgba(255,252,254,.90);
+  --surface-soft: rgba(244,235,243,.90);
+  --surface-strong: rgba(234,220,232,.94);
+  --ink: #2a1e2b;
+  --ink-soft: #574652;
+  --muted: #766570;
+  --line: rgba(92,61,83,.20);
+  --line-strong: rgba(84,53,76,.38);
+  --primary: #68405f;
+  --primary-hover: #513149;
+  --primary-soft: rgba(237,220,233,.94);
+  --secondary: #714f91;
+  --secondary-soft: rgba(234,225,245,.94);
+  --highlight: #96526d;
+  --highlight-soft: rgba(248,229,237,.94);
+  --success: #276749;
+  --warning: #8a5700;
+  --danger: #b42318;
+  --focus: #81559a;
+  --brand-accent: linear-gradient(135deg, #5a394f 0 46%, #75508c 46% 73%, #aa637a 73%);
+  --campus-image: url('assets/backgrounds/campus-walk.jpg');
+}
+
 [data-theme="aurora"] {
   color-scheme: light;
   --chrome: #e7e1f6;
   --chrome-2: #d8cef0;
   --chrome-gradient: linear-gradient(145deg, #f3effd 0%, #e5dcf8 46%, #d7c9f1 100%);
+  --sidebar-bg: linear-gradient(145deg, rgba(243,239,253,.90) 0%, rgba(229,220,248,.90) 46%, rgba(215,201,241,.90) 100%);
   --chrome-gradient-strong: linear-gradient(135deg, #eee8fb 0%, #dcd0f4 52%, #cdbce9 100%);
   --chrome-text: #2d2341;
   --chrome-muted: #625773;
@@ -35,11 +69,12 @@
   --chrome: #123b37;
   --chrome-2: #194842;
   --chrome-gradient: linear-gradient(145deg, #123b37 0%, #194842 100%);
+  --sidebar-bg: linear-gradient(145deg, rgba(18,59,55,.90) 0%, rgba(25,72,66,.90) 100%);
   --chrome-gradient-strong: linear-gradient(135deg, #123b37 0%, #23544d 100%);
   --chrome-text: #f5fbf8;
   --chrome-muted: #b9d0c9;
   --app-bg: #f3f8f6;
-  --surface: #ffffff;
+  --surface: rgba(255,255,255,.90);
   --surface-soft: #e5f2ed;
   --surface-strong: #d5e9e1;
   --ink: #14251f;
@@ -62,11 +97,12 @@
   --chrome: #29223e;
   --chrome-2: #382e52;
   --chrome-gradient: linear-gradient(145deg, #29223e 0%, #44365f 100%);
+  --sidebar-bg: linear-gradient(145deg, rgba(41,34,62,.90) 0%, rgba(68,54,95,.90) 100%);
   --chrome-gradient-strong: linear-gradient(135deg, #29223e 0%, #4b3b69 100%);
   --chrome-text: #faf8ff;
   --chrome-muted: #c9c0dd;
   --app-bg: #f8f6fb;
-  --surface: #ffffff;
+  --surface: rgba(255,255,255,.90);
   --surface-soft: #f0ecf7;
   --surface-strong: #e7e0f2;
   --ink: #211a31;
