@@ -233,6 +233,7 @@ const defaultState = {
     workSetting: '',
     employmentReadiness: '',
     stageMilestones: { grade10: [], grade11: [], grade12: [], college1: [], college2: [], college3: [], collegeFinal: [], firstJob: [], dreamJob: [] },
+    milestoneProgress: { grade10: {}, grade11: {}, grade12: {}, college1: {}, college2: {}, college3: {}, collegeFinal: {}, firstJob: {}, dreamJob: {} },
     noNos: { grade10: [], grade11: [], grade12: [], college1: [], college2: [], college3: [], collegeFinal: [], firstJob: [], dreamJob: [] },
     stageNotes: { grade10: '', grade11: '', grade12: '', college1: '', college2: '', college3: '', collegeFinal: '', firstJob: '', dreamJob: '' },
     ranks: { grade10: '', grade11: '', grade12: '', college1: '', college2: '', college3: '', collegeFinal: '' },
@@ -532,6 +533,7 @@ function loadState() {
         ...structuredClone(defaultState.journey),
         ...(stored.journey || {}),
         stageMilestones: { ...structuredClone(defaultState.journey.stageMilestones), ...(stored.journey?.stageMilestones || {}) },
+        milestoneProgress: Object.fromEntries(Object.keys(defaultState.journey.milestoneProgress).map((stage) => [stage, { ...(stored.journey?.milestoneProgress?.[stage] || {}) }])),
         noNos: { ...structuredClone(defaultState.journey.noNos), ...(stored.journey?.noNos || {}) },
         stageNotes: { ...structuredClone(defaultState.journey.stageNotes), ...(stored.journey?.stageNotes || {}) },
         ranks: { ...structuredClone(defaultState.journey.ranks), ...(stored.journey?.ranks || {}) },
@@ -906,54 +908,63 @@ const noNoOptions = [
 const yearMilestoneConfig = {
   grade10: {
     step: '01 · GRADE 10', title: 'Eliminate poor-fit worlds before choosing a stream',
+    purpose: 'Leave Grade 10 with fewer false choices, a truthful view of your effort, and two directions worth testing—not a borrowed dream.',
     copy: 'Most students cannot name a career yet. Start with the work, environments, constraints, and trade-offs they already know they do not want.',
     noteLabel: 'After removing the NO-NOs, what activities or problems are still worth testing?',
     milestones: ['Write the first NO-NO list', 'Sample six subject activities', 'Compare available boards and schools', 'Talk to three working adults', 'Run two career mini-experiments', 'Record subject effort—not marks alone'],
   },
   grade11: {
     step: '02 · GRADE 11', title: 'Build the foundation that later projects depend on',
+    purpose: 'Build study habits and subject foundations strong enough to support future choices without sacrificing health or curiosity.',
     copy: 'Settle into the route, close foundational gaps, establish a sustainable study rhythm, and test one real problem before chasing impressive titles.',
     noteLabel: 'Which subject or problem still holds your attention after the difficult parts?',
     milestones: ['Stabilise weekly study rhythm', 'Clear foundational backlogs', 'Track subject-level rank or percentile', 'Aim for top-decile consistency where realistic', 'Complete one real-world mini-project', 'Speak with a practitioner or mentor', 'Review the NO-NO list with evidence'],
   },
   grade12: {
     step: '03 · GRADE 12', title: 'Choose the right course—not merely the famous entrance',
+    purpose: 'Make one evidence-backed course decision with affordable, realistic alternatives and no preventable deadline failures.',
     copy: 'Boards, entrances, course curricula, cost, location, alternatives, and actual student work must resolve into one defensible choice.',
     noteLabel: 'Which course family survives curriculum, cost, workload, location, and NO-NO checks?',
     milestones: ['Protect board-exam readiness', 'Verify entrance eligibility and dates', 'Compare actual course curricula', 'Compare cost, support and location', 'Track top-decile or target rank', 'Build primary and alternate shortlists', 'Submit documents and applications early'],
   },
   college1: {
     step: '04 · COLLEGE YEAR 1', title: 'Confirm that the course fits through foundations',
+    purpose: 'Learn how college works, protect the fundamentals, and find people and environments that help you grow with integrity.',
     copy: 'The first year is for adapting, learning the foundation properly, sampling clubs and labs, and noticing which work remains interesting outside the brochure.',
     noteLabel: 'Which foundation, lab, club, or problem makes you want to go deeper?',
     milestones: ['Understand the complete curriculum map', 'Build a GPA / rank baseline', 'Aim for top-decile habits—not grade anxiety', 'Join one relevant club or lab', 'Complete one small foundation project', 'Build faculty and peer relationships', 'Review whether the course still fits'],
   },
   college2: {
     step: '05 · COLLEGE YEAR 2', title: 'Find the special interest that should shape your choices',
+    purpose: 'Turn broad coursework into a personally meaningful direction through electives, practice, mentorship, and a reviewable project.',
     copy: 'Choose electives, tools, communities, and projects around an emerging special interest. A course becomes useful when the student gives it direction.',
     noteLabel: 'What special interest should guide electives, skill-building, and the next project?',
     milestones: ['Choose aligned electives or modules', 'Name one emerging special interest', 'Build one special-interest project', 'Maintain strong rank / GPA evidence', 'Start a public or reviewable portfolio', 'Shadow work or take a short internship', 'Find one domain mentor'],
   },
   college3: {
     step: '06 · COLLEGE YEAR 3', title: 'Choose the project and experience that signal real direction',
+    purpose: 'Create credible proof of what you can do through a serious project and real workplace, research, or community experience.',
     copy: 'A substantial project plus an internship, apprenticeship, research role, or field experience often becomes the bridge to campus interviews and early work.',
     noteLabel: 'Which project problem and experience best align with your special interest and target work?',
     milestones: ['Select a career-aligned project problem', 'Choose a credible project guide', 'Secure internship / research / field experience', 'Document decisions, failures and outcomes', 'Deepen one differentiating skill', 'Maintain top-decile / strong academic evidence', 'Begin role-specific interview practice', 'Speak with recent alumni'],
   },
   collegeFinal: {
     step: '07 · FINAL YEAR', title: 'Convert the right project into a campus opportunity',
+    purpose: 'Enter placement season able to explain your work honestly, choose roles by daily reality, and execute a strong alternate plan.',
     copy: 'The capstone, rank, portfolio, alumni intelligence, interview preparation, and company-role fit must converge before campus recruitment begins.',
     noteLabel: 'Which campus roles genuinely fit the daily work you want—and which offers are only attractive by title?',
     milestones: ['Finish a defensible flagship project', 'Explain every portfolio claim unaided', 'Keep final-year rank / GPA strong', 'Map campus companies to actual roles', 'Prepare resume and role-specific stories', 'Practise aptitude / technical / case rounds', 'Run repeated mock interviews', 'Use alumni and placement-cell evidence', 'Win a campus offer or execute alternate plan'],
   },
   firstJob: {
     step: '08 · FIRST JOB', title: 'Use the first role as a launchpad, not a verdict',
+    purpose: 'Become dependable, keep learning, build financial stability, and gather evidence for a better-aligned next move.',
     copy: 'The first offer may not be the dream job. Track learning, work quality, portfolio evidence, mentors, mobility, and financial runway so the next move becomes stronger.',
     noteLabel: 'Which parts of this role move you toward dream work, and which gaps require the next move?',
     milestones: ['Learn the real workflow and standards', 'Deliver measurable outcomes', 'Build one compounding deep skill', 'Find internal and external mentors', 'Record evidence without exposing employer data', 'Review fit every 6–12 months', 'Prepare for an internal or external move', 'Protect a financial and learning runway'],
   },
   dreamJob: {
     step: '09 · YEARS 1–12', title: 'Reach, test, and sustain dream work',
+    purpose: 'Move toward work whose daily practice, relationships, values, and contribution remain meaningful—not merely impressive.',
     copy: 'Treat six to twelve years as a deliberate mobility window—not an expiry date. Dream work is defined by daily problems, people, autonomy, values, and contribution, not a single employer logo.',
     noteLabel: 'Describe the daily work, problems, people, environment, and impact you truly desire—without using a job title.',
     milestones: ['Define dream work by daily reality', 'Map capability and credibility gaps', 'Produce high-signal outcomes', 'Build trusted practitioner relationships', 'Make evidence-led role moves', 'Run repeated interview cycles', 'Review progress at years 1, 3, 6, 9 and 12', 'Sustain growth, health, values and impact once there', 'Redefine dream work when priorities change', 'Keep meaningful alternatives alive'],
@@ -1278,18 +1289,23 @@ function renderJourneyStagePage() {
   const survivors = recommendationsAfterElimination(combinedNoNos);
   const note = state.journey.stageNotes[stageId]?.trim();
   const rank = state.journey.ranks[stageId];
-  const completion = Math.round((selected.length / config.milestones.length) * 100);
+  const progressMap = state.journey.milestoneProgress?.[stageId] || {};
+  const milestoneStatus = (milestone) => selected.includes(milestone) ? 'complete' : progressMap[milestone] || 'todo';
+  const statusCounts = config.milestones.reduce((counts, milestone) => { counts[milestoneStatus(milestone)] += 1; return counts; }, { todo: 0, doing: 0, complete: 0 });
+  const progressPoints = statusCounts.complete + (statusCounts.doing * .5);
+  const completion = Math.round((progressPoints / config.milestones.length) * 100);
+  const nextMilestones = config.milestones.filter((milestone) => milestoneStatus(milestone) !== 'complete').slice(0, 2);
   const stageTab = ['focus', 'choices', 'evidence', 'community', 'ai'].includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
   const tabs = [['focus', 'Focus'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
   const tabContent = {
-    focus: `<section class="panel stage-milestone-board"><div class="panel-head"><div><h3>Focus for this stage</h3><p>Complete what matters; revisit when circumstances change.</p></div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Edit full stage</button></div><div class="stage-milestone-grid">${config.milestones.map((milestone, milestoneIndex) => `<button class="stage-milestone ${selected.includes(milestone) ? 'complete' : ''}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${milestone}" aria-pressed="${selected.includes(milestone)}"><span>${String(milestoneIndex + 1).padStart(2, '0')}</span><strong>${milestone}</strong><em>${selected.includes(milestone) ? 'Complete' : 'To focus'}</em></button>`).join('')}</div></section>`,
+    focus: `<section class="stage-progress-summary panel"><div><p class="eyebrow">PURPOSE FOR THIS STAGE</p><h3>${escapeHtml(config.purpose)}</h3><div class="stage-progress-track" role="progressbar" aria-label="Stage progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${completion}"><span style="width:${completion}%"></span></div></div><dl><div><dt>Completed</dt><dd>${statusCounts.complete}</dd></div><div><dt>In progress</dt><dd>${statusCounts.doing}</dd></div><div><dt>Not started</dt><dd>${statusCounts.todo}</dd></div></dl>${nextMilestones.length ? `<aside><span>NEXT HIGH-ROAD TARGET</span><strong>${escapeHtml(nextMilestones[0])}</strong><small>Choose evidence and learning over comparison with peers.</small></aside>` : '<aside><span>STAGE COMPLETE</span><strong>Reflect, document the evidence, then move forward.</strong></aside>'}</section><section class="panel stage-milestone-board"><div class="panel-head"><div><h3>Milestones that matter</h3><p>Click each milestone to move it from Not started → In progress → Complete.</p></div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Add reflection</button></div><div class="stage-milestone-grid">${config.milestones.map((milestone, milestoneIndex) => { const status = milestoneStatus(milestone); return `<button class="stage-milestone ${status}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${escapeHtml(milestone)}" data-status="${status}" aria-label="${escapeHtml(milestone)}. ${status === 'complete' ? 'Complete' : status === 'doing' ? 'In progress' : 'Not started'}. Click to advance status."><span>${String(milestoneIndex + 1).padStart(2, '0')}</span><strong>${escapeHtml(milestone)}</strong><em>${status === 'complete' ? '✓ Complete' : status === 'doing' ? '◐ In progress' : '○ Not started'}</em></button>`; }).join('')}</div></section>`,
     choices: `<div class="journey-stage-layout"><section class="panel stage-nono-card"><p class="eyebrow">WHAT IS RULED OUT</p><h3>${combinedNoNos.length ? `${combinedNoNos.length} NO-NO signals` : 'Start with what you know you do not want'}</h3><div class="stage-nono-tags">${combinedNoNos.length ? combinedNoNos.map((item) => `<span>${escapeHtml(item)}</span>`).join('') : '<p>Record working conditions, subjects and trade-offs that feel clearly wrong.</p>'}</div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Review NO-NOs</button></section><section class="panel stage-shortlist"><p class="eyebrow">REMAINING WORLDS TO TEST</p>${survivors.map((career) => `<button data-action="career-detail" data-id="${career.id}"><span>${career.glyph}</span><strong>${career.title}</strong><small>${career.fit.label}</small></button>`).join('')}</section></div>`,
     evidence: `<section class="panel stage-proof-card stage-tab-panel"><p class="eyebrow">CURRENT EVIDENCE</p><dl><div><dt>Performance</dt><dd>${escapeHtml(rank || 'Not recorded')}</dd></div><div><dt>Reflection</dt><dd>${escapeHtml(note || 'No reflection recorded')}</dd></div><div><dt>Completed milestones</dt><dd>${selected.length} of ${config.milestones.length}</dd></div></dl><button class="button-primary" data-action="journey-edit" data-id="${stageId}">Add evidence and reflection</button></section>`,
     community: `<section class="panel stage-tab-panel"><p class="eyebrow">LEARN FROM CONTEXT, NOT CONSENSUS</p><h3>See how other learners approached ${escapeHtml(config.title)}.</h3><p>Compare constraints, doubts, reversals and evidence. A popular answer is not automatically the right answer for you.</p><button class="button-primary" data-action="stage-community" data-id="${stageId}">Open related discussions</button></section>`,
     ai: `<section class="panel stage-tab-panel"><p class="eyebrow">AI LENS</p><h3>${state.aiJourney.stageAnswers[stageId]?.trim() ? 'You have an AI reflection for this stage.' : 'One AI question is still open.'}</h3><p>${escapeHtml(aiStagePrompts[stageId])}</p>${state.aiJourney.stageAnswers[stageId]?.trim() ? `<blockquote>${escapeHtml(state.aiJourney.stageAnswers[stageId])}</blockquote>` : ''}<button class="button-primary" data-action="journey-edit" data-id="${stageId}">${state.aiJourney.stageAnswers[stageId]?.trim() ? 'Review AI evidence' : 'Answer the AI question'}</button></section>`,
   }[stageTab];
   return `<div class="view-enter journey-stage-page">
-    <header class="journey-stage-hero panel"><div><p class="eyebrow">${config.step}</p><h2>${config.title}</h2><p>${config.copy}</p></div><div class="stage-completion"><strong>${completion}%</strong><span>${selected.length}/${config.milestones.length} milestones</span></div></header>
+    <header class="journey-stage-hero panel"><div><p class="eyebrow">${config.step}</p><h2>${config.title}</h2><p>${config.copy}</p></div><div class="stage-completion"><strong>${completion}%</strong><span>${statusCounts.complete} complete · ${statusCounts.doing} active</span></div></header>
     <nav class="stage-tabs" aria-label="${escapeHtml(config.title)} sections">${tabs.map(([id, label]) => `<button data-action="stage-tab" data-value="${id}" class="${stageTab === id ? 'active' : ''}" aria-current="${stageTab === id ? 'page' : 'false'}">${label}</button>`).join('')}</nav>
     ${tabContent}
     <nav class="stage-page-navigation" aria-label="Journey stage pages">${index > 0 ? `<button class="button-secondary" data-action="journey-stage-nav" data-id="${stops[index - 1].id}">← ${stops[index - 1].title}</button>` : '<span></span>'}${index < stops.length - 1 ? `<button class="button-primary" data-action="journey-stage-nav" data-id="${stops[index + 1].id}">${stops[index + 1].title} →</button>` : '<button class="button-primary" data-action="go" data-target="roadmap">Open complete roadmap →</button>'}</nav>
@@ -1927,9 +1943,16 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'signal') toggleSignal(group, value);
   if (action === 'work-reality-reset') { state.workReality = structuredClone(defaultState.workReality); saveState(); render(); showToast('Work Reality Scan cleared.'); }
   if (action === 'journey-page-milestone') {
-    const list = state.journey.stageMilestones[control.dataset.stage] || [];
-    state.journey.stageMilestones[control.dataset.stage] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+    const stage = control.dataset.stage;
+    const list = state.journey.stageMilestones[stage] || [];
+    state.journey.milestoneProgress ||= structuredClone(defaultState.journey.milestoneProgress);
+    state.journey.milestoneProgress[stage] ||= {};
+    const current = list.includes(value) ? 'complete' : state.journey.milestoneProgress[stage][value] || 'todo';
+    const next = current === 'todo' ? 'doing' : current === 'doing' ? 'complete' : 'todo';
+    state.journey.milestoneProgress[stage][value] = next;
+    state.journey.stageMilestones[stage] = next === 'complete' ? [...new Set([...list, value])] : list.filter((item) => item !== value);
     saveState(); render();
+    showToast(next === 'doing' ? 'Milestone marked in progress.' : next === 'complete' ? 'Milestone completed—add evidence when useful.' : 'Milestone reset to not started.');
   }
   if (action === 'journey-edit') renderJourneyInspector(id);
   if (action === 'journey-stage-nav') { state.activeJourneyStage = id; state.journeyStageTab = 'focus'; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -2398,7 +2421,11 @@ $('#journeyInspectorBody').addEventListener('click', (event) => {
   if (group.startsWith('milestone-')) {
     const stageId = group.slice(10);
     const list = state.journey.stageMilestones[stageId] || [];
-    state.journey.stageMilestones[stageId] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+    const completing = !list.includes(value);
+    state.journey.stageMilestones[stageId] = completing ? [...list, value] : list.filter((item) => item !== value);
+    state.journey.milestoneProgress ||= structuredClone(defaultState.journey.milestoneProgress);
+    state.journey.milestoneProgress[stageId] ||= {};
+    state.journey.milestoneProgress[stageId][value] = completing ? 'complete' : 'todo';
   }
   if (group === 'subjects') {
     const list = state.journey.subjects;
