@@ -23,11 +23,22 @@
       <header class="journal-intro">
         <p class="eyebrow">THE MAKING OF ZYSHAM2026</p>
         <h1>Prompt<br /><em>journal.</em></h1>
-        <p class="journal-lede">Every instruction is recorded exactly as it was written, including spelling, punctuation, and links. This is a trail to learn from—not a polished rewrite.</p>
-        <div class="journal-rule"><span>46 prompts documented</span><span>Started 08 August 2026</span></div>
+        <p class="journal-lede">Every instruction is recorded as written, including spelling, punctuation, and links. Credential values are redacted because this journal is public. This is a trail to learn from—not a polished rewrite.</p>
+        <div class="journal-rule"><span id="journal-count">Loading captured prompts…</span><span>Started 08 August 2026</span></div>
       </header>
 
-      <section class="prompt-list" aria-label="Original prompts">
+      <div class="journal-tabs" role="tablist" aria-label="Prompt journal views">
+        <button class="journal-tab is-active" id="raw-prompts-tab" type="button" role="tab" aria-selected="true" aria-controls="raw-prompts-panel" data-journal-view="raw">
+          Original prompts
+          <span>Complete verbatim timeline</span>
+        </button>
+        <button class="journal-tab" id="optimized-prompts-tab" type="button" role="tab" aria-selected="false" aria-controls="optimized-prompts-panel" data-journal-view="optimized">
+          Optimized rebuild prompts
+          <span>12 dependency-ordered instructions</span>
+        </button>
+      </div>
+
+      <section class="prompt-list" id="raw-prompts-panel" role="tabpanel" aria-labelledby="raw-prompts-tab" aria-label="Original prompts">
         <article class="prompt-entry">
           <div class="prompt-meta"><span>001</span><span>START THE WORKSPACE</span></div>
           <blockquote>can you build the workspace for this git? [https://sashanaga.github.io/Zysham/](https://sashanaga.github.io/Zysham/)</blockquote>
@@ -418,10 +429,69 @@ Then add this well to the right sidebar <a href="https://www.placementpreparatio
 ) above the actual title inside the content area. DO the same for all pages.</blockquote>
         </article>
 
-        <article class="prompt-entry current">
+        <article class="prompt-entry">
           <div class="prompt-meta"><span>063</span><span>SEPARATE CALLING FROM DREAM JOB</span></div>
           <blockquote>Find  your Calling and The Dream Job &gt;&gt; Share similar // duplicate content -- ensure they are merged into appropriate menu items and only relevant content stay under respective menu pages/tabs.</blockquote>
         </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>064</span><span>MOVE DIRECTIONS AND ACTION-PLAN TOOLS</span></div>
+          <blockquote>Find Your calling &gt; Move the career direction and compare pages insid ethe The Dream Job menu.
+
+Then move these **Target roadmap**
+
+**Evidence gaps**
+
+**Prestige check**
+
+under Action Plan under My Journey</blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>065</span><span>INTEGRATE AI JOURNEY INTO MY JOURNEY</span></div>
+          <blockquote>Reality &amp; NO-Nos &gt;&gt; Rename it "Know Thyself".
+
+Them integrate the ai-journey content with content inside the journey overview under My Journey. ai-journey has right sidebar panel as well which should work as detail view. </blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>066</span><span>STRENGTHEN SIDEBAR CONTRAST</span></div>
+          <blockquote>Left sidebar and right sidebar navigation  &gt;&gt; white shadow should be mixed with dark borders and dark text so it's visible</blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>067</span><span>MAKE TRANSPARENT SIDEBARS CLEARLY VISIBLE</span></div>
+          <blockquote>Not enough -- you decide whats' the best solution to improve visibility while still using transparent background  -- I need both sidebars to be clearly visible.</blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>068</span><span>LIGHTEN AND NARROW SIDEBARS</span></div>
+          <blockquote>good work. now reduce the opacity of the sidebar navigations (on both side) by 25%. then remove the borders and shadows and reduce their width by 20%.</blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>069</span><span>FULL-PAGE ADMIN CONFIGURATION</span></div>
+          <blockquote>Great work. Now, upgrade the Admin Settings page with lot of comprehensive standard configurations for a career platform, and make it a full page instead of right sliding panel.</blockquote>
+        </article>
+
+        <article class="prompt-entry">
+          <div class="prompt-meta"><span>070</span><span>REMOVE DUPLICATE ADMIN HEADER AND ADD MILKY GLASS</span></div>
+          <blockquote>Look at the duplicate header/title area and transparency issues -- use glass milky tint technique</blockquote>
+        </article>
+
+        <article class="prompt-entry current">
+          <div class="prompt-meta"><span>071</span><span>COMPREHENSIVE ACCOMPLISHMENT TRACKERS</span></div>
+          <blockquote>My Journey &gt; Make the Accomplishments page as the comprehensive Tasks Tracker, Milestones Tracker, Rewards, Courses Completed, Exams Completed, Score Tracker and so on. ENsure it has 7 tabs that covers everything.</blockquote>
+        </article>
+      </section>
+
+      <section class="optimized-prompt-list" id="optimized-prompts-panel" role="tabpanel" aria-labelledby="optimized-prompts-tab" aria-label="Optimized rebuild prompts" hidden>
+        <header class="optimized-intro">
+          <p class="eyebrow">REBUILD WITH LESS WASTE</p>
+          <h2>One deliberate sequence.<br />Twelve effective prompts.</h2>
+          <p>Run these in order. Each prompt closes a dependency before the next layer begins, reducing duplicate pages, conflicting redesigns, and repeated implementation.</p>
+        </header>
+        <div class="optimized-prompt-items"></div>
       </section>
 
       <footer class="journal-footer">
@@ -429,6 +499,8 @@ Then add this well to the right sidebar <a href="https://www.placementpreparatio
         <a href="index.html">Explore ZYSHAM <span>→</span></a>
       </footer>
     </main>
+    <script src="prompt-journal-data.js"></script>
+    <script src="optimized-prompts.js"></script>
     <script src="prompts.js"></script>
   </body>
 </html>

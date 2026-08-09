@@ -27,9 +27,10 @@
           <div class="entry-auth-tabs" role="tablist" aria-label="Account access"><button type="button" class="active" role="tab" aria-selected="true" data-auth-mode="signin">Sign in</button><button type="button" role="tab" aria-selected="false" data-auth-mode="create">Sign up</button></div>
           <div class="entry-credentials">
             <label><span id="entryIdentifierLabel">Email or user ID</span><input id="entryIdentifier" name="identifier" type="text" autocomplete="username" maxlength="120" placeholder="Email or profile name" required></label>
-            <label><span>Password</span><span class="entry-password-field"><input id="entryPassword" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="72" placeholder="Enter your password" required><button type="button" id="toggleEntryPassword" aria-label="Show password" aria-pressed="false">Show</button></span></label>
+            <label><span>Password</span><span class="entry-password-field"><input id="entryPassword" name="password" type="password" autocomplete="current-password" minlength="1" maxlength="72" placeholder="Enter your password" required><button type="button" id="toggleEntryPassword" aria-label="Show password" aria-pressed="false">Show</button></span></label>
           </div>
           <div class="entry-signin-options" id="entrySigninOptions"><label><input type="checkbox" id="rememberEntry" checked> Keep me signed in</label><button type="button" class="entry-help" id="signinHelp">Forgot password?</button></div>
+          <section class="entry-admin-accounts" id="seededLoginAccounts" aria-label="Admin login accounts"><header><strong>Admin users</strong><small>Select an account to fill the login form</small></header><div><button type="button" data-seeded-login="Admin" data-seeded-password="admin"><span>ADMINISTRATOR</span><strong>Admin</strong><small>Password: admin</small></button><button type="button" data-seeded-login="Sasha" data-seeded-password="sasha957"><span>OWNER · ADMIN</span><strong>Sasha</strong><small>Password: sasha957</small></button><button type="button" data-seeded-login="Harshini" data-seeded-password="harsh108"><span>CO-OWNER · ADMIN</span><strong>Harshini</strong><small>Password: harsh108</small></button></div></section>
           <div class="entry-create-fields" id="entryCreateFields" hidden>
           <div class="entry-profile-intro"><strong>Set up your profile</strong><span>Shown only during sign up</span></div>
           <div class="entry-role-tabs" role="tablist" aria-label="Choose profile type"><button type="button" class="active" role="tab" aria-selected="true" data-entry-role="student">Student</button><button type="button" role="tab" aria-selected="false" data-entry-role="parent">Parent</button><button type="button" role="tab" aria-selected="false" data-entry-role="admin">Team admin</button></div>
@@ -51,7 +52,7 @@
           <button class="entry-guest" type="button" id="enterGuest">Continue as guest</button>
           <p class="entry-guest-note">Explore without an account. Personal journeys and publishing require a profile.</p>
         </form>
-        <details class="entry-sample-actions"><summary>Preview a sample workspace</summary><div><button class="entry-sample-link" type="button" id="enterSample">Student journey</button><button class="entry-sample-link" type="button" id="enterAdminSample">Team publishing</button></div></details>
+        <details class="entry-sample-actions"><summary>Preview a sample workspace</summary><div><button class="entry-sample-link" type="button" id="enterSample">Student journey</button></div></details>
       </div>
       <button class="entry-zip-pull" id="entryZipPull" type="button" aria-label="Pull the zipper to continue as guest" title="Pull to explore as guest"><img src="assets/zipper-logo-cropped.png" alt=""><span>PULL FOR GUEST</span></button>
     </section>
@@ -68,6 +69,7 @@
           <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" data-icon="calling" aria-hidden="true"></span><span>Find Your Calling</span></button>
           <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" data-icon="journey" aria-hidden="true"></span><span>My Journey</span></button>
           <button class="nav-item" data-view="dream-job" data-menu="dreamJob"><span class="nav-icon" data-icon="dream" aria-hidden="true"></span><span>The Dream Job</span></button>
+          <button class="nav-item" data-view="jobs" data-menu="ethics"><span class="nav-icon" data-icon="karma" aria-hidden="true"></span><span>Moral &amp; Ethics</span></button>
           <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Experience Forum</span></button>
         </nav>
 
@@ -91,7 +93,7 @@
 
             <div class="header-actions" aria-label="Account and editorial links">
               <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog" title="Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
-              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Newsletter" title="Newsletter"><span aria-hidden="true">✉</span><em>Newsletter</em></button>
+              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Infographics" title="Infographics"><span aria-hidden="true">◫</span><em>Infographics</em></button>
               <button class="header-profile-button" id="headerProfileButton" aria-label="Open profile and account settings" aria-controls="rightDrawer" title="Profile and account settings"><span id="headerProfileAvatar">GE</span><em id="headerProfileLabel">Guest</em><b aria-hidden="true">⌄</b></button>
             </div>
           </div>
@@ -110,6 +112,13 @@
         <nav id="researchRailNav" aria-label="Research domains"></nav>
         <button class="research-rail-saved" id="researchSavedButton" aria-controls="rightDrawer"><span aria-hidden="true">☆</span><strong>Saved</strong><small id="researchRailSaved">0</small></button>
         <button class="research-rail-toggle" id="rightSidebarToggle" aria-controls="researchRail" aria-expanded="false" title="Expand research navigation"><span aria-hidden="true">‹</span><strong>Expand</strong></button>
+        <div class="mentor-dock" id="mentorDock" aria-label="Career mentor">
+          <button class="mentor-trigger" id="mentorTrigger" aria-expanded="false" aria-controls="rightDrawer" aria-label="Open AI career counsellor">
+            <span class="mentor-face mentor-animal cat" id="mentorFace"></span>
+            <span class="mentor-trigger-copy"><small>AI CAREER COUNSELLOR</small><strong><span id="mentorTriggerName">Miso</span> · Ask anything</strong></span>
+            <b aria-hidden="true">←</b>
+          </button>
+        </div>
       </aside>
 
       <aside class="journey-inspector" id="journeyInspector" aria-label="Edit journey stop" aria-hidden="true">
@@ -126,12 +135,13 @@
 
       <aside class="settings-panel" id="settingsPanel" aria-label="User profile preferences" aria-hidden="true">
         <div class="settings-head"><div><span>YOUR PROFILE</span><strong>User Profile Preferences</strong></div><button class="icon-button" id="settingsClose" aria-label="Close user preferences">×</button></div>
+        <section class="settings-section background-switcher-settings"><p class="eyebrow">BACKGROUND SWITCHER</p><h2>Choose the view behind your workspace.</h2><p>Each academy scene keeps the left side calmer for transparent navigation. Your selection previews immediately and stays on this device.</p><div class="background-switcher-controls"><button class="button-secondary" id="backgroundSetDefault" type="button">Set selected as default</button><label class="background-slideshow-toggle"><input id="backgroundSlideshowEnabled" type="checkbox"><span><strong>Automatic slideshow</strong><small>Slide through every available background</small></span></label><label class="background-slideshow-speed">Change every<select id="backgroundSlideshowInterval"><option value="10">10 seconds</option><option value="20">20 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option></select></label></div><p class="background-default-status" id="backgroundDefaultStatus"></p><div class="background-options" id="backgroundOptions"></div></section>
         <section class="settings-section account-settings"><p class="eyebrow">PROFILE & COMMUNICATION</p><h2>Your account.</h2><p>Review identity, role, newsletter consent and communication preferences. Journey records remain separate from email choices.</p><div id="accountSettingsBody"></div></section>
         <section class="settings-section guidance-preferences"><p class="eyebrow">GUIDANCE CONTEXT</p><h2>How Zysham should guide you.</h2><p>Choose the perspective and region used across journeys, discussions, experiences, and recommendations.</p><div class="preference-grid"><label>Guidance view<select id="userAudienceSelect"><option value="student">Student view</option><option value="parent">Parent view</option></select><small>This changes guidance language, not profile ownership.</small></label><label>Region<select id="userRegionSelect"><option value="All">All regions</option></select><small>Regional evidence stays distinct from national guidance.</small></label></div></section>
         <section class="settings-section appearance-settings">
           <p class="eyebrow">APPEARANCE</p><h2>Default or make it yours.</h2><p>Use the calm Zysham default, or keep a personal theme and campus background override on this device.</p>
           <div class="appearance-mode" role="radiogroup" aria-label="Appearance behavior">
-            <button type="button" data-appearance-mode="default" role="radio"><strong>Zysham default</strong><small>Violet-purple · Campus walk</small></button>
+            <button type="button" data-appearance-mode="default" role="radio"><strong>Zysham default</strong><small>Violet-purple · Wide courtyard</small></button>
             <button type="button" data-appearance-mode="override" role="radio"><strong>My override</strong><small>Use the choices below</small></button>
           </div>
           <div class="appearance-overrides" id="appearanceOverrides">
@@ -141,7 +151,6 @@
               <button class="theme-choice" data-theme-choice="aurora" title="Aurora Light theme"><span></span><em>Aurora Light</em></button>
               <button class="theme-choice" data-theme-choice="teal" title="Green-teal theme"><span></span><em>Green-teal</em></button>
             </div></div>
-            <div class="settings-subsection"><span class="settings-label">APP BACKGROUND</span><p>Built-in and personal backgrounds are dimmed to keep content readable.</p><div class="background-options" id="backgroundOptions"></div></div>
             <form class="background-add-form" id="backgroundAddForm">
               <div><span class="settings-label">ADD A BACKGROUND</span><small>Choose an image from this device or paste a direct HTTPS image URL. Personal files are resized before being stored locally.</small></div>
               <label>Display name<input name="name" maxlength="40" placeholder="e.g. Anna University courtyard"></label>
@@ -156,6 +165,7 @@
       <aside class="admin-settings-panel" id="adminSettingsPanel" aria-label="Admin settings" aria-hidden="true">
         <div class="settings-head"><div><span>PLATFORM CONTROL</span><strong>Admin Settings</strong></div><button class="icon-button" id="adminSettingsClose" aria-label="Close admin settings">×</button></div>
         <section class="settings-section admin-access-settings"><p class="eyebrow">ADMIN ACCESS</p><h2>Product and publishing controls.</h2><p>These controls are available only to a signed-in Team Admin profile.</p><div id="adminSettingsBody"></div></section>
+        <section class="settings-section platform-defaults-settings" data-admin-control><p class="eyebrow">APP CONFIGURATION</p><h2>Platform defaults.</h2><p>Set the first experience new and signed-out users receive on this device.</p><form id="platformSettingsForm" class="platform-settings-form"><label>Default start page<select name="defaultView"><option value="calling">Find Your Calling</option><option value="overview">Journey overview</option><option value="explore">Explore careers</option><option value="blog">Team Blog</option></select></label><label>Default theme<select name="defaultTheme"><option value="violet">Violet-purple</option><option value="brown-violet">Dark brown-violet</option><option value="aurora">Aurora Light</option><option value="teal">Green-teal</option></select></label><label>Default regional scope<select name="defaultRegion"><option value="All">All regions</option><option value="India::Tamil Nadu">India · Tamil Nadu</option></select></label><fieldset><legend>Access and navigation</legend><label><input type="checkbox" name="allowGuestAccess"> Allow guest exploration</label><label><input type="checkbox" name="showEditorialLinks"> Show Team Blog and Infographics in the header</label></fieldset><div class="platform-settings-actions"><button class="button-primary" type="submit">Save app configuration</button><button class="button-secondary" type="button" data-admin-action="reset-platform">Restore defaults</button></div></form></section>
         <section class="settings-section android-settings" data-admin-control><p class="eyebrow">ANDROID RELEASE</p><h2>Zysham, ready to go.</h2><p>Distribute the newest Android build from the official GitHub release channel.</p><div class="android-download-card"><span class="android-download-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3"></rect><path d="M12 7v7m-3-3 3 3 3-3M10 18h4"></path></svg></span><span><span class="android-latest-badge">LATEST</span><strong>Zysham for Android</strong><small>Android 7.0 or newer · Direct APK</small></span><a class="button-primary" href="https://github.com/shishyan/Zysham2026/releases/download/android-latest/zysham-latest.apk" download>Download latest APK</a></div><div class="android-release-facts"><span>Automatically refreshed</span><span>Official GitHub release</span><span>No account required</span></div></section>
         <section class="settings-section generated-names-settings" data-admin-control><p class="eyebrow">COMMUNITY IDENTITIES</p><h2>Generated Names</h2><p>Choose the product-level name pool used for starter community content.</p><label>Name pool<select id="generatedNameScope"><option>Tamil Nadu</option><option>India</option><option>International</option></select></label><div class="generated-name-preview" id="generatedNamePreview"></div><small>These are content fixtures, never registered users.</small></section>
         <section class="settings-section admin-danger-zone" data-admin-control><p class="eyebrow">LOCAL DATA</p><h2>Workspace maintenance.</h2><p>Reset only this browser’s Zysham workspace.</p><button class="button-secondary" id="resetData"><span class="utility-icon" data-icon="reset" aria-hidden="true"></span> Reset workspace</button></section>
@@ -169,13 +179,7 @@
     </aside>
     <button class="right-drawer-scrim" id="rightDrawerScrim" aria-label="Close right drawer"></button>
 
-    <aside class="mentor-dock" id="mentorDock" aria-label="Career mentor">
-      <button class="mentor-trigger" id="mentorTrigger" aria-expanded="false" aria-controls="rightDrawer">
-        <span class="mentor-face mentor-animal cat" id="mentorFace"></span>
-        <span><small>AI CAREER COUNSELLOR</small><strong><span id="mentorTriggerName">Miso</span> · Ask anything</strong></span>
-        <b>←</b>
-      </button>
-      <div class="mentor-panel" id="mentorPanel">
+    <div class="mentor-panel" id="mentorPanel">
         <div class="mentor-panel-head">
           <div><span class="mentor-face mentor-animal cat"></span><span><small id="mentorRole">RADICALLY CANDID</small><strong><span id="mentorName">Miso</span> · Career counsellor</strong></span></div>
           <button class="icon-button" id="mentorClose" aria-label="Collapse career counsellor">×</button>
@@ -208,8 +212,7 @@
           <button data-mentor-action="clear">Clear chat</button>
         </div>
         <p class="mentor-disclosure">The embedded small language model runs locally on the CPU through WebAssembly and receives a grounded draft—not your complete workspace. Model files are cached after first load. Verify high-stakes decisions with current official sources and qualified people.</p>
-      </div>
-    </aside>
+    </div>
 
     <div class="toast" id="toast" role="status"></div>
     <script type="module" src="app.js"></script>

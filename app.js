@@ -226,11 +226,32 @@ const careers = [
   },
 ];
 
+const rolePermissions = {
+  admin: ['app:configure', 'android:release', 'content:publish', 'community:configure', 'workspace:reset'],
+  student: ['journey:edit', 'evidence:edit', 'community:participate'],
+  parent: ['journey:view', 'family:edit', 'community:participate'],
+};
+
+const seededAccounts = [
+  { id: 'admin-default', email: 'admin@zysham.local', role: 'admin', displayName: 'Admin', teamRole: 'Platform Administrator', accessLevel: 'administrator', salt: 'zysham-admin-seed', passwordHash: '76ecb6ba491c79f326a7d032cb51dec63f6f409f37e82bfcff001fc732fcb4f7' },
+  { id: 'admin-sasha', email: 'sasha@zysham.local', role: 'admin', displayName: 'Sasha', teamRole: 'Owner', accessLevel: 'owner', salt: 'zysham-sasha-seed', passwordHash: '4e6be4c3d8a8697f80114540d1886676efffd036ec87a238d7336355256c2b6a' },
+  { id: 'admin-harshini', email: 'harshini@zysham.local', role: 'admin', displayName: 'Harshini', teamRole: 'Co-owner', accessLevel: 'co-owner', salt: 'zysham-harshini-seed', passwordHash: 'a1cb2e6c735eab72da1a76333a6bbe2373c607c59a34236a980a4ab5b46783ac' },
+].map((account) => ({ ...account, language: 'English', timezone: 'Asia/Kolkata', visibility: 'Private', emailVerified: true, seeded: true, createdAt: '2026-08-09T00:00:00.000Z', lastLoginAt: '', profile: { role: account.role, teamRole: account.teamRole, accessLevel: account.accessLevel, status: 'active', permissions: rolePermissions[account.role] } }));
+
+function normaliseAccounts(accounts = []) {
+  const seededEmails = new Set(seededAccounts.map((account) => account.email));
+  const localAccounts = accounts.filter((account) => !seededEmails.has(String(account.email || '').toLowerCase())).map((account) => {
+    const role = rolePermissions[account.role] ? account.role : 'student';
+    return { ...account, role, profile: { role, teamRole: account.teamRole || '', accessLevel: role === 'admin' ? 'administrator' : 'standard', status: 'active', permissions: rolePermissions[role], ...(account.profile || {}) } };
+  });
+  return [...seededAccounts.map((account) => structuredClone(account)), ...localAccounts];
+}
+
 const defaultState = {
   version: 6,
   onboarded: false,
   session: { mode: 'signed_out', activeRole: 'student', accountId: '' },
-  accounts: [],
+  accounts: normaliseAccounts(),
   workspaces: {},
   profile: { name: 'Anya', grade: '10', board: 'CBSE', location: '', school: 'Private school', schoolName: '', medium: 'English', mobility: 'Nearby / daily commute' },
   profiles: {
@@ -243,8 +264,8 @@ const defaultState = {
   regionScope: 'All',
   sidebarExpanded: false,
   researchRailExpanded: false,
-  background: 'campus-walk',
-  appearance: { mode: 'default', customBackgrounds: [] },
+  background: 'academy-wide-courtyard',
+  appearance: { mode: 'default', defaultBackgroundId: 'academy-wide-courtyard', customBackgrounds: [], slideshow: { enabled: false, interval: 20 } },
   audience: 'student',
   mentor: 'miso',
   mentorChat: { open: false, stage: 'auto', messages: [] },
@@ -277,6 +298,8 @@ const defaultState = {
   careerFilter: 'All',
   careerSearch: '',
   roadmapDone: ['profile'],
+  roadmapSection: 'actions',
+  overviewSection: 'journey',
   tasks: [
     { id: 'task-1', text: 'Complete two Career Compass sections', done: false },
     { id: 'task-2', text: 'Discuss one career experiment at dinner', done: false },
@@ -284,6 +307,7 @@ const defaultState = {
   familyNote: '',
   familyLens: 'student',
   evidence: [],
+  accomplishments: { section: 'overview', rewards: [], courses: [], exams: [], scores: [] },
   experienceFilters: { search: '', country: 'All', stage: 'All', perspective: 'All', ai: 'All' },
   experienceLimit: 12,
   sharedExperiences: [],
@@ -312,6 +336,17 @@ const defaultState = {
     },
   },
   generatedNames: { scope: 'Tamil Nadu' },
+  platform: { defaultView: 'calling', defaultTheme: 'violet', defaultRegion: 'All', allowGuestAccess: true, showEditorialLinks: true },
+  adminConfig: {
+    platformName: 'ZYSHAM', supportEmail: 'support@zysham.in', defaultLanguage: 'English', timezone: 'Asia/Kolkata', academicYear: '2026–27', rolloutRegion: 'Tamil Nadu',
+    recommendationsPerStage: 7, assessmentRetakeDays: 14, allowGuestAssessments: true, evidenceBeforeRecommendation: true, showUncertainty: true,
+    sourceFreshnessDays: 180, requireOfficialSources: true, showSourceDates: true, staleContentWarning: true, regionalFallback: 'India',
+    aiMode: 'local-first', aiModel: 'Zysham Career SLM', cloudFallback: false, citationsRequired: true, humanDecisionNotice: true, maxAiRecommendations: 3, logPrompts: false,
+    minimumCommunityAge: 13, pseudonymsRequired: true, imageSharing: true, maxUploadMb: 8, premoderateFirstPosts: true, slowModeSeconds: 30, minMetricsCohort: 10, enableReporting: true,
+    privacyRetentionDays: 365, exportEnabled: true, deletionEnabled: true, analyticsMode: 'privacy-preserving', consentVersion: '2026.1',
+    digestDay: 'Sunday', transactionalEmail: true, editorialApproval: true, newsletterDoubleOptIn: true,
+    maintenanceMode: false, releaseChannel: 'stable', auditFrequency: 'monthly', backupsEnabled: true, lastAuditAt: '',
+  },
   communications: { newsletterSubscribed: false, productUpdates: false, familyDigest: false, consentAt: '', subscriberEmail: '', campaigns: [], outbox: [] },
   editorial: { blogSearch: '', blogCategory: 'All', selectedBlogId: '', selectedNewsletterId: '', localPosts: [], localNewsletters: [] },
   studyGuide: { section: 'overview', track: 'grade11', subject: 'Physics', search: '', selectedChapterId: '', chapterTab: 'summary', statuses: {}, mastery: {}, notes: {}, studyBlocks: [], assessments: [], assignments: [] },
@@ -331,6 +366,7 @@ const viewMeta = {
   experiences: ['LEARN FROM MANY ROUTES', 'Experience exchange'],
   discussions: ['A GLOBAL DECISION COMMONS', 'Discussions'],
   'ai-journey': ['AI IN EVERY DECISION', 'AI Journey'],
+  'admin-settings': ['PLATFORM GOVERNANCE', 'Admin Settings'],
   compare: ['SEE THE TRADE-OFFS', 'Compare paths'],
   roadmap: ['TURN CLARITY INTO ACTION', 'My roadmap'],
   family: ['ONE PLAN, TWO PERSPECTIVES', 'Family room'],
@@ -338,6 +374,7 @@ const viewMeta = {
   'journey-stage': ['YEAR-BY-YEAR JOURNEY', 'Journey stage'],
   'vedic-prediction': ['TRADITION AS A REFLECTIVE LENS', 'Vedic Prediction'],
   assessments: ['ALL ASSESSMENTS · ONE WORKSPACE', 'Assessments'],
+  'burning-desire': ['WHAT YOU WOULD WILLINGLY SUSTAIN', 'Burning Desire'],
   research: ['VERIFY BEFORE YOU RANK', 'Research'],
   calling: ['3 ASSESSMENTS · 7 TRAITS · 7 NEXT MOVES', 'Find Your Calling'],
   blog: ['FROM THE ZYSHAM TEAM', 'Team Blog'],
@@ -351,6 +388,18 @@ const viewMeta = {
 };
 
 const campusBackgrounds = [
+  { id: 'academy-wide-courtyard', name: 'Wide courtyard', detail: 'Open contemporary academy', file: 'assets/backgrounds/academy-wide-courtyard.jpg' },
+  { id: 'academy-sunrise-quadrangle', name: 'Sunrise quadrangle', detail: 'Warm, quiet morning', file: 'assets/backgrounds/academy-sunrise-quadrangle.jpg' },
+  { id: 'academy-library-terrace', name: 'Library terrace', detail: 'Open-air collaboration', file: 'assets/backgrounds/academy-library-terrace.jpg' },
+  { id: 'academy-innovation-court', name: 'Innovation court', detail: 'Engineering and making', file: 'assets/backgrounds/academy-innovation-court.jpg' },
+  { id: 'academy-arts-amphitheatre', name: 'Arts amphitheatre', detail: 'Heritage and discussion', file: 'assets/backgrounds/academy-arts-amphitheatre.jpg' },
+  { id: 'academy-science-garden', name: 'Science garden', detail: 'Labs meet landscape', file: 'assets/backgrounds/academy-science-garden.jpg' },
+  { id: 'academy-heritage-modern', name: 'Heritage modern', detail: 'Old and new learning', file: 'assets/backgrounds/academy-heritage-modern.jpg' },
+  { id: 'academy-monsoon-courtyard', name: 'Monsoon courtyard', detail: 'Fresh after the rain', file: 'assets/backgrounds/academy-monsoon-courtyard.jpg' },
+  { id: 'academy-evening-commons', name: 'Evening commons', detail: 'Warm library at blue hour', file: 'assets/backgrounds/academy-evening-commons.jpg' },
+  { id: 'academy-sustainable-green', name: 'Sustainable campus', detail: 'Green, climate-aware design', file: 'assets/backgrounds/academy-sustainable-green.jpg' },
+  { id: 'academy-urban-rooftop', name: 'Urban rooftop', detail: 'Learning above the city', file: 'assets/backgrounds/academy-urban-rooftop.jpg' },
+  { id: 'academy-lakeside-commons', name: 'Lakeside commons', detail: 'Calm water and study', file: 'assets/backgrounds/academy-lakeside-commons.jpg' },
   { id: 'campus-walk', name: 'Campus walk', detail: 'Everyday university life', file: 'assets/backgrounds/campus-walk.jpg' },
   { id: 'library-team', name: 'Library team', detail: 'Study and collaboration', file: 'assets/backgrounds/library-team.jpg' },
   { id: 'engineering-lab', name: 'Engineering lab', detail: 'Building and testing', file: 'assets/backgrounds/engineering-lab.jpg' },
@@ -512,12 +561,22 @@ if (state.view === 'study-guide') {
   state.journeyStageTab = 'study';
   state.view = 'journey-stage';
 }
+if (state.view === 'ai-journey') {
+  state.overviewSection = 'ai';
+  state.view = 'overview';
+}
 const previousDreamIdentity = state.dreamJob.identity?.trim();
 if (previousDreamIdentity) {
   const callingLegacy = state.calling.custom.legacy?.trim() || '';
   if (!callingLegacy) state.calling.custom.legacy = previousDreamIdentity;
   else if (!callingLegacy.toLocaleLowerCase().includes(previousDreamIdentity.toLocaleLowerCase())) state.calling.custom.legacy = `${callingLegacy}\n${previousDreamIdentity}`.slice(0, 800);
   state.dreamJob.identity = '';
+}
+const movedDreamSection = { roadmap: 'target', evidence: 'gaps', reality: 'prestige' }[state.dreamJob.tab];
+if (movedDreamSection) {
+  state.roadmapSection = movedDreamSection;
+  state.dreamJob.tab = 'discover';
+  if (state.view === 'dream-job') state.view = 'roadmap';
 }
 let toastTimer;
 let rightDrawerReturnFocus = null;
@@ -608,11 +667,16 @@ function closeRightDrawer(kind = '') {
 initialiseRightDrawer();
 
 const sidebarMenuViews = {
-  journey: ['overview', 'journey-stage', 'vedic-prediction', 'roadmap', 'evidence'],
+  journey: ['overview', 'journey-stage', 'roadmap', 'evidence'],
   discussions: ['discussions'], certifications: ['certifications'],
-  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job', 'jobs'], calling: ['calling', 'assessments', 'compass', 'explore', 'compare', 'ai-journey'], blog: ['blog'], newsletters: ['newsletters'],
+  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job', 'jobs', 'explore', 'compare'], ethics: ['jobs'], calling: ['calling', 'assessments', 'compass', 'burning-desire', 'vedic-prediction'], blog: ['blog'], newsletters: ['newsletters'],
 };
-let expandedSidebarGroup = Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
+const ethicsTabs = ['framework', 'improve', 'foundations'];
+function activeSidebarGroup() {
+  if (state.view === 'jobs') return ethicsTabs.includes(state.jobsHub.tab) ? 'ethics' : 'dreamJob';
+  return Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
+}
+let expandedSidebarGroup = activeSidebarGroup();
 const sidebarItemColors = ['#d6a8ff', '#78ddd4', '#ff9fbe', '#f4c66f', '#91c8ff', '#9ce0aa', '#ffb67f'];
 
 function sidebarMenuDefinitions() {
@@ -621,7 +685,6 @@ function sidebarMenuDefinitions() {
       { kind: 'view', value: 'overview', label: 'Journey overview', group: 'Workspace' },
       { kind: 'view', value: 'roadmap', label: 'Action Plan', meta: 'Milestones and next steps', group: 'Workspace' },
       { kind: 'view', value: 'evidence', label: 'Accomplishments', meta: 'Projects, progress and recognition', group: 'Workspace' },
-      { kind: 'view', value: 'vedic-prediction', label: 'Vedic Prediction', meta: 'Reflective career lens', group: 'Workspace' },
     ],
     discussions: [['discussions','Discussions'],['experiences','Alumni Talks'],['saved','Saved topics']].map(([value,label]) => ({ kind: 'community', value, label })),
     certifications: certificationCategories.map((value) => ({ kind: 'certification', value, label: value })),
@@ -634,23 +697,23 @@ function sidebarMenuDefinitions() {
       { kind: 'exam-category', value: 'syllabus', label: 'Syllabus library', meta: 'Guide page 101', group: 'Preparation' },
     ],
     dreamJob: [
+      { kind: 'view', value: 'explore', label: 'Career directions' },
+      { kind: 'view', value: 'compare', label: 'Compare directions' },
       { kind: 'dream-job', value: 'discover', label: 'Employer atlas' },
       { kind: 'dream-job', value: 'performing', label: 'Performing arts paths' },
-      { kind: 'dream-job', value: 'roadmap', label: 'Target roadmap' },
-      { kind: 'dream-job', value: 'evidence', label: 'Evidence gaps' },
-      { kind: 'dream-job', value: 'reality', label: 'Prestige check' },
       { kind: 'jobs', value: 'atlas', label: 'Role library' },
       { kind: 'jobs', value: 'compare', label: 'Compare roles' },
+    ],
+    ethics: [
       { kind: 'jobs', value: 'framework', label: 'Work ethics' },
       { kind: 'jobs', value: 'improve', label: 'Improve the workplace' },
       { kind: 'jobs', value: 'foundations', label: 'Ethical foundations' },
     ],
     calling: [
-      { kind: 'view', value: 'compass', label: 'Reality & NO-NOs' },
+      { kind: 'view', value: 'compass', label: 'Know Thyself' },
       { kind: 'view', value: 'assessments', label: 'Self assessments' },
-      { kind: 'view', value: 'explore', label: 'Career directions' },
-      { kind: 'view', value: 'compare', label: 'Compare directions' },
-      { kind: 'view', value: 'ai-journey', label: 'AI decision lens' },
+      { kind: 'view', value: 'burning-desire', label: 'Burning Desire' },
+      { kind: 'view', value: 'vedic-prediction', label: 'Vedic Prediction', meta: 'Reflective career lens' },
     ],
     blog: [{ kind: 'blog', value: 'All', label: 'All viewpoints' }, ...[...new Set(teamBlogEntries.map((item) => item.category))].map((value) => ({ kind: 'blog', value, label: value }))],
     newsletters: infographicTopics.map((topic) => ({ kind: 'newsletter', value: topic.id, label: `${topic.number} · ${topic.label}`, meta: topic.title })),
@@ -713,7 +776,7 @@ function initialiseSidebarMenus() {
 }
 
 function updateSidebarMenus() {
-  const activeGroup = Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
+  const activeGroup = activeSidebarGroup();
   $$('[data-nav-group]').forEach((group) => {
     const key = group.dataset.navGroup;
     const belongs = key === activeGroup;
@@ -760,9 +823,16 @@ function loadState() {
       ...stored,
       profile: { ...structuredClone(defaultState.profile), ...(stored.profile || {}) },
       session: { ...structuredClone(defaultState.session), ...(stored.session || {}) },
-      accounts: Array.isArray(stored.accounts) ? stored.accounts : [],
+      accounts: normaliseAccounts(Array.isArray(stored.accounts) ? stored.accounts : []),
       workspaces: stored.workspaces && typeof stored.workspaces === 'object' ? stored.workspaces : {},
-      appearance: { ...structuredClone(defaultState.appearance), ...(stored.appearance || { mode: 'override' }), customBackgrounds: Array.isArray(stored.appearance?.customBackgrounds) ? stored.appearance.customBackgrounds : [] },
+      appearance: {
+        ...structuredClone(defaultState.appearance),
+        ...(stored.appearance || { mode: 'override' }),
+        customBackgrounds: Array.isArray(stored.appearance?.customBackgrounds) ? stored.appearance.customBackgrounds : [],
+        slideshow: { ...structuredClone(defaultState.appearance.slideshow), ...(stored.appearance?.slideshow || {}) },
+      },
+      platform: { ...structuredClone(defaultState.platform), ...(stored.platform || {}) },
+      adminConfig: { ...structuredClone(defaultState.adminConfig), ...(stored.adminConfig || {}) },
       mentorChat: { ...structuredClone(defaultState.mentorChat), ...(stored.mentorChat || {}), messages: Array.isArray(stored.mentorChat?.messages) ? stored.mentorChat.messages.slice(-50).map((item) => ({ ...item, text: String(item.text || '').replace(/^The local model could not run \([\s\S]*\)\.\s*/, '') })) : [] },
       profiles: {
         student: { ...structuredClone(defaultState.profiles.student), ...(stored.profiles?.student || stored.profile || {}) },
@@ -790,6 +860,13 @@ function loadState() {
       },
       discussionFilters: { ...structuredClone(defaultState.discussionFilters), ...(stored.discussionFilters || {}) },
       research: { ...structuredClone(defaultState.research), ...(stored.research || {}) },
+      accomplishments: {
+        ...structuredClone(defaultState.accomplishments), ...(stored.accomplishments || {}),
+        rewards: Array.isArray(stored.accomplishments?.rewards) ? stored.accomplishments.rewards : [],
+        courses: Array.isArray(stored.accomplishments?.courses) ? stored.accomplishments.courses : [],
+        exams: Array.isArray(stored.accomplishments?.exams) ? stored.accomplishments.exams : [],
+        scores: Array.isArray(stored.accomplishments?.scores) ? stored.accomplishments.scores : [],
+      },
       calling: {
         ...structuredClone(defaultState.calling), ...(stored.calling || {}),
         selections: Object.fromEntries(callingQuestions.map((question) => {
@@ -833,7 +910,7 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
 }
 
-const workspaceKeys = ['profile', 'profiles', 'signals', 'workReality', 'saved', 'compare', 'streamChoice', 'streamReflections', 'journey', 'roadmapDone', 'tasks', 'familyNote', 'familyLens', 'evidence', 'aiJourney', 'calling', 'assessments', 'mentor', 'mentorChat', 'studyGuide', 'certifications', 'traditional', 'entranceExams', 'dreamJob', 'vedicPrediction', 'jobsHub'];
+const workspaceKeys = ['profile', 'profiles', 'signals', 'workReality', 'saved', 'compare', 'streamChoice', 'streamReflections', 'journey', 'roadmapDone', 'roadmapSection', 'overviewSection', 'tasks', 'familyNote', 'familyLens', 'evidence', 'accomplishments', 'aiJourney', 'calling', 'assessments', 'mentor', 'mentorChat', 'studyGuide', 'certifications', 'traditional', 'entranceExams', 'dreamJob', 'vedicPrediction', 'jobsHub'];
 
 function captureWorkspace(accountId = state.session.accountId) {
   if (!accountId) return;
@@ -913,16 +990,21 @@ function rankedCareers() {
 function setView(view, { updateHash = true } = {}) {
   if (!viewMeta[view]) return;
   if (view === 'research') { openResearchShelf(); return; }
-  let redirectedStudyGuide = false;
+  let redirectedView = false;
   if (view === 'study-guide') {
     state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
     state.journeyStageTab = 'study';
     view = 'journey-stage';
-    redirectedStudyGuide = true;
+    redirectedView = true;
+  }
+  if (view === 'ai-journey') {
+    state.overviewSection = 'ai';
+    view = 'overview';
+    redirectedView = true;
   }
   state.view = view;
   saveState();
-  if (updateHash || redirectedStudyGuide) history.replaceState(null, '', `#${view}`);
+  if (updateHash || redirectedView) history.replaceState(null, '', `#${view}`);
   render();
   window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
@@ -950,7 +1032,9 @@ function renderResearchRail() {
 }
 
 function updateShell() {
-  const [eyebrow, title] = viewMeta[state.view];
+  const [eyebrow, title] = state.view === 'jobs' && ethicsTabs.includes(state.jobsHub.tab)
+    ? ['LIVELIHOOD WITH CONSCIENCE', 'Moral & Ethics']
+    : viewMeta[state.view];
   document.body.dataset.view = state.view;
   document.body.classList.toggle('left-sidebar-expanded', Boolean(state.sidebarExpanded));
   document.body.classList.toggle('right-sidebar-expanded', Boolean(state.researchRailExpanded));
@@ -989,9 +1073,15 @@ function updateShell() {
   const adminSettingsButton = $('#adminSettingsButton');
   const adminAccessActive = isAdmin();
   adminSettingsButton.dataset.access = adminAccessActive ? 'active' : 'restricted';
+  adminSettingsButton.classList.toggle('active', state.view === 'admin-settings');
+  adminSettingsButton.setAttribute('aria-current', state.view === 'admin-settings' ? 'page' : 'false');
   adminSettingsButton.title = adminAccessActive ? 'Admin Settings' : 'Admin Settings · Team Admin sign-in required';
   adminSettingsButton.setAttribute('aria-label', adminSettingsButton.title);
-  $$('.header-editorial-link').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
+  if ($('#enterGuest')) $('#enterGuest').hidden = state.platform?.allowGuestAccess === false;
+  $$('.header-editorial-link').forEach((button) => {
+    button.hidden = state.platform?.showEditorialLinks === false;
+    button.classList.toggle('active', button.dataset.view === state.view);
+  });
   $$('[data-learning-view]').forEach((button) => {
     const active = button.dataset.learningView === state.view;
     button.classList.toggle('active', active);
@@ -1000,6 +1090,8 @@ function updateShell() {
   const appearance = effectiveAppearance();
   document.body.dataset.theme = appearance.theme;
   document.documentElement.style.setProperty('--campus-image', `url(${JSON.stringify(appearance.background.file)})`);
+  showAppBackground(appearance.background, true);
+  syncBackgroundSlideshow();
   $$('.theme-choice').forEach((button) => {
     const active = button.dataset.themeChoice === state.theme;
     button.classList.toggle('active', active);
@@ -1019,7 +1111,7 @@ function updateShell() {
 function promoteViewHeading(host) {
   const candidates = [
     '.section-header', '.hero-main', '.journey-stage-hero', '.research-workspace-head',
-    '.assessment-hub-main > section > header', '.assessment-hub-main .calling-question > header',
+    '.assessment-hub-main > section > header', '.assessment-hub-main .calling-question > header', '.burning-desire-intro',
     '.assessment-hero', '.dream-calling-handoff', '.entrance-exams-hero', '.exam-section-head',
     '.vedic-hero', '.forum-header', '.editorial-hero', '.ai-hero', '.jobs-hero',
     '.infographic-hero', '.jobs-page-head', '.compact-page-intro', '.course-detail',
@@ -1058,10 +1150,76 @@ function allBackgrounds() {
   return [...campusBackgrounds, ...(state.appearance?.customBackgrounds || [])];
 }
 
-function effectiveAppearance() {
+let backgroundSlideshowTimer = null;
+let backgroundSlideshowSignature = '';
+let slideshowBackgroundId = '';
+let backgroundLayerIndex = 0;
+
+function ensureAppBackgroundStage() {
+  let stage = $('#appBackgroundStage');
+  if (stage) return stage;
+  stage = document.createElement('div');
+  stage.id = 'appBackgroundStage';
+  stage.className = 'app-background-stage';
+  stage.setAttribute('aria-hidden', 'true');
+  stage.innerHTML = '<span class="app-background-layer"></span><span class="app-background-layer"></span>';
+  document.body.prepend(stage);
+  return stage;
+}
+
+function showAppBackground(background, animate = true) {
+  if (!background?.file) return;
+  const stage = ensureAppBackgroundStage();
+  const layers = $$('.app-background-layer', stage);
+  const current = layers[backgroundLayerIndex];
+  if (current?.dataset.backgroundId === background.id) return;
+  const nextIndex = current?.dataset.backgroundId ? 1 - backgroundLayerIndex : backgroundLayerIndex;
+  const next = layers[nextIndex];
+  next.style.backgroundImage = `url(${JSON.stringify(background.file)})`;
+  next.dataset.backgroundId = background.id;
+  next.className = `app-background-layer${animate && current?.dataset.backgroundId ? ' entering' : ' active'}`;
+  if (animate && current?.dataset.backgroundId) {
+    current.className = 'app-background-layer active';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      current.className = 'app-background-layer leaving';
+      next.className = 'app-background-layer active';
+    }));
+    window.setTimeout(() => { if (current !== layers[backgroundLayerIndex]) current.className = 'app-background-layer'; }, 950);
+  } else if (current !== next) {
+    current.className = 'app-background-layer';
+  }
+  backgroundLayerIndex = nextIndex;
+}
+
+function syncBackgroundSlideshow() {
+  const slideshow = state.appearance?.slideshow || defaultState.appearance.slideshow;
+  const interval = Math.max(10, Number(slideshow.interval) || 20);
+  const signature = `${Boolean(slideshow.enabled)}:${interval}`;
+  if (signature === backgroundSlideshowSignature) return;
+  window.clearInterval(backgroundSlideshowTimer);
+  backgroundSlideshowTimer = null;
+  backgroundSlideshowSignature = signature;
+  if (!slideshow.enabled) { slideshowBackgroundId = ''; return; }
+  slideshowBackgroundId = effectiveAppearance(false).background.id;
+  backgroundSlideshowTimer = window.setInterval(() => {
+    const backgrounds = allBackgrounds();
+    const currentIndex = Math.max(0, backgrounds.findIndex((item) => item.id === slideshowBackgroundId));
+    const next = backgrounds[(currentIndex + 1) % backgrounds.length];
+    slideshowBackgroundId = next.id;
+    showAppBackground(next, true);
+    renderBackgroundOptions();
+  }, interval * 1000);
+}
+
+function effectiveAppearance(includeSlideshow = true) {
   const useDefault = state.appearance?.mode !== 'override';
-  const background = useDefault ? campusBackgrounds[0] : allBackgrounds().find((item) => item.id === state.background) || campusBackgrounds[0];
-  return { theme: useDefault ? 'violet' : state.theme, background };
+  const backgrounds = allBackgrounds();
+  const defaultBackground = backgrounds.find((item) => item.id === state.appearance?.defaultBackgroundId) || campusBackgrounds[0];
+  const selectedBackground = useDefault ? defaultBackground : backgrounds.find((item) => item.id === state.background) || defaultBackground;
+  const background = includeSlideshow && state.appearance?.slideshow?.enabled && slideshowBackgroundId
+    ? backgrounds.find((item) => item.id === slideshowBackgroundId) || selectedBackground
+    : selectedBackground;
+  return { theme: useDefault ? state.platform?.defaultTheme || 'violet' : state.theme, background };
 }
 
 function renderBackgroundOptions() {
@@ -1077,6 +1235,12 @@ function renderBackgroundOptions() {
     button.setAttribute('aria-checked', String(active));
   });
   $('#appearanceOverrides').classList.toggle('using-defaults', state.appearance.mode !== 'override');
+  const defaultBackground = allBackgrounds().find((item) => item.id === state.appearance.defaultBackgroundId) || campusBackgrounds[0];
+  $('#backgroundDefaultStatus').textContent = `Default: ${defaultBackground.name}`;
+  $('#backgroundSetDefault').textContent = effective.background.id === defaultBackground.id ? 'Current background is default' : 'Set selected as default';
+  $('#backgroundSlideshowEnabled').checked = Boolean(state.appearance.slideshow?.enabled);
+  $('#backgroundSlideshowInterval').value = String(state.appearance.slideshow?.interval || 20);
+  $('#backgroundSlideshowInterval').disabled = !state.appearance.slideshow?.enabled;
 }
 
 function renderGeneratedNames() {
@@ -1685,18 +1849,15 @@ function renderSignalAssessment() {
 }
 
 function renderAssessments() {
-  const hub = state.assessments.hub || 'signals';
-  const reflected = callingQuestions.filter((question) => state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim()).length;
+  const hub = state.assessments.hub === 'reflections' ? 'signals' : state.assessments.hub || 'signals';
   const items = [
     ['signals', 'Discovery signals', `${Object.values(state.signals).flat().length} selected`],
     ['student', 'Student assessment', `${callingAssessmentCoverage()}/21 answered`],
-    ['reflections', 'Calling reflections', `${reflected}/3 reflected`],
     ...careerAssessments.map((assessment) => { const progress = careerAssessmentProgress(assessment); return [`career:${assessment.id}`, assessment.title, state.assessments.completed[assessment.id] ? 'Complete' : `${progress.answered}/${progress.total} answered`]; }),
     ['recommendations', '7 recommendations', 'From your student assessment'],
   ];
   const body = hub === 'signals' ? renderSignalAssessment()
     : hub === 'student' ? renderStudentAssessment()
-    : hub === 'reflections' ? renderCallingQuestions()
     : hub === 'recommendations' ? renderAssessmentRecommendations()
     : renderCareerAssessmentWorkspace();
   return `<div class="assessment-hub assessment-hub-campaign view-enter"><section class="calling-campaign-hero" aria-labelledby="callingCampaignTitle"><div class="calling-campaign-light" aria-hidden="true"></div><div class="calling-campaign-copy"><p class="eyebrow">ZYSHAM DISCOVERY STUDIO · BUILT AROUND YOU</p><h2 id="callingCampaignTitle">A future that feels<br><em>like yours.</em></h2><p>Move beyond borrowed expectations. Notice what energises you, test what the work really asks, and build a direction from evidence you can trust.</p><div class="calling-campaign-actions"><button class="button-primary" data-action="campaign-begin" data-value="student">Begin the guided discovery <span>→</span></button><button class="calling-campaign-secondary" data-action="campaign-begin" data-value="signals">Explore the method</button></div><div class="calling-campaign-proof"><span><strong>10</strong><small>reflective lenses</small></span><span><strong>21</strong><small>human signals</small></span><span><strong>0</strong><small>destiny scores</small></span></div></div><div class="calling-campaign-note"><span>01</span><p><strong>Start with the person.</strong> No result, rank or inherited dream gets the first word.</p></div><div class="calling-campaign-scroll" aria-hidden="true"><i></i><span>DISCOVER</span></div></section><aside class="assessment-hub-sidebar"><div><p class="eyebrow">ASSESSMENT INDEX</p><h2>All assessments</h2><p>One place for every lens. Move between them without losing your answers.</p></div><nav aria-label="All assessments">${items.map(([id, label, meta], index) => `<button data-action="assessment-hub" data-value="${id}" class="${hub === id ? 'active' : ''}" aria-current="${hub === id ? 'page' : 'false'}"><span>${String(index + 1).padStart(2, '0')}</span><span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(meta)}</small></span></button>`).join('')}</nav></aside><main class="assessment-hub-main">${body}</main></div>`;
@@ -1766,7 +1927,19 @@ function renderVedicPrediction() {
   </div>`;
 }
 
+function renderOverviewSectionTabs() {
+  const section = ['journey', 'ai'].includes(state.overviewSection) ? state.overviewSection : 'journey';
+  const completed = journeyStops().filter((stop) => state.aiJourney.stageAnswers[stop.id]?.trim()).length;
+  return `<nav class="overview-section-tabs" aria-label="Journey overview sections">
+    <button type="button" data-action="overview-section" data-value="journey" class="${section === 'journey' ? 'active' : ''}" aria-current="${section === 'journey' ? 'page' : 'false'}"><span>Journey overview</span><small>Your map and next move</small></button>
+    <button type="button" data-action="overview-section" data-value="ai" class="${section === 'ai' ? 'active' : ''}" aria-current="${section === 'ai' ? 'page' : 'false'}"><span>AI Journey</span><small>${completed}/9 stages grounded</small></button>
+  </nav>`;
+}
+
 function renderOverview() {
+  const overviewSection = ['journey', 'ai'].includes(state.overviewSection) ? state.overviewSection : 'journey';
+  const sectionTabs = renderOverviewSectionTabs();
+  if (overviewSection === 'ai') return `<div class="view-enter journey-overview-workspace">${sectionTabs}${renderAIJourney()}</div>`;
   const completion = compassCompletion();
   const reality = workRealityResult();
   const recommendationReady = reality.answered >= 6;
@@ -1775,7 +1948,8 @@ function renderOverview() {
     ? ['Clarity comes from <em>small proof.</em>', 'Discover what fits, compare the real trade-offs, and try a path before anyone asks you to commit.']
     : ['Support the path without <em>taking it over.</em>', 'See the evidence your child is building, discuss real trade-offs, and agree on one useful next step.'];
   return `
-    <div class="view-enter">
+    <div class="view-enter journey-overview-workspace">
+      ${sectionTabs}
       <section class="overview-hero">
         <article class="hero-main">
           <p class="eyebrow">${state.audience === 'student' ? 'YOUR PATH · NOT A VERDICT' : 'A SHARED DECISION · STUDENT-LED'}</p>
@@ -2026,32 +2200,41 @@ function renderJourneyStagePage() {
 }
 
 const roadmapItems = [
-  { id: 'profile', stage: 'NOW · GRADE 10', title: 'Build your evidence profile', copy: 'Interests, strengths, values, subjects, and preferred work style.' },
+  { id: 'profile', stage: 'NOW · GRADE 10', title: 'Discover Your Capability & Potential', copy: 'Map your interests, strengths, values, subject readiness, preferred work style, and real-world evidence.' },
   { id: 'stream', stage: 'NEXT · STREAM DECISION', title: 'Choose with eyes open', copy: 'Compare subject readiness, workload, flexibility, and nearby alternatives.' },
   { id: 'experiment', stage: 'THIS TERM', title: 'Run one real-world experiment', copy: 'A mini-project, practitioner interview, observation, or job-shadow reflection.' },
   { id: 'syllabus', stage: 'GRADE 11', title: 'Connect syllabus to direction', copy: 'Track foundations, review backlogs weekly, and keep a sustainable rhythm.' },
   { id: 'applications', stage: 'GRADE 12', title: 'Unify boards, entrances, and applications', copy: 'One calendar for mocks, error reviews, documents, and decision deadlines.' },
 ];
 
+function actionPlanTargetContext() {
+  const selected = dreamJobEmployers.find((employer) => employer.id === state.dreamJob.selectedId) || dreamJobEmployers[0];
+  const currentStageId = state.dreamJob.previewStage || mentorStageId();
+  const currentStage = dreamJobStageBlueprint.find((stage) => stage.stage === currentStageId) || dreamJobStageBlueprint[0];
+  return { selected, currentStageId, currentStage, vocation: selectedDreamVocation() };
+}
+
+function renderTargetRoadmapPlan() {
+  const { selected, currentStageId, currentStage, vocation } = actionPlanTargetContext();
+  const vocationMilestones = vocation.stageMilestones[currentStage.stage] || [];
+  return `<section class="dream-roadmap action-plan-dream-section"><header><p class="eyebrow">FROM SCHOOL TO MEANINGFUL WORK</p><h3>The destination may be a company, a vocation—or a portfolio of both.</h3></header><ol class="dream-stage-chevrons" aria-label="Target roadmap stages">${dreamJobStageBlueprint.map((stage, index) => `<li class="${stage.stage === currentStageId ? 'current' : ''}"><button data-action="dream-stage" data-value="${stage.stage}" ${stage.stage === currentStageId ? 'aria-current="step"' : ''}><span>${String(index + 1).padStart(2,'0')}</span><strong>${escapeHtml(stage.label)}</strong></button></li>`).join('')}</ol><article class="dream-stage-focus"><div><p class="eyebrow">CURRENT FOCUS · ${escapeHtml(currentStage.label)}</p><h4>${escapeHtml(currentStage.focus)}</h4><p>${escapeHtml(currentStage.action)}</p></div><aside><span>${state.dreamJob.selectedVocationId ? vocation.mark : selected.mark}</span><strong>${escapeHtml(state.dreamJob.selectedVocationId ? vocation.name : selected.name)}</strong><p>${escapeHtml(state.dreamJob.selectedVocationId ? vocationMilestones.slice(0, 2).join(' · ') : selected.evidence.slice(0, 2).join(' · '))}</p>${state.dreamJob.selectedVocationId ? `<button class="button-quiet" data-action="dream-vocation-detail" data-id="${vocation.id}">View milestones</button>` : ''}</aside></article></section>`;
+}
+
+function renderEvidenceGapPlan() {
+  const { selected, currentStage } = actionPlanTargetContext();
+  return `<section class="dream-evidence action-plan-dream-section"><header><div><p class="eyebrow">ROLE FIRST · ${escapeHtml(currentStage.label)}</p><h3>What can you prove—not merely claim?</h3></div><span>${selected.mark}</span></header><div><section><h4>Target role family</h4><p>${escapeHtml(state.dreamJob.targetRole || 'Choose a role in The Dream Job. A company target without a role target is too vague.')}</p><h4>Evidence standard to test</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><label>Evidence I already have<textarea data-dream-input="evidence" placeholder="Projects, outcomes, feedback, difficult work, responsibility…">${escapeHtml(state.dreamJob.evidence)}</textarea><small>${isGuest() ? 'Available in this session. Create a profile only to retain it.' : 'Saved privately with your profile.'}</small></label></div><footer><button class="button-primary" data-action="dream-go-evidence">Open Accomplishments</button></footer></section>`;
+}
+
+function renderPrestigeCheckPlan() {
+  const { selected } = actionPlanTargetContext();
+  return `<section class="dream-reality action-plan-dream-section"><header><p class="eyebrow">PRESTIGE-FREE REVIEW</p><h3>Would the work still matter without the name?</h3></header><div class="dream-reality-grid">${['A company is an environment, not a calling.','The same logo contains radically different work.','A referral may improve visibility; it does not replace evidence.','A solved-problem count measures volume, not explanation or judgment.','A programme can close or change—verify before planning around it.','Your campus changes access, not the value of your ability.'].map((item, index) => `<article><span>${String(index + 1).padStart(2,'0')}</span><p>${escapeHtml(item)}</p></article>`).join('')}</div><aside><strong>${escapeHtml(selected.name)} reality</strong><p>${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Verify current roles and requirements ↗</a></aside></section>`;
+}
+
 function renderRoadmap() {
-  return `
-    <div class="view-enter">
-      <header class="section-header"><div><p class="eyebrow">MY PATH</p><h2 class="section-heading">A living plan, not a perfect plan.</h2><p class="section-copy">Turn decisions into milestones. Check them off, revisit them, and keep the next action small.</p></div></header>
-      <div class="roadmap-shell">
-        <section class="panel roadmap-list">
-          ${roadmapItems.map((item) => {
-            const done = state.roadmapDone.includes(item.id);
-            return `<article class="roadmap-item ${done ? 'done' : ''}"><button class="milestone-check" data-action="milestone" data-id="${item.id}" aria-label="Mark ${item.title} ${done ? 'incomplete' : 'complete'}" aria-pressed="${done}">${done ? '✓' : '○'}</button><div class="roadmap-copy"><span>${item.stage}</span><h3>${item.title}</h3><p>${item.copy}</p></div><button class="roadmap-action" data-action="roadmap-open" data-id="${item.id}">${done ? 'Review' : 'Open'} →</button></article>`;
-          }).join('')}
-        </section>
-        <aside class="panel weekly-plan">
-          <div class="panel-head"><div><h3>This week</h3><p>${state.tasks.filter((task) => task.done).length}/${state.tasks.length} actions complete</p></div></div>
-          <div class="task-list">${state.tasks.map((task) => `<div class="task-row"><input type="checkbox" id="${task.id}" data-action="task-toggle" data-id="${task.id}" ${task.done ? 'checked' : ''}><label for="${task.id}">${escapeHtml(task.text)}</label></div>`).join('')}</div>
-          <form class="task-form" id="taskForm"><input id="taskInput" maxlength="100" placeholder="Add one small next step" aria-label="New task"><button aria-label="Add task">+</button></form>
-          <p class="disclosure">Existing Zysham syllabus, mock review, and entrance planning now live on one shared path.</p>
-        </aside>
-      </div>
-    </div>`;
+  const section = ['actions', 'target', 'gaps', 'prestige'].includes(state.roadmapSection) ? state.roadmapSection : 'actions';
+  const actionList = `<div class="roadmap-shell"><section class="panel roadmap-list">${roadmapItems.map((item) => { const done = state.roadmapDone.includes(item.id); return `<article class="roadmap-item ${done ? 'done' : ''}"><button class="milestone-check" data-action="milestone" data-id="${item.id}" aria-label="Mark ${item.title} ${done ? 'incomplete' : 'complete'}" aria-pressed="${done}">${done ? '✓' : '○'}</button><div class="roadmap-copy"><span>${item.stage}</span><h3>${item.title}</h3><p>${item.copy}</p></div><button class="roadmap-action" data-action="roadmap-open" data-id="${item.id}">${done ? 'Review' : 'Open'} →</button></article>`; }).join('')}</section><aside class="panel weekly-plan"><div class="panel-head"><div><h3>This week</h3><p>${state.tasks.filter((task) => task.done).length}/${state.tasks.length} actions complete</p></div></div><div class="task-list">${state.tasks.map((task) => `<div class="task-row"><input type="checkbox" id="${task.id}" data-action="task-toggle" data-id="${task.id}" ${task.done ? 'checked' : ''}><label for="${task.id}">${escapeHtml(task.text)}</label></div>`).join('')}</div><form class="task-form" id="taskForm"><input id="taskInput" maxlength="100" placeholder="Add one small next step" aria-label="New task"><button aria-label="Add task">+</button></form><p class="disclosure">Existing Zysham syllabus, mock review, and entrance planning now live on one shared path.</p></aside></div>`;
+  const content = section === 'target' ? renderTargetRoadmapPlan() : section === 'gaps' ? renderEvidenceGapPlan() : section === 'prestige' ? renderPrestigeCheckPlan() : actionList;
+  return `<div class="view-enter"><header class="section-header"><div><p class="eyebrow">MY PATH · ACTION PLAN</p><h2 class="section-heading">A living plan, not a perfect plan.</h2><p class="section-copy">Turn decisions into milestones. Check them off, revisit them, and keep the next action small.</p></div></header><nav class="action-plan-tabs" aria-label="Action Plan workspaces">${[['actions','Next actions'],['target','Target roadmap'],['gaps','Evidence gaps'],['prestige','Prestige check']].map(([id, label]) => `<button data-action="roadmap-section" data-value="${id}" class="${section === id ? 'active' : ''}" aria-current="${section === id ? 'page' : 'false'}">${label}</button>`).join('')}</nav>${content}</div>`;
 }
 
 function renderFamily() {
@@ -2086,7 +2269,7 @@ function renderFamily() {
     </div>`;
 }
 
-function renderEvidence() {
+function renderEvidenceLegacy() {
   const top = rankedCareers()[0];
   const experimentCareers = [top, ...careers.filter((career) => state.saved.includes(career.id) && career.id !== top.id)].slice(0, 3);
   const completedMilestones = roadmapItems.filter((item) => state.roadmapDone.includes(item.id));
@@ -2110,6 +2293,31 @@ function renderEvidence() {
         </aside>
       </div>
     </div>`;
+}
+
+function trackerEmpty(title, copy) {
+  return `<div class="tracker-empty"><span aria-hidden="true">◇</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div>`;
+}
+
+function renderEvidence() {
+  const sections = [['overview','Overview'],['tasks','Tasks'],['milestones','Milestones'],['rewards','Rewards'],['courses','Courses completed'],['exams','Exams completed'],['scores','Scores']];
+  const section = sections.some(([id]) => id === state.accomplishments.section) ? state.accomplishments.section : 'overview';
+  const stages = Object.entries(yearMilestoneConfig);
+  const completedTasks = state.tasks.filter((task) => task.done).length;
+  const milestoneTotal = stages.reduce((sum,[,config]) => sum + config.milestones.length, 0);
+  const milestoneComplete = stages.reduce((sum,[id]) => sum + (state.journey.stageMilestones[id] || []).length, 0);
+  const averageScore = state.accomplishments.scores.length ? Math.round(state.accomplishments.scores.reduce((sum,item) => sum + (Number(item.score) / Math.max(1,Number(item.max))) * 100, 0) / state.accomplishments.scores.length) : 0;
+  const taskPanel = `<section class="tracker-workspace"><form class="tracker-add-form" id="taskForm"><input id="taskInput" name="text" maxlength="120" required placeholder="Add a clear next action"><select name="stage" aria-label="Journey stage">${stages.map(([id,c])=>`<option value="${id}">${escapeHtml(c.step)}</option>`).join('')}</select><select name="priority" aria-label="Priority"><option>High</option><option selected>Medium</option><option>Low</option></select><input name="due" type="date" aria-label="Due date"><button class="button-primary">Add task</button></form><div class="tracker-table task-tracker"><header><span>Done</span><span>Task</span><span>Stage</span><span>Priority</span><span>Due</span><span></span></header>${state.tasks.length ? state.tasks.map((task)=>`<article class="${task.done?'complete':''}"><input type="checkbox" data-action="task-toggle" data-id="${task.id}" ${task.done?'checked':''} aria-label="Mark ${escapeHtml(task.text)} complete"><strong>${escapeHtml(task.text)}</strong><span>${escapeHtml(yearMilestoneConfig[task.stage]?.step || 'General')}</span><em data-priority="${escapeHtml(task.priority || 'Medium')}">${escapeHtml(task.priority || 'Medium')}</em><time>${escapeHtml(task.due || 'No date')}</time><button data-action="tracker-remove" data-group="tasks" data-id="${task.id}" aria-label="Remove task">×</button></article>`).join('') : trackerEmpty('No tasks yet','Add one action small enough to finish and meaningful enough to matter.')}</div></section>`;
+  const milestonePanel = `<section class="milestone-tracker-grid">${stages.map(([stageId,config])=>{const done=state.journey.stageMilestones[stageId]||[];const progress=Math.round(done.length/config.milestones.length*100);return `<details class="milestone-tracker-stage" ${stageId===state.activeJourneyStage?'open':''}><summary><span>${escapeHtml(config.step)}</span><strong>${escapeHtml(config.title)}</strong><div><i style="width:${progress}%"></i></div><em>${done.length}/${config.milestones.length}</em></summary><div>${config.milestones.map((milestone,index)=>{const status=done.includes(milestone)?'complete':state.journey.milestoneProgress?.[stageId]?.[milestone]||'todo';return `<button class="${status}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${escapeHtml(milestone)}"><span>${String(index+1).padStart(2,'0')}</span><strong>${escapeHtml(milestone)}</strong><em>${status==='complete'?'Complete':status==='doing'?'In progress':'Not started'}</em></button>`}).join('')}</div></details>`}).join('')}</section>`;
+  const rewardPanel = `<section class="tracker-workspace"><form class="tracker-add-form" id="rewardTrackerForm"><input name="title" required maxlength="100" placeholder="Award, recognition or contribution"><input name="issuer" required maxlength="80" placeholder="Issuer / organisation"><select name="level"><option>School / College</option><option>District</option><option>State</option><option>National</option><option>International</option><option>Community</option></select><input name="date" type="date" required><button class="button-primary">Record reward</button></form><div class="tracker-record-grid">${state.accomplishments.rewards.length?state.accomplishments.rewards.map((item)=>`<article><span>REWARD · ${escapeHtml(item.level)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.issuer)}</p><time>${escapeHtml(item.date)}</time><button data-action="tracker-remove" data-group="rewards" data-id="${item.id}">Remove</button></article>`).join(''):trackerEmpty('No rewards recorded','Recognition is context, not identity. Record what it acknowledges and what you learned.')}</div></section>`;
+  const coursePanel = `<section class="tracker-workspace"><form class="tracker-add-form tracker-six" id="courseTrackerForm"><input name="title" required maxlength="100" placeholder="Course or certification"><input name="provider" required maxlength="80" placeholder="Institution / provider"><select name="category"><option>Academic</option><option>Technical</option><option>Professional</option><option>Language</option><option>Creative</option><option>Traditional arts</option><option>Life skills</option></select><input name="hours" type="number" min="1" max="5000" placeholder="Hours"><input name="date" type="date" required><button class="button-primary">Add completion</button></form><div class="tracker-table record-table"><header><span>Course</span><span>Provider</span><span>Category</span><span>Effort</span><span>Completed</span><span></span></header>${state.accomplishments.courses.length?state.accomplishments.courses.map((item)=>`<article><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.provider)}</span><em>${escapeHtml(item.category)}</em><span>${escapeHtml(item.hours || '—')} ${item.hours?'hours':''}</span><time>${escapeHtml(item.date)}</time><button data-action="tracker-remove" data-group="courses" data-id="${item.id}">×</button></article>`).join(''):trackerEmpty('No completed courses','Record completed learning with its provider, effort, date, and evidence—not courses merely bookmarked.')}</div></section>`;
+  const examPanel = `<section class="tracker-workspace"><form class="tracker-add-form tracker-six" id="examTrackerForm"><input name="title" required maxlength="100" placeholder="Exam / entrance / assessment"><input name="authority" required maxlength="80" placeholder="Board / authority"><input name="score" maxlength="30" placeholder="Score / rank / percentile"><select name="result"><option>Completed</option><option>Qualified</option><option>Result awaited</option><option>Retry planned</option></select><input name="date" type="date" required><button class="button-primary">Add exam</button></form><div class="tracker-table record-table"><header><span>Exam</span><span>Authority</span><span>Outcome</span><span>Result</span><span>Date</span><span></span></header>${state.accomplishments.exams.length?state.accomplishments.exams.map((item)=>`<article><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.authority)}</span><em>${escapeHtml(item.score || 'Not recorded')}</em><span>${escapeHtml(item.result)}</span><time>${escapeHtml(item.date)}</time><button data-action="tracker-remove" data-group="exams" data-id="${item.id}">×</button></article>`).join(''):trackerEmpty('No completed exams','Record attempts truthfully. A result is evidence for the next plan, not a judgment of worth.')}</div></section>`;
+  const scorePanel = `<section class="tracker-workspace"><form class="tracker-add-form tracker-six" id="scoreTrackerForm"><input name="subject" required maxlength="60" placeholder="Subject / skill"><input name="assessment" required maxlength="80" placeholder="Assessment name"><input name="score" required type="number" min="0" step=".01" placeholder="Score"><input name="max" required type="number" min="1" step=".01" placeholder="Out of"><input name="date" type="date" required><button class="button-primary">Add score</button></form><div class="score-tracker-list">${state.accomplishments.scores.length?state.accomplishments.scores.map((item)=>{const percent=Math.min(100,Math.round(Number(item.score)/Math.max(1,Number(item.max))*100));return `<article><div><span>${escapeHtml(item.subject)}</span><strong>${escapeHtml(item.assessment)}</strong><small>${escapeHtml(item.date)}</small></div><div class="score-track"><i style="width:${percent}%"></i></div><em>${escapeHtml(item.score)} / ${escapeHtml(item.max)}<strong>${percent}%</strong></em><button data-action="tracker-remove" data-group="scores" data-id="${item.id}">×</button></article>`}).join(''):trackerEmpty('No scores recorded','Track comparable evidence over time and record the repair action behind improvement.')}</div></section>`;
+  const evidenceTypes = ['Project','Milestone','Certification','Award or recognition','Leadership','Service','Skill developed','Reflection'];
+  const recent = [...state.evidence.map((item)=>({...item,kind:item.type,date:item.createdAt})),...state.accomplishments.rewards.map((item)=>({...item,kind:'Reward'})),...state.accomplishments.courses.map((item)=>({...item,kind:'Course'})),...state.accomplishments.exams.map((item)=>({...item,kind:'Exam'}))].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).slice(0,6);
+  const overviewPanel = `<section class="tracker-overview"><div class="tracker-kpi-grid"><article><span>Tasks</span><strong>${completedTasks}/${state.tasks.length}</strong><i style="--value:${state.tasks.length?completedTasks/state.tasks.length*100:0}%"></i></article><article><span>Milestones</span><strong>${milestoneComplete}/${milestoneTotal}</strong><i style="--value:${milestoneTotal?milestoneComplete/milestoneTotal*100:0}%"></i></article><article><span>Rewards</span><strong>${state.accomplishments.rewards.length}</strong><small>recognitions recorded</small></article><article><span>Courses</span><strong>${state.accomplishments.courses.length}</strong><small>completed learning routes</small></article><article><span>Exams</span><strong>${state.accomplishments.exams.length}</strong><small>attempts documented</small></article><article><span>Score average</span><strong>${averageScore||'—'}${averageScore?'%':''}</strong><small>across recorded scores</small></article></div><div class="tracker-overview-grid"><section class="panel"><div class="panel-head"><div><h3>Accomplishment record</h3><p>Projects, service, leadership, skills, and reflection.</p></div></div><form class="evidence-form" id="evidenceForm"><input id="evidenceTitle" maxlength="120" placeholder="What did you complete, contribute, or improve?" required><select id="evidenceType">${evidenceTypes.map((type)=>`<option>${type}</option>`).join('')}</select><button class="button-primary">Add</button></form><div class="evidence-list">${state.evidence.length?state.evidence.slice(0,8).map((item)=>`<article class="evidence-item"><span class="evidence-icon">▣</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.type)}</small></span><button data-action="evidence-remove" data-id="${item.id}">×</button></article>`).join(''):trackerEmpty('No evidence yet','Record one finished project, contribution, skill, or reflection.')}</div></section><section class="panel tracker-recent"><div class="panel-head"><div><h3>Recent progress</h3><p>One timeline across every tracker.</p></div></div>${recent.length?recent.map((item)=>`<article><span>${escapeHtml(item.kind||'Progress')}</span><strong>${escapeHtml(item.title)}</strong><time>${escapeHtml(item.date?String(item.date).slice(0,10):'')}</time></article>`).join(''):trackerEmpty('Your timeline is ready','Completed work from all seven trackers will appear here.')}</section></div></section>`;
+  const content = {overview:overviewPanel,tasks:taskPanel,milestones:milestonePanel,rewards:rewardPanel,courses:coursePanel,exams:examPanel,scores:scorePanel}[section];
+  return `<div class="view-enter accomplishment-hub"><header class="section-header"><div><p class="eyebrow">MY JOURNEY · PROGRESS SYSTEM</p><h2 class="section-heading">Track the work behind your growth.</h2><p class="section-copy">Tasks, milestones, learning, attempts, recognition, and scores stay connected to the same journey.</p></div></header><nav class="accomplishment-tabs" aria-label="Accomplishment trackers">${sections.map(([id,label],index)=>`<button data-action="accomplishment-tab" data-value="${id}" class="${section===id?'active':''}" aria-current="${section===id?'page':'false'}"><span>${String(index+1).padStart(2,'0')}</span>${label}</button>`).join('')}</nav>${content}</div>`;
 }
 
 function experienceFilterOptions(key) {
@@ -2457,17 +2665,21 @@ function renderCallingQuestions() {
   const allSelected = callingQuestions.flatMap((question) => (state.calling.selections[question.id] || []).map((id) => question.options.find((option) => option.id === id)).filter(Boolean));
   const themes = [...new Set(allSelected.map((option) => option.category))].slice(0, 8);
   const synthesis = callingSynthesis();
-  return `<div class="view-enter calling-view">
-    <header class="calling-intro"><p class="eyebrow">FIND YOUR CALLING</p><strong>${answered}<span>/ 3 reflected</span></strong></header>
+  return `<div class="view-enter calling-view burning-desire-view">
+    <header class="calling-intro burning-desire-intro"><div><p class="eyebrow">FIND YOUR CALLING · BURNING DESIRE</p><h2>What would you willingly sustain?</h2><p>Move past borrowed approval. Reflect on freedom, non-negotiables and the legacy you would still care about when the work becomes ordinary.</p></div><strong>${answered}<span>/ 3 reflected</span></strong></header>
     <nav class="calling-question-tabs" aria-label="Three calling questions">${callingQuestions.map((question) => { const done = state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim(); return `<button data-action="calling-question" data-value="${question.id}" class="${active.id === question.id ? 'active' : ''}" aria-current="${active.id === question.id ? 'step' : 'false'}"><span>${question.number}</span><strong>“${escapeHtml(question.question)}”</strong><em>${done ? '✓ Reflection added' : 'Answer this question'} →</em></button>`; }).join('')}</nav>
     <div class="calling-layout"><main class="calling-question panel"><header><span>QUESTION ${active.number}</span><h2>“${active.question}”</h2><p>${active.guidance}</p></header><div class="calling-tools"><label>Search ${callingMetadata.optionsPerQuestion} possibilities<input id="callingSearch" type="search" value="${escapeHtml(state.calling.search)}" placeholder="Family, creating, service, health, integrity…"></label><span>${selected.length} selected · choose any that feel true</span></div><section class="calling-option-list" aria-label="Possible answers">${visible.map((option) => { const on = selected.includes(option.id); return `<button data-action="calling-option" data-id="${option.id}" class="${on ? 'selected' : ''}" aria-pressed="${on}"><span>${on ? '✓' : '+'}</span><div><small>${escapeHtml(option.category)}</small><strong>${escapeHtml(option.text)}</strong></div></button>`; }).join('') || '<div class="calling-empty">No possibilities match that search. Try a broader word—or write your own answer below.</div>'}</section>${filtered.length > state.calling.limit ? `<button class="button-secondary calling-more" data-action="calling-more">Show ${Math.min(18, filtered.length - state.calling.limit)} more · ${filtered.length - state.calling.limit} remaining</button>` : ''}<label class="calling-custom">Your own answer<textarea data-calling-custom="${active.id}" maxlength="800" placeholder="Write in your own words. It can be uncertain, unfinished or different from every option above.">${escapeHtml(state.calling.custom[active.id])}</textarea><small>${isGuest() ? 'Temporary in this session · create a profile only when you want to save.' : 'Saved privately on this device.'}</small></label></main>
-      <aside class="calling-reflection panel"><p class="eyebrow">YOUR CALLING COMPASS</p><h3>${themes.length ? (synthesis.complete ? 'Your strongest directions' : 'A provisional pattern is emerging') : 'Select what feels true—not what sounds admirable.'}</h3>${themes.length ? `<div class="calling-themes">${themes.map((theme) => `<span>${escapeHtml(theme)}</span>`).join('')}</div><div class="calling-recommendations">${synthesis.ranked.map((direction, index) => `<article class="calling-recommendation ${index === 0 ? 'primary' : ''}"><span>${index === 0 ? 'STRONGEST DIRECTION' : `ALTERNATIVE ${index + 1}`}</span><h4>${escapeHtml(direction.title)}</h4><p><strong>Why:</strong> ${escapeHtml(direction.reasons.length ? direction.reasons.join(', ') : 'your own written reflection')} recur in your answers.</p><p><strong>Possible arenas:</strong> ${escapeHtml(direction.arenas)}.</p><p><strong>Test it:</strong> ${escapeHtml(direction.experiment)}</p><small>${escapeHtml(direction.caution)}</small></article>`).join('')}</div>${synthesis.boundaries.length ? `<div class="calling-guardrails"><strong>Your work must protect</strong>${synthesis.boundaries.map((item) => `<span>${escapeHtml(item.guidance)}</span>`).join('')}</div>` : ''}` : '<p>Look for three kinds of signal: what gives relief, what creates a firm boundary, and whose life becomes better because of your work.</p>'}<div class="calling-summary">${callingQuestions.map((question) => { const count = state.calling.selections[question.id]?.length || 0; const custom = state.calling.custom[question.id]?.trim(); return `<section><span>${question.number}</span><div><strong>${question.short}</strong><p>${count ? `${count} possibilities selected` : 'No possibilities selected'}${custom ? ' · own answer added' : ''}</p></div></section>`; }).join('')}</div><p class="calling-caution">These are hypotheses, not a psychological diagnosis. Test the strongest direction in real life, discuss it with people who know you, and revise it when evidence changes.</p>${answered ? `${isGuest() ? '<button class="button-primary" data-action="calling-save">Save these reflections</button>' : ''}<button class="button-quiet" data-action="calling-clear">Clear my calling reflections</button>` : ''}</aside>
+      <aside class="calling-reflection panel"><p class="eyebrow">YOUR CALLING COMPASS</p><h3>${themes.length ? (synthesis.complete ? 'Your strongest directions' : 'A provisional pattern is emerging') : 'Select what feels true—not what sounds admirable.'}</h3>${themes.length ? `<div class="calling-themes">${themes.map((theme) => `<span>${escapeHtml(theme)}</span>`).join('')}</div><div class="calling-recommendations">${synthesis.ranked.map((direction, index) => `<article class="calling-recommendation ${index === 0 ? 'primary' : ''}"><span>${index === 0 ? 'STRONGEST DIRECTION' : `ALTERNATIVE ${index + 1}`}</span><h4>${escapeHtml(direction.title)}</h4><p><strong>Why:</strong> ${escapeHtml(direction.reasons.length ? direction.reasons.join(', ') : 'your own written reflection')} recur in your answers.</p><p><strong>Possible arenas:</strong> ${escapeHtml(direction.arenas)}.</p><p><strong>Test it:</strong> ${escapeHtml(direction.experiment)}</p><small>${escapeHtml(direction.caution)}</small></article>`).join('')}</div>${synthesis.boundaries.length ? `<div class="calling-guardrails"><strong>Your work must protect</strong>${synthesis.boundaries.map((item) => `<span>${escapeHtml(item.guidance)}</span>`).join('')}</div>` : ''}` : '<p>Look for three kinds of signal: what gives relief, what creates a firm boundary, and whose life becomes better because of your work.</p>'}<div class="calling-summary">${callingQuestions.map((question) => { const count = state.calling.selections[question.id]?.length || 0; const custom = state.calling.custom[question.id]?.trim(); return `<section><span>${question.number}</span><div><strong>${question.short}</strong><p>${count ? `${count} possibilities selected` : 'No possibilities selected'}${custom ? ' · own answer added' : ''}</p></div></section>`; }).join('')}</div><p class="calling-caution">These are hypotheses, not a psychological diagnosis. Test the strongest direction in real life, discuss it with people who know you, and revise it when evidence changes.</p>${answered ? `${isGuest() ? '<button class="button-primary" data-action="calling-save">Save these reflections</button>' : ''}<button class="button-quiet" data-action="calling-clear">Clear Burning Desire reflections</button>` : ''}</aside>
     </div>
   </div>`;
 }
 
 function renderCalling() {
   return renderAssessments();
+}
+
+function renderBurningDesire() {
+  return renderCallingQuestions();
 }
 
 function dreamJobNorthStar() {
@@ -2511,7 +2723,7 @@ function renderDreamPathDrawer(path = selectedDreamVocation(), stageId = state.d
 }
 
 function renderDreamJob(isRefresh = false) {
-  if (!['discover', 'performing', 'roadmap', 'evidence', 'reality'].includes(state.dreamJob.tab)) state.dreamJob.tab = 'discover';
+  if (!['discover', 'performing'].includes(state.dreamJob.tab)) state.dreamJob.tab = 'discover';
   const query = state.dreamJob.search.trim().toLowerCase();
   const employers = dreamJobEmployers.filter((employer) => !query || `${employer.name} ${employer.family} ${employer.roleWorlds.join(' ')}`.toLowerCase().includes(query));
   const selected = dreamJobEmployers.find((employer) => employer.id === state.dreamJob.selectedId) || dreamJobEmployers[0];
@@ -2524,9 +2736,6 @@ function renderDreamJob(isRefresh = false) {
   const tabContent = {
     discover: `<div class="dream-atlas"><aside><label>Search employers and role worlds<input data-dream-input="search" type="search" value="${escapeHtml(state.dreamJob.search)}" placeholder="Engineering, research, design, consulting…"></label><div class="dream-employer-list">${employers.map((employer) => `<button data-action="dream-employer" data-id="${employer.id}" class="${selected.id === employer.id ? 'active' : ''}"><span>${employer.mark}</span><div><strong>${escapeHtml(employer.name)}</strong><small>${escapeHtml(employer.family)}</small></div></button>`).join('') || '<p>No employer or role world matches.</p>'}</div></aside><article class="dream-employer-detail"><header><span>${selected.mark}</span><div><p class="eyebrow">EMPLOYER ENVIRONMENT · NOT A CALLING</p><h3>${escapeHtml(selected.name)}</h3><p>${escapeHtml(selected.family)}</p></div><button data-action="dream-save" data-id="${selected.id}" aria-pressed="${state.dreamJob.saved.includes(selected.id)}">${state.dreamJob.saved.includes(selected.id) ? 'Saved ★' : 'Save target ☆'}</button></header><section><h4>Environment-fit questions</h4>${selected.purposeQuestions.map((question) => `<p>${escapeHtml(question)}</p>`).join('')}</section><section><h4>Role worlds inside the same logo</h4><div class="dream-role-tags">${selected.roleWorlds.map((role) => `<button data-action="dream-role" data-value="${escapeHtml(role)}" class="${state.dreamJob.targetRole === role ? 'active' : ''}">${escapeHtml(role)}</button>`).join('')}</div></section><section><h4>Proof worth building</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><p class="dream-reality-note">${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Official careers source · checked ${dreamJobMetadata.checkedAt} ↗</a></article></div>`,
     performing: `<section class="dream-vocations"><header><div><p class="eyebrow">CRAFT · LIVELIHOOD · CONTRIBUTION</p><h3>A dream can be a vocation—not an employer.</h3><p>Test whether you love the ordinary practice, then build proof, collaborators and more than one honest income route.</p></div><span>${dreamJobVocations.length} paths</span></header><div class="dream-vocation-layout"><nav aria-label="Performing arts paths">${dreamJobVocations.map((path) => `<button data-action="dream-vocation" data-id="${path.id}" aria-pressed="${path.id === vocation.id}" class="${path.id === vocation.id ? 'active' : ''}" style="--path-accent:${path.accent}"><span>${escapeHtml(path.mark)}</span><div><strong>${escapeHtml(path.name)}</strong><small>${escapeHtml(path.family)}</small></div></button>`).join('')}</nav><article class="dream-vocation-preview" style="--path-accent:${vocation.accent}"><header><span>${escapeHtml(vocation.mark)}</span><div><p class="eyebrow">${escapeHtml(vocation.family)}</p><h4>${escapeHtml(vocation.name)}</h4></div></header><blockquote>${escapeHtml(vocation.promise)}</blockquote><section><h5>Would the work fit?</h5>${vocation.noNoTests.map((item) => `<p>${escapeHtml(item)}</p>`).join('')}</section><section><h5>Proof to build</h5><ol>${vocation.proof.slice(0, 3).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><footer><button class="button-primary" data-action="dream-vocation-detail" data-id="${vocation.id}">Open ${escapeHtml(currentStage.label)} path</button><small>${isGuest() ? 'Explore fully as a guest · profile needed only to retain progress.' : 'Stage progress is saved privately on this device.'}</small></footer></article></div></section>`,
-    roadmap: `<section class="dream-roadmap"><header><p class="eyebrow">FROM SCHOOL TO MEANINGFUL WORK</p><h3>The destination may be a company, a vocation—or a portfolio of both.</h3></header><ol class="dream-stage-chevrons" aria-label="Dream Job stages">${dreamJobStageBlueprint.map((stage, index) => `<li class="${stage.stage === currentStageId ? 'current' : ''}"><button data-action="dream-stage" data-value="${stage.stage}" ${stage.stage === currentStageId ? 'aria-current="step"' : ''}><span>${String(index + 1).padStart(2,'0')}</span><strong>${escapeHtml(stage.label)}</strong></button></li>`).join('')}</ol><article class="dream-stage-focus"><div><p class="eyebrow">CURRENT FOCUS · ${escapeHtml(currentStage.label)}</p><h4>${escapeHtml(currentStage.focus)}</h4><p>${escapeHtml(currentStage.action)}</p></div><aside><span>${state.dreamJob.selectedVocationId ? vocation.mark : selected.mark}</span><strong>${escapeHtml(state.dreamJob.selectedVocationId ? vocation.name : selected.name)}</strong><p>${escapeHtml(state.dreamJob.selectedVocationId ? vocation.stageMilestones[currentStage.stage].slice(0, 2).join(' · ') : selected.evidence.slice(0, 2).join(' · '))}</p>${state.dreamJob.selectedVocationId ? `<button class="button-quiet" data-action="dream-vocation-detail" data-id="${vocation.id}">View milestones</button>` : ''}</aside></article></section>`,
-    evidence: `<section class="dream-evidence"><header><div><p class="eyebrow">ROLE FIRST · ${escapeHtml(currentStage.label)}</p><h3>What can you prove—not merely claim?</h3></div><span>${selected.mark}</span></header><div><section><h4>Target role family</h4><p>${escapeHtml(state.dreamJob.targetRole || 'Choose a role world in the Employer atlas. A company target without a role target is too vague.')}</p><h4>Evidence standard to test</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><label>Evidence I already have<textarea data-dream-input="evidence" placeholder="Projects, outcomes, feedback, difficult work, responsibility…">${escapeHtml(state.dreamJob.evidence)}</textarea><small>${isGuest() ? 'Available in this session. Create a profile only to retain it.' : 'Saved privately with your profile.'}</small></label></div><footer><button class="button-primary" data-action="dream-go-evidence">Open Accomplishments</button></footer></section>`,
-    reality: `<section class="dream-reality"><header><p class="eyebrow">PRESTIGE-FREE REVIEW</p><h3>Would the work still matter without the name?</h3></header><div class="dream-reality-grid">${['A company is an environment, not a calling.','The same logo contains radically different work.','A referral may improve visibility; it does not replace evidence.','A solved-problem count measures volume, not explanation or judgment.','A programme can close or change—verify before planning around it.','Your campus changes access, not the value of your ability.'].map((item, index) => `<article><span>${String(index + 1).padStart(2,'0')}</span><p>${escapeHtml(item)}</p></article>`).join('')}</div><aside><strong>${escapeHtml(selected.name)} reality</strong><p>${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Verify current roles and requirements ↗</a></aside></section>`,
   }[state.dreamJob.tab] || '';
   return `<div class="view-enter dream-job-view${isRefresh ? ' view-refresh' : ''}"><section class="dream-calling-handoff"><div><p class="eyebrow">YOUR CALLING → WORK TO TEST</p><h2>${northStar ? `“${escapeHtml(northStar)}”` : 'Your calling is still open. Test work without inventing certainty.'}</h2>${callingDirections.length ? `<div class="dream-calling-directions">${callingDirections.map((item) => `<span>${escapeHtml(item.title)}</span>`).join('')}</div>` : ''}</div><aside><span>OWNED BY FIND YOUR CALLING</span><strong>${callingAssessmentCoverage()}/21 assessment signals · ${realityEvidence.noNos.length} firm NO-NOs</strong><p>Identity and values are edited once in Find Your Calling. This workspace turns them into role, employer and evidence decisions.</p><button class="button-secondary" data-action="dream-review-calling">Review calling evidence</button></aside></section>${tabContent}<p class="dream-disclosure">${escapeHtml(dreamJobMetadata.disclosure)}</p></div>`;
 }
@@ -2757,6 +2966,74 @@ function renderEntranceExams() {
   return `<div class="view-enter entrance-exams-view">${body}<footer class="exam-source-notes"><div><strong>Source and freshness discipline</strong><p>Volatile dates and fees are not frozen here; official notifications control.</p></div>${entranceExamSources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.type)}</span><strong>${escapeHtml(source.label)}</strong><em>Open ↗</em></a>`).join('')}</footer></div>`;
 }
 
+const marketingPageLibrary = {
+  overview: { image: 'assets/visuals/calling-academy-hero.png', kicker: 'YOUR JOURNEY · BUILT WITH EVIDENCE', title: ['Your path is already', 'beginning.'], copy: 'See where you are, what you have learned, and which next experience can turn uncertainty into useful evidence.', marker: '01', proof: 'One connected journey' },
+  'journey-stage': { image: 'assets/visuals/academy-learning-hero.png', kicker: 'THIS YEAR · ONE HUMAN CHAPTER', title: ['Build this year into', 'a bridge.'], copy: 'Protect foundations, test the work, and leave this stage with evidence the next version of you can use.', marker: '02', proof: 'Progress without panic' },
+  roadmap: { image: 'assets/visuals/calling-academy-hero.png', kicker: 'ACTION PLAN · SMALL MOVES THAT COMPOUND', title: ['Turn direction into', 'momentum.'], copy: 'Bring the next milestone close enough to act on, while keeping recovery routes and real life in the plan.', marker: '03', proof: 'From intention to action' },
+  evidence: { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'YOUR WORK · YOUR LEARNING · YOUR PROOF', title: ['Make progress', 'visible.'], copy: 'Keep the projects, conversations, revisions and recoveries that show how your judgment is becoming stronger.', marker: '04', proof: 'Proof over performance' },
+  family: { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'FAMILY GUIDANCE · SUPPORT WITHOUT SILENT STEERING', title: ['A shared plan can still be', 'theirs.'], copy: 'Name money, safety, distance and care honestly—then keep the student’s voice inside the final decision.', marker: '05', proof: 'Care with agency' },
+  compass: { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'REALITY SCAN · PREFERENCES MEET DAILY WORK', title: ['Know what the work asks', 'of you.'], copy: 'Notice energy, boundaries and conditions before a prestigious title starts answering on your behalf.', marker: '01', proof: 'Self-knowledge in context' },
+  explore: { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'CAREER WORLDS · LOOK BENEATH THE TITLE', title: ['Meet the work before', 'choosing it.'], copy: 'Explore ordinary tasks, environments, routes and trade-offs before narrowing a life around a job name.', marker: '02', proof: 'Reality before ranking' },
+  compare: { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'COMPARE DIRECTIONS · NOTHING IMPORTANT STAYS HIDDEN', title: ['Trade-offs deserve', 'daylight.'], copy: 'Place routes side by side: daily work, entry gates, cost, mobility, uncertainty and the life each one makes possible.', marker: '03', proof: 'Compare the whole life' },
+  experiences: { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'ALUMNI TALKS · FIRST-PERSON EVIDENCE', title: ['Borrow perspective, not', 'somebody else’s path.'], copy: 'Listen for the ordinary week, the unexpected difficulty and the quiet choice a brochure would never show.', marker: '01', proof: 'Many lives, no template' },
+  discussions: { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'DECISION COMMONS · ASK WITHOUT PERFORMING CERTAINTY', title: ['Better questions grow', 'in community.'], copy: 'Share uncertainty, compare lived experience and leave room for routes that began somewhere different.', marker: '02', proof: 'Conversation with care' },
+  'ai-journey': { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'AI DECISION LENS · HUMAN ACCOUNTABILITY', title: ['Use the tool. Keep', 'the judgment.'], copy: 'Let AI explain, draft and challenge—then verify consequential claims and keep the final responsibility human.', marker: '03', proof: 'Assistance without surrender' },
+  certifications: { image: 'assets/visuals/academy-learning-hero.png', kicker: 'SKILLS & CREDENTIALS · EVIDENCE THAT TRAVELS', title: ['A credential should prove', 'capability.'], copy: 'Choose learning by the task it helps you perform, the feedback it includes and the proof you can defend.', marker: '01', proof: 'Skill beyond the badge' },
+  traditional: { image: 'assets/visuals/academy-learning-hero.png', kicker: 'LIVING PRACTICE · CRAFT, CULTURE & CONTINUITY', title: ['Let practice carry', 'tradition forward.'], copy: 'Approach inherited knowledge with disciplined study, patient craft, ethical context and room for a contemporary voice.', marker: '02', proof: 'Inheritance made conscious' },
+  'entrance-exams': { image: 'assets/visuals/academy-learning-hero.png', kicker: 'ENTRANCE EXAMS · A GATE, NOT AN IDENTITY', title: ['Prepare for the gate. Remember', 'the life beyond it.'], copy: 'Connect preparation to course fit, counselling, affordability, recovery and the work you hope the route will enable.', marker: '03', proof: 'Preparation with perspective' },
+  'dream-job': { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'DREAM WORK · PRESTIGE-FREE AMBITION', title: ['Aim high. Stay close', 'to the work.'], copy: 'Study the problems, people, conditions and evidence behind admired organisations and meaningful vocations.', marker: '01', proof: 'Ambition grounded in work' },
+  jobs: { image: 'assets/visuals/academy-innovation-hero.png', kicker: 'ROLE LIBRARY · LIVELIHOOD & CONSEQUENCE', title: ['Read the role beneath', 'the reputation.'], copy: 'Compare capability, salary, environment, service, risk and mobility without using status as a shortcut.', marker: '02', proof: 'Work examined honestly' },
+  'vedic-prediction': { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'TRADITIONAL LENS · REFLECTION, NOT DESTINY', title: ['Use tradition as', 'a reflective lens.'], copy: 'Hold inherited frameworks with respect and humility, then test every practical decision against lived evidence.', marker: '03', proof: 'Meaning without determinism' },
+  blog: { image: 'assets/visuals/academy-mentoring-hero.png', kicker: 'TEAM BLOG · THE FEELINGS INSIDE A DECISION', title: ['Stories make room for', 'the human decision.'], copy: 'Long-form reflections for the moments when results, money, belonging, family and hope refuse to fit inside a checklist.', marker: '01', proof: 'Human before prescriptive' },
+  newsletters: { image: 'assets/visuals/academy-learning-hero.png', kicker: 'INFOGRAPHICS · SEE THE WHOLE DECISION', title: ['Complex choices can become', 'visible.'], copy: 'Use seven visual guides to slow the room down, connect the trade-offs and choose one next conversation.', marker: '02', proof: 'Clarity without simplification' },
+};
+
+const marketingImageLibrary = {
+  overview: 'assets/visuals/journey-overview-hero.png',
+  'journey-stage': 'assets/visuals/journey-stage-hero.png',
+  roadmap: 'assets/visuals/roadmap-action-hero.png',
+  evidence: 'assets/visuals/evidence-portfolio-hero.png',
+  family: 'assets/visuals/family-guidance-hero.png',
+  compass: 'assets/visuals/compass-reality-hero.png',
+  explore: 'assets/visuals/career-explore-hero.png',
+  compare: 'assets/visuals/career-compare-hero.png',
+  experiences: 'assets/backgrounds/campus-mentor.jpg',
+  discussions: 'assets/visuals/community-discussions-hero.png',
+  'ai-journey': 'assets/visuals/academy-innovation-hero.png',
+  certifications: 'assets/visuals/certification-skills-hero.png',
+  traditional: 'assets/visuals/traditional-learning-hero.png',
+  'entrance-exams': 'assets/visuals/entrance-exams-hero.png',
+  'dream-job': 'assets/visuals/dream-work-hero.png',
+  jobs: 'assets/visuals/role-library-hero.png',
+  'vedic-prediction': 'assets/backgrounds/design-studio.jpg',
+  blog: 'assets/backgrounds/library-team.jpg',
+  newsletters: 'assets/visuals/academy-learning-hero.png',
+};
+
+Object.entries(marketingImageLibrary).forEach(([view, image]) => {
+  marketingPageLibrary[view].image = image;
+});
+
+function marketingBannerAllowed(host, view) {
+  if (!marketingPageLibrary[view] || ['calling', 'assessments'].includes(view)) return false;
+  if (view === 'jobs' && ethicsTabs.includes(state.jobsHub.tab)) return false;
+  return !host.querySelector('.career-detail,.experience-detail,.editorial-detail,.infographic-detail,.course-detail,.job-detail-page,.share-experience,.discussion-detail,.thread-detail,.exam-handbook');
+}
+
+function renderMarketingBanner(view) {
+  const config = marketingPageLibrary[view];
+  if (!config) return '';
+  const stage = view === 'journey-stage' ? yearMilestoneConfig[state.activeJourneyStage] : null;
+  const kicker = stage ? `${escapeHtml(stage.step)} · ${escapeHtml(stage.title).toUpperCase()}` : escapeHtml(config.kicker);
+  return `<section class="marketing-banner" style="--marketing-image:url('${config.image}')" aria-label="${escapeHtml(config.title.join(' '))}"><div class="marketing-banner-glow" aria-hidden="true"></div><div class="marketing-banner-copy"><p class="eyebrow">${kicker}</p><h2>${escapeHtml(config.title[0])}<br><em>${escapeHtml(config.title[1])}</em></h2><p>${escapeHtml(config.copy)}</p><div class="marketing-banner-meta"><span><i aria-hidden="true"></i>${escapeHtml(config.proof)}</span><span>ZYSHAM · GUIDANCE WITH ITS ASSUMPTIONS SHOWING</span></div></div><aside><span>${escapeHtml(config.marker)}</span><p><strong>Pause here.</strong> Read the page as an invitation to investigate—not an instruction about who you must become.</p></aside><div class="marketing-banner-motion" aria-hidden="true"><i></i><b></b><i></i></div></section>`;
+}
+
+function placeMarketingBanner(host, view) {
+  if (!marketingBannerAllowed(host, view)) return;
+  const root = host.querySelector(':scope > .view-enter') || host;
+  root.insertAdjacentHTML('afterbegin', renderMarketingBanner(view));
+}
+
 const pageVisualLibrary = {
   overview: ['assets/visuals/career-discovery-panorama.png', 'Indian college students testing career interests through projects, teaching and collaborative research', 'A calling becomes clearer through action', 'panorama'],
   compass: ['assets/backgrounds/design-studio.jpg', 'Students collaborating around a design project', 'Preferences become useful when tested against real work', 'bars'],
@@ -2882,7 +3159,7 @@ function renderJobsAtlas() {
 }
 
 function renderJobsFramework() {
-  return `<div class="jobs-framework"><header class="jobs-page-head"><div><p class="eyebrow">TRANSPARENT METHOD · NOT DIVINATION</p><h2>Six questions create the base score.</h2><p>The base is a weighted ethical profile of ordinary work. Context can move it by up to three points—because a title alone cannot see your actions or the employer’s business model.</p></div><span class="framework-formula">BASE<br>± CONTEXT<br>= 0–10</span></header>
+  return `<div class="jobs-framework"><section class="ethics-manifesto"><span>MORAL &amp; ETHICS</span><h2>There are a thousand ways to earn money, but very few ways to earn it ethically and morally.</h2><p>Start by examining not only what work pays, but who it serves, what it asks you to tolerate, and which consequences it leaves behind.</p></section><header class="jobs-page-head"><div><p class="eyebrow">TRANSPARENT METHOD · NOT DIVINATION</p><h2>Six questions create the base score.</h2><p>The base is a weighted ethical profile of ordinary work. Context can move it by up to three points—because a title alone cannot see your actions or the employer’s business model.</p></div><span class="framework-formula">BASE<br>± CONTEXT<br>= 0–10</span></header>
     <section class="framework-grid">${karmicFramework.principles.map((item, index) => `<article><span>0${index + 1}</span><div><h3>${escapeHtml(item.label)}</h3><p>${escapeHtml(item.question)}</p></div><strong>${item.weight}%</strong></article>`).join('')}</section>
     <section class="context-modifiers panel"><div><p class="eyebrow">CONTEXT MODIFIERS</p><h3>The company matters. Your choices matter more.</h3></div>${karmicFramework.modifiers.map((item) => `<article><div><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.range)}</span></div><p>${escapeHtml(item.copy)}</p></article>`).join('')}</section>
     <section class="karma-scenarios"><article><span class="scenario-score bad">1.2</span><h3>Property deception</h3><p>Hidden defects, illegal cash, manufactured urgency, and distress exploitation. High income does not cleanse a harmful method.</p></article><article><span class="scenario-score neutral">5.0</span><h3>Neutral technical work</h3><p>A competent IT role with no clear public benefit or major harm. Product choices, privacy, accessibility, and employer incentives move it.</p></article><article><span class="scenario-score good">9.2</span><h3>Emergency care</h3><p>Skilled action saves life. Fair treatment and honest consent lift the work; unnecessary procedures or profit-first billing pull it down.</p></article></section>
@@ -2925,6 +3202,47 @@ function renderJobsHub() {
   return `<div class="view-enter karmic-jobs-page">${body}</div>`;
 }
 
+function renderAdminSettingsPage() {
+  const account = currentAccount();
+  if (!isAdmin()) return `<div class="view-enter admin-page"><header class="admin-page-head"><div><p class="eyebrow">PLATFORM GOVERNANCE</p><strong>Protected platform controls</strong><p>Configuration is separated from personal profile preferences.</p></div><span class="admin-status restricted">Restricted</span></header><section class="admin-page-denied"><span aria-hidden="true">A</span><div><p class="eyebrow">TEAM ADMIN REQUIRED</p><h3>Sign in to manage the career platform.</h3><p>Career guidance rules, AI safeguards, community moderation, privacy, communications, releases, and operational controls remain protected.</p><button class="button-primary" data-action="admin-signin">Return to Admin sign in</button></div></section></div>`;
+  const cfg = state.adminConfig;
+  const checked = (value) => value ? 'checked' : '';
+  const toggle = (name, label, copy) => `<label class="admin-toggle"><input type="checkbox" name="${name}" ${checked(cfg[name])}><span><strong>${label}</strong><small>${copy}</small></span></label>`;
+  const auditLabel = cfg.lastAuditAt ? new Date(cfg.lastAuditAt).toLocaleString('en-IN') : 'Not run on this device';
+  const sections = [
+    ['general', 'General & access'], ['guidance', 'Guidance engine'], ['content', 'Research & content'], ['ai', 'AI governance'],
+    ['community', 'Community safety'], ['privacy', 'Privacy & data'], ['communications', 'Communications'], ['operations', 'Operations'],
+  ];
+  return `<div class="view-enter admin-page">
+    <header class="admin-page-head"><div><p class="eyebrow">PLATFORM GOVERNANCE · ${escapeHtml(account.teamRole || 'ADMINISTRATOR')}</p><strong>Platform control centre</strong><p>Guidance, evidence, safety, privacy, and operations in one workspace.</p></div><div class="admin-head-actions"><span class="admin-status active">Admin access active</span><button class="button-secondary" data-action="admin-export">Export configuration</button></div></header>
+    <section class="admin-health-strip" aria-label="Platform summary"><article><strong>${researchCatalog.length}</strong><span>research records</span></article><article><strong>${experienceStories.length}</strong><span>experience stories</span></article><article><strong>${discussionTopics.length}</strong><span>discussion topics</span></article><article><strong>${state.accounts.length}</strong><span>local accounts</span></article><article><strong>${escapeHtml(cfg.releaseChannel)}</strong><span>release channel</span></article></section>
+    <div class="admin-page-layout"><nav class="admin-section-nav" aria-label="Admin setting categories">${sections.map(([id,label], index) => `<a href="#admin-${id}"><span>${String(index + 1).padStart(2,'0')}</span>${label}</a>`).join('')}</nav>
+    <form id="adminConfigurationForm" class="admin-configuration-form">
+      <section class="admin-config-section" id="admin-general"><header><span>01</span><div><h3>General & access</h3><p>Product identity, rollout defaults, and entry behavior.</p></div></header><div class="admin-field-grid">
+        <label>Platform name<input name="platformName" maxlength="40" value="${escapeHtml(cfg.platformName)}"></label><label>Support email<input name="supportEmail" type="email" value="${escapeHtml(cfg.supportEmail)}"></label>
+        <label>Default language<select name="defaultLanguage">${['English','Tamil','Hindi','Malayalam','Telugu'].map((v)=>`<option ${cfg.defaultLanguage===v?'selected':''}>${v}</option>`).join('')}</select></label><label>Platform timezone<select name="timezone"><option ${cfg.timezone==='Asia/Kolkata'?'selected':''}>Asia/Kolkata</option><option ${cfg.timezone==='UTC'?'selected':''}>UTC</option></select></label>
+        <label>Academic year<input name="academicYear" maxlength="16" value="${escapeHtml(cfg.academicYear)}"></label><label>Initial rollout region<select name="rolloutRegion">${['Tamil Nadu','India','International'].map((v)=>`<option ${cfg.rolloutRegion===v?'selected':''}>${v}</option>`).join('')}</select></label>
+        <label>Default start page<select name="defaultView">${[['calling','Find Your Calling'],['overview','Journey overview'],['explore','Career directions'],['blog','Team Blog']].map(([v,l])=>`<option value="${v}" ${state.platform.defaultView===v?'selected':''}>${l}</option>`).join('')}</select></label><label>Default theme<select name="defaultTheme">${[['violet','Violet-purple'],['brown-violet','Dark brown-violet'],['aurora','Aurora Light'],['teal','Green-teal']].map(([v,l])=>`<option value="${v}" ${state.platform.defaultTheme===v?'selected':''}>${l}</option>`).join('')}</select></label>
+      </div><div class="admin-toggle-grid">${toggle('allowGuestAssessments','Guest assessments','Visitors can answer assessments; a profile is required only when saving.')}<label class="admin-toggle"><input type="checkbox" name="allowGuestAccess" ${checked(state.platform.allowGuestAccess)}><span><strong>Guest exploration</strong><small>Allow full read-only exploration without creating an account.</small></span></label><label class="admin-toggle"><input type="checkbox" name="showEditorialLinks" ${checked(state.platform.showEditorialLinks)}><span><strong>Editorial links</strong><small>Show Team Blog and Newsletter in the top navigation.</small></span></label>${toggle('maintenanceMode','Maintenance mode','Keep administrative access while pausing public entry.')}</div></section>
+
+      <section class="admin-config-section" id="admin-guidance"><header><span>02</span><div><h3>Guidance engine</h3><p>Control assessment pacing and recommendation discipline.</p></div></header><div class="admin-field-grid"><label>Recommendations per stage<input name="recommendationsPerStage" type="number" min="3" max="12" value="${cfg.recommendationsPerStage}"></label><label>Assessment retake interval<input name="assessmentRetakeDays" type="number" min="0" max="365" value="${cfg.assessmentRetakeDays}"><small>Days before suggesting a reflective retake.</small></label></div><div class="admin-toggle-grid">${toggle('evidenceBeforeRecommendation','Evidence before recommendations','Require NO-NOs, lived evidence, or constraints before presenting a shortlist.')}${toggle('showUncertainty','Explain uncertainty','Show missing evidence, conflicts, and why a recommendation may change.')}${toggle('humanDecisionNotice','Student remains the decision-maker','Keep agency language visible in guidance and AI outputs.')}</div><aside class="admin-policy-note"><strong>Fixed assessment standard</strong><span>All quantitative reflective scales remain 0–10, use red-to-green progression, and never become diagnostic labels.</span></aside></section>
+
+      <section class="admin-config-section" id="admin-content"><header><span>03</span><div><h3>Research & content</h3><p>Freshness, provenance, regional fallback, and starter identities.</p></div></header><div class="admin-field-grid"><label>Source freshness window<input name="sourceFreshnessDays" type="number" min="30" max="730" value="${cfg.sourceFreshnessDays}"><small>Days before a changing claim is marked for review.</small></label><label>National fallback<select name="regionalFallback">${['India','No fallback','International comparator'].map((v)=>`<option ${cfg.regionalFallback===v?'selected':''}>${v}</option>`).join('')}</select></label><label>Community name pool<select name="generatedNameScope">${['Tamil Nadu','India','International'].map((v)=>`<option ${state.generatedNames.scope===v?'selected':''}>${v}</option>`).join('')}</select></label><label>Default regional scope<select name="defaultRegion"><option value="All" ${state.platform.defaultRegion==='All'?'selected':''}>All regions</option><option value="India::Tamil Nadu" ${state.platform.defaultRegion==='India::Tamil Nadu'?'selected':''}>India · Tamil Nadu</option></select></label></div><div class="admin-toggle-grid">${toggle('requireOfficialSources','Official sources for consequential facts','Eligibility, admissions, rankings, fees, and deadlines need a primary source.')}${toggle('showSourceDates','Display source dates','Expose checked dates and jurisdiction alongside factual guidance.')}${toggle('staleContentWarning','Warn on stale evidence','Flag content that exceeds its freshness window instead of silently ranking it.')}</div></section>
+
+      <section class="admin-config-section" id="admin-ai"><header><span>04</span><div><h3>AI governance</h3><p>Model policy, grounding, disclosure, and human accountability.</p></div></header><div class="admin-field-grid"><label>Serving mode<select name="aiMode">${[['local-first','Local-first'],['local-only','Local only'],['managed','Managed service']].map(([v,l])=>`<option value="${v}" ${cfg.aiMode===v?'selected':''}>${l}</option>`).join('')}</select></label><label>Approved model label<input name="aiModel" maxlength="60" value="${escapeHtml(cfg.aiModel)}"></label><label>Maximum recommendations<input name="maxAiRecommendations" type="number" min="1" max="7" value="${cfg.maxAiRecommendations}"></label><label>Knowledge boundary<select disabled><option>Zysham content + student-shared context</option></select></label></div><div class="admin-toggle-grid">${toggle('citationsRequired','Ground changing claims','Require current sources for admissions, course, salary, and employment claims.')}${toggle('cloudFallback','Cloud fallback','Allow an approved remote model when the local SLM is unavailable.')}${toggle('logPrompts','Retain counselling prompts','Off by default; enable only with an approved retention and consent policy.')}${toggle('humanDecisionNotice','Human accountability notice','Reinforce that AI informs while the student and family decide.')}</div></section>
+
+      <section class="admin-config-section" id="admin-community"><header><span>05</span><div><h3>Community safety</h3><p>Safeguarding, moderation, media, and aggregate insight controls.</p></div></header><div class="admin-field-grid"><label>Minimum participation age<input name="minimumCommunityAge" type="number" min="13" max="18" value="${cfg.minimumCommunityAge}"></label><label>Maximum image upload<input name="maxUploadMb" type="number" min="1" max="20" value="${cfg.maxUploadMb}"><small>Megabytes per image.</small></label><label>Discussion slow mode<input name="slowModeSeconds" type="number" min="0" max="3600" value="${cfg.slowModeSeconds}"><small>Seconds between new posts.</small></label><label>Minimum metrics cohort<input name="minMetricsCohort" type="number" min="5" max="100" value="${cfg.minMetricsCohort}"><small>Never expose small identifiable cohorts.</small></label></div><div class="admin-toggle-grid">${toggle('pseudonymsRequired','Pseudonyms by default','Do not expose minors’ full names, exact schools, or direct contact details.')}${toggle('imageSharing','Image sharing','Allow moderated image attachments with metadata removal.')}${toggle('premoderateFirstPosts','Review first contribution','Queue a new member’s first topic or experience before publication.')}${toggle('enableReporting','Reporting and correction flow','Keep report, correction, lock, and takedown states available.')}</div></section>
+
+      <section class="admin-config-section" id="admin-privacy"><header><span>06</span><div><h3>Privacy & data</h3><p>Retention, consent, portability, deletion, and measurement.</p></div></header><div class="admin-field-grid"><label>Default retention period<input name="privacyRetentionDays" type="number" min="30" max="3650" value="${cfg.privacyRetentionDays}"><small>Days before a private-data review is required.</small></label><label>Consent policy version<input name="consentVersion" maxlength="20" value="${escapeHtml(cfg.consentVersion)}"></label><label>Analytics mode<select name="analyticsMode">${[['privacy-preserving','Privacy-preserving aggregates'],['essential-only','Essential operations only'],['disabled','Disabled']].map(([v,l])=>`<option value="${v}" ${cfg.analyticsMode===v?'selected':''}>${l}</option>`).join('')}</select></label><label>Data residency<select disabled><option>Local browser prototype</option></select></label></div><div class="admin-toggle-grid">${toggle('exportEnabled','Account data export','Allow students and parents to download their records.')}${toggle('deletionEnabled','Self-service deletion','Provide account and journey deletion with clear consequences.')}${toggle('backupsEnabled','Configuration backup','Include platform policy in recoverable administrative backups.')}</div></section>
+
+      <section class="admin-config-section" id="admin-communications"><header><span>07</span><div><h3>Communications</h3><p>Email consent, editorial workflow, and family digests.</p></div></header><div class="admin-field-grid"><label>Weekly digest day<select name="digestDay">${['Sunday','Monday','Wednesday','Friday'].map((v)=>`<option ${cfg.digestDay===v?'selected':''}>${v}</option>`).join('')}</select></label><label>Delivery adapter<select disabled><option>Local preview outbox</option></select></label></div><div class="admin-toggle-grid">${toggle('transactionalEmail','Transactional email','Enable verification, security, and service-status messages.')}${toggle('editorialApproval','Editorial approval required','Require review before Team Blog and Newsletter publication.')}${toggle('newsletterDoubleOptIn','Newsletter double opt-in','Confirm subscription before adding an address to editorial delivery.')}</div><aside class="admin-policy-note"><strong>Current delivery status</strong><span>${state.communications.outbox.length} local-preview messages · ${state.communications.campaigns.length} campaigns recorded.</span></aside></section>
+
+      <section class="admin-config-section" id="admin-operations"><header><span>08</span><div><h3>Operations & releases</h3><p>Release channel, policy audits, diagnostics, and recovery.</p></div></header><div class="admin-field-grid"><label>Release channel<select name="releaseChannel">${['stable','preview','internal'].map((v)=>`<option ${cfg.releaseChannel===v?'selected':''}>${titleCase(v)}</option>`).join('')}</select></label><label>Governance audit frequency<select name="auditFrequency">${['weekly','monthly','quarterly'].map((v)=>`<option ${cfg.auditFrequency===v?'selected':''}>${titleCase(v)}</option>`).join('')}</select></label></div><div class="admin-operation-grid"><article><strong>Policy audit</strong><p>Check source freshness, safety defaults, AI accountability, and community thresholds.</p><small>Last run: ${escapeHtml(auditLabel)}</small><button type="button" class="button-secondary" data-action="admin-run-audit">Run audit</button></article><article><strong>Android release</strong><p>Stable package distributed through the official GitHub release channel.</p><a class="button-secondary" href="https://github.com/shishyan/Zysham2026/releases/download/android-latest/zysham-latest.apk" download>Download latest APK</a></article><article><strong>Local workspace</strong><p>Reset this browser’s accounts, choices, content drafts, and configuration.</p><button type="button" class="button-secondary danger" data-action="admin-reset-workspace">Reset workspace</button></article></div></section>
+
+      <footer class="admin-save-bar"><div><strong>Platform configuration</strong><span>Changes remain local to this prototype until a production backend is connected.</span></div><button type="button" class="button-secondary" data-action="admin-reset-config">Restore defaults</button><button class="button-primary" type="submit">Save configuration</button></footer>
+    </form></div></div>`;
+}
+
 function render() {
   updateShell();
   renderJourneyRail();
@@ -2941,6 +3259,7 @@ function render() {
       experiences: state.shareExperienceOpen ? renderShareExperience : renderExperiences,
       discussions: renderDiscussions,
       'ai-journey': renderAIJourney,
+      'admin-settings': renderAdminSettingsPage,
       compare: renderCompare,
       roadmap: renderRoadmap,
       family: renderFamily,
@@ -2958,6 +3277,7 @@ function render() {
       jobs: renderJobsHub,
       'vedic-prediction': renderVedicPrediction,
       assessments: renderAssessments,
+      'burning-desire': renderBurningDesire,
     })[state.view]();
   }
   if (state.view === 'overview' || state.view === 'journey-stage') host.insertAdjacentHTML('afterbegin', renderJourneyWorkspaceTabs());
@@ -2969,6 +3289,7 @@ function render() {
       stagePage.prepend(phaseStepper);
     }
   }
+  placeMarketingBanner(host, state.view);
   promoteViewHeading(host);
   updateMentor();
 }
@@ -3073,8 +3394,32 @@ $('#viewHost').addEventListener('click', (event) => {
   const control = event.target.closest('[data-action]');
   if (!control) return;
   const { action, target, group, value, id } = control.dataset;
-  const profileOnlyActions = new Set(['stream', 'milestone', 'task-toggle', 'evidence-remove', 'add-experiment', 'share-open', 'discussion-new', 'journey-page-milestone', 'study-status', 'study-mastery-bump', 'study-assignment', 'study-block-done', 'assessment-complete', 'assessment-reset']);
+  if (action === 'admin-signin') { signOutToEntry(); return; }
+  if (action === 'admin-run-audit') {
+    if (!isAdmin()) return showToast('Team Admin access is required.');
+    state.adminConfig.lastAuditAt = new Date().toISOString(); saveState(); render(); showToast('Governance audit completed. No blocking local checks found.'); return;
+  }
+  if (action === 'admin-export') {
+    if (!isAdmin()) return showToast('Team Admin access is required.');
+    const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), platform: state.platform, adminConfig: state.adminConfig }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `zysham-admin-config-${new Date().toISOString().slice(0,10)}.json`; link.click(); URL.revokeObjectURL(url); showToast('Configuration export prepared.'); return;
+  }
+  if (action === 'admin-reset-config') {
+    if (!isAdmin() || !confirm('Restore all platform configuration defaults?')) return;
+    state.platform = structuredClone(defaultState.platform); state.adminConfig = structuredClone(defaultState.adminConfig); state.generatedNames = structuredClone(defaultState.generatedNames); saveState(); render(); showToast('Platform configuration defaults restored.'); return;
+  }
+  if (action === 'admin-reset-workspace') {
+    if (!isAdmin() || !confirm('Reset all locally saved Zysham accounts, journeys, drafts, and configuration?')) return;
+    state = structuredClone(defaultState); saveState(); signOutToEntry(); showToast('Local workspace reset.'); return;
+  }
+  const profileOnlyActions = new Set(['stream', 'milestone', 'task-toggle', 'tracker-remove', 'evidence-remove', 'add-experiment', 'share-open', 'discussion-new', 'journey-page-milestone', 'study-status', 'study-mastery-bump', 'study-assignment', 'study-block-done', 'assessment-complete', 'assessment-reset']);
   if (profileOnlyActions.has(action) && !requireProfile(action === 'discussion-new' ? 'Create a profile to post in Discussions.' : action === 'share-open' ? 'Create a profile to share an experience.' : undefined)) return;
+  if (action === 'accomplishment-tab') { state.accomplishments.section = value; saveState(); render(); }
+  if (action === 'tracker-remove') {
+    if (group === 'tasks') state.tasks = state.tasks.filter((item) => item.id !== id);
+    else if (['rewards','courses','exams','scores'].includes(group)) state.accomplishments[group] = state.accomplishments[group].filter((item) => item.id !== id);
+    saveState(); render(); showToast('Tracker record removed.');
+  }
   if (action === 'go') setView(target);
   if (action === 'vedic-reset') { state.vedicPrediction = structuredClone(defaultState.vedicPrediction); saveState(); render(); showToast('Vedic Prediction inputs cleared.'); }
   if (action === 'assessment-open') { state.assessments.active = id; if (state.view === 'assessments' || state.view === 'calling') state.assessments.hub = `career:${id}`; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -3198,12 +3543,18 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'dream-employer') { state.dreamJob.selectedId = id; state.dreamJob.selectedVocationId = ''; saveState(); refreshDreamJob(`[data-action="dream-employer"][data-id="${CSS.escape(id)}"]`); }
   if (action === 'dream-vocation') { state.dreamJob.selectedVocationId = id; saveState(); refreshDreamJob(`[data-action="dream-vocation"][data-id="${CSS.escape(id)}"]`); }
   if (action === 'dream-vocation-detail') { state.dreamJob.selectedVocationId = id; saveState(); renderDreamPathDrawer(); }
-  if (action === 'dream-role') { state.dreamJob.targetRole = value; state.dreamJob.selectedVocationId = ''; state.dreamJob.tab = 'evidence'; saveState(); refreshDreamJob('[data-action="dream-tab"][data-value="evidence"]'); }
-  if (action === 'dream-stage') { state.dreamJob.previewStage = value; saveState(); refreshDreamJob(`[data-action="dream-stage"][data-value="${CSS.escape(value)}"]`); }
+  if (action === 'dream-role') { state.dreamJob.targetRole = value; state.dreamJob.selectedVocationId = ''; state.roadmapSection = 'gaps'; saveState(); setView('roadmap'); }
+  if (action === 'dream-stage') { state.dreamJob.previewStage = value; saveState(); if (state.view === 'roadmap') render(); else refreshDreamJob(`[data-action="dream-stage"][data-value="${CSS.escape(value)}"]`); }
   if (action === 'dream-save') { state.dreamJob.saved = state.dreamJob.saved.includes(id) ? state.dreamJob.saved.filter((item) => item !== id) : [...state.dreamJob.saved, id]; saveState(); refreshDreamJob(`[data-action="dream-save"][data-id="${CSS.escape(id)}"]`); }
   if (action === 'dream-go-evidence') setView('evidence');
-  if (action === 'dream-review-calling') { state.assessments.hub = 'reflections'; saveState(); setView('assessments'); }
-  if (action === 'calling-mode') { state.calling.mode = value; state.assessments.hub = value === 'recommendations' ? 'recommendations' : value === 'questions' ? 'reflections' : 'student'; saveState(); if (state.view !== 'assessments') setView('assessments'); else render(); }
+  if (action === 'dream-review-calling') { saveState(); setView('burning-desire'); }
+  if (action === 'overview-section') { state.overviewSection = ['journey', 'ai'].includes(value) ? value : 'journey'; saveState(); render(); }
+  if (action === 'roadmap-section') { state.roadmapSection = value; saveState(); render(); }
+  if (action === 'calling-mode') {
+    state.calling.mode = value;
+    if (value === 'questions') { saveState(); setView('burning-desire'); }
+    else { state.assessments.hub = value === 'recommendations' ? 'recommendations' : 'student'; saveState(); if (state.view !== 'assessments') setView('assessments'); else render(); }
+  }
   if (action === 'assessment-type') { state.calling.activeAssessment = value; saveState(); render(); }
   if (action === 'assessment-next') { if (value === 'recommendations') { state.calling.mode = 'recommendations'; state.assessments.hub = 'recommendations'; } else state.calling.activeAssessment = value; saveState(); render(); }
   if (action === 'assessment-save') {
@@ -3222,15 +3573,15 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'calling-more') { state.calling.limit += 18; saveState(); render(); }
   if (action === 'calling-save') {
     if (!requireProfile('Create a profile only to save these reflections. You can keep answering as a guest.')) return;
-    captureWorkspace(); saveState(); showToast('Calling reflections saved to your profile.');
+    captureWorkspace(); saveState(); showToast('Burning Desire saved to your profile.');
   }
   if (action === 'blog-open') { state.editorial.selectedBlogId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'blog-close') { state.editorial.selectedBlogId = ''; saveState(); render(); }
   if (action === 'newsletter-view') { state.editorial.selectedNewsletterId = ''; saveState(); setView('newsletters'); }
   if (action === 'newsletter-open') { state.editorial.selectedNewsletterId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'newsletter-close') { state.editorial.selectedNewsletterId = ''; saveState(); render(); }
-  if (action === 'calling-clear' && confirm(`Clear all three calling reflections ${isGuest() ? 'from this session' : 'saved on this device'}?`)) {
-    state.calling = structuredClone(defaultState.calling); saveState(); render(); showToast('Calling reflections cleared.');
+  if (action === 'calling-clear' && confirm(`Clear all three Burning Desire reflections ${isGuest() ? 'from this session' : 'saved on this device'}?`)) {
+    state.calling = structuredClone(defaultState.calling); saveState(); render(); showToast('Burning Desire reflections cleared.');
   }
   if (action === 'student-detail') { state.detailStudent = id; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'student-detail-close') { state.detailStudent = ''; render(); }
@@ -3497,6 +3848,19 @@ async function backgroundFileToDataUrl(file) {
 
 $('#viewHost').addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (event.target.id === 'adminConfigurationForm') {
+    if (!isAdmin()) return showToast('Team Admin access is required.');
+    const data = new FormData(event.target);
+    const textKeys = ['platformName','supportEmail','defaultLanguage','timezone','academicYear','rolloutRegion','regionalFallback','aiMode','aiModel','analyticsMode','consentVersion','digestDay','releaseChannel','auditFrequency'];
+    const numberKeys = ['recommendationsPerStage','assessmentRetakeDays','sourceFreshnessDays','maxAiRecommendations','minimumCommunityAge','maxUploadMb','slowModeSeconds','minMetricsCohort','privacyRetentionDays'];
+    const booleanKeys = ['allowGuestAssessments','evidenceBeforeRecommendation','showUncertainty','requireOfficialSources','showSourceDates','staleContentWarning','cloudFallback','citationsRequired','humanDecisionNotice','logPrompts','pseudonymsRequired','imageSharing','premoderateFirstPosts','enableReporting','exportEnabled','deletionEnabled','backupsEnabled','transactionalEmail','editorialApproval','newsletterDoubleOptIn','maintenanceMode'];
+    textKeys.forEach((key) => { state.adminConfig[key] = String(data.get(key) || '').trim(); });
+    numberKeys.forEach((key) => { state.adminConfig[key] = Number(data.get(key)); });
+    booleanKeys.forEach((key) => { state.adminConfig[key] = data.has(key); });
+    state.platform = { defaultView: data.get('defaultView'), defaultTheme: data.get('defaultTheme'), defaultRegion: data.get('defaultRegion'), allowGuestAccess: data.has('allowGuestAccess'), showEditorialLinks: data.has('showEditorialLinks') };
+    state.generatedNames.scope = data.get('generatedNameScope');
+    saveState(); updateShell(); render(); showToast('Admin configuration saved.'); return;
+  }
   if (event.target.id === 'vedicPredictionForm') {
     if (!requireProfile('Create a profile to save a private Vedic Prediction.')) return;
     const data = new FormData(event.target);
@@ -3553,21 +3917,33 @@ $('#viewHost').addEventListener('submit', async (event) => {
     saveState(); render(); showToast(preferences.newsletterSubscribed ? 'Newsletter preference saved on this device.' : 'Newsletter subscription removed.');
     return;
   }
-  const profileOnlyForms = new Set(['taskForm', 'evidenceForm', 'shareExperienceForm', 'claimCheckForm', 'newDiscussionForm', 'discussionReplyForm']);
+  const profileOnlyForms = new Set(['taskForm', 'evidenceForm', 'rewardTrackerForm', 'courseTrackerForm', 'examTrackerForm', 'scoreTrackerForm', 'shareExperienceForm', 'claimCheckForm', 'newDiscussionForm', 'discussionReplyForm']);
   if (profileOnlyForms.has(event.target.id) && !requireProfile(event.target.id.includes('Discussion') || event.target.id === 'discussionReplyForm' ? 'Create a profile to contribute to Discussions.' : 'Create a profile to save personal work.')) return;
   if (event.target.id === 'taskForm') {
-    const input = $('#taskInput');
-    const text = input.value.trim();
+    const data = new FormData(event.target);
+    const text = String(data.get('text') || '').trim();
     if (!text) return;
-    state.tasks.push({ id: `task-${Date.now()}`, text, done: false });
-    saveState(); render();
+    state.tasks.push({ id: `task-${Date.now()}`, text, stage: data.get('stage'), priority: data.get('priority'), due: data.get('due'), done: false });
+    saveState(); render(); showToast('Task added to your tracker.'); return;
   }
   if (event.target.id === 'evidenceForm') {
     const title = $('#evidenceTitle').value.trim();
     const type = $('#evidenceType').value;
     if (!title) return;
     state.evidence.unshift({ id: `ev-${Date.now()}`, title, type, createdAt: new Date().toISOString() });
-    saveState(); render();
+    saveState(); render(); showToast('Accomplishment added.'); return;
+  }
+  if (event.target.id === 'rewardTrackerForm') {
+    const data = new FormData(event.target); state.accomplishments.rewards.unshift({ id:`reward-${Date.now()}`, title:String(data.get('title')).trim(), issuer:String(data.get('issuer')).trim(), level:data.get('level'), date:data.get('date') }); saveState(); render(); showToast('Reward recorded with context.'); return;
+  }
+  if (event.target.id === 'courseTrackerForm') {
+    const data = new FormData(event.target); state.accomplishments.courses.unshift({ id:`course-${Date.now()}`, title:String(data.get('title')).trim(), provider:String(data.get('provider')).trim(), category:data.get('category'), hours:data.get('hours'), date:data.get('date') }); saveState(); render(); showToast('Completed course recorded.'); return;
+  }
+  if (event.target.id === 'examTrackerForm') {
+    const data = new FormData(event.target); state.accomplishments.exams.unshift({ id:`exam-${Date.now()}`, title:String(data.get('title')).trim(), authority:String(data.get('authority')).trim(), score:String(data.get('score')).trim(), result:data.get('result'), date:data.get('date') }); saveState(); render(); showToast('Exam record added.'); return;
+  }
+  if (event.target.id === 'scoreTrackerForm') {
+    const data = new FormData(event.target); const score=Number(data.get('score')), max=Number(data.get('max')); if (score > max) return showToast('Score cannot be greater than the maximum.'); state.accomplishments.scores.unshift({ id:`score-${Date.now()}`, subject:String(data.get('subject')).trim(), assessment:String(data.get('assessment')).trim(), score, max, date:data.get('date') }); saveState(); render(); showToast('Score added to the trend tracker.'); return;
   }
   if (event.target.id === 'shareExperienceForm') {
     const data = new FormData(event.target);
@@ -3660,7 +4036,7 @@ $('#leftSidebarToggle').addEventListener('click', (event) => {
   setLeftSidebarExpanded(!state.sidebarExpanded);
 });
 $('#researchRail').addEventListener('click', (event) => {
-  if (event.target.closest('#rightSidebarToggle, .right-learning-nav')) return;
+  if (event.target.closest('#rightSidebarToggle, #mentorTrigger, .right-learning-nav')) return;
   if (!state.researchRailExpanded) {
     event.preventDefault();
     event.stopPropagation();
@@ -3866,7 +4242,15 @@ function renderAdminSettings() {
   $$('[data-admin-control]', $('#adminSettingsPanel')).forEach((section) => { section.hidden = !accessActive; });
   host.innerHTML = accessActive
     ? `<div class="admin-settings-identity"><span>${escapeHtml(account.displayName.slice(0, 2).toUpperCase())}</span><div><strong>${escapeHtml(account.displayName)}</strong><small>${escapeHtml(account.teamRole || 'Administrator')} · ${escapeHtml(account.email)}</small></div><em>Admin access active</em></div>`
-    : `<div class="admin-access-denied"><span aria-hidden="true">A</span><div><strong>Team Admin access required</strong><p>Admin Settings is always available here, but product, publishing, Android release, identity-pool, and maintenance controls remain locked until a Team Admin signs in.</p></div><button class="button-primary" type="button" data-admin-action="signin">Sign in as Team Admin</button></div>`;
+    : `<div class="admin-access-denied"><span aria-hidden="true">A</span><div><strong>Team Admin access required</strong><p>Admin Settings is always available here, but app configuration, Android release, identity-pool, and maintenance controls remain locked until an admin signs in.</p></div><button class="button-primary" type="button" data-admin-action="signin">Sign in as Admin</button></div><p class="admin-access-note">Choose Admin, Sasha, or Harshini from the Admin users section on the sign-in page.</p>`;
+  if (accessActive) {
+    const form = $('#platformSettingsForm');
+    form.elements.defaultView.value = state.platform.defaultView;
+    form.elements.defaultTheme.value = state.platform.defaultTheme;
+    form.elements.defaultRegion.value = state.platform.defaultRegion;
+    form.elements.allowGuestAccess.checked = state.platform.allowGuestAccess;
+    form.elements.showEditorialLinks.checked = state.platform.showEditorialLinks;
+  }
 }
 
 function openSettings(section = '') {
@@ -3884,16 +4268,34 @@ function openSettings(section = '') {
   });
 }
 
-$('#headerProfileButton').addEventListener('click', () => openSettings('account'));
+$('#headerProfileButton').addEventListener('click', () => openSettings());
 $('#adminSettingsButton').addEventListener('click', () => {
   closeNavigation(); closeResearchShelf(); closeSettings();
-  renderAdminSettings();
-  if (isAdmin()) renderGeneratedNames();
-  document.body.classList.add('admin-settings-open');
-  openRightDrawer('adminSettings');
+  closeAdminSettings();
+  setView('admin-settings');
 });
 $('#adminSettingsBody').addEventListener('click', (event) => {
   if (event.target.closest('[data-admin-action="signin"]')) signOutToEntry();
+});
+$('#platformSettingsForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (!isAdmin()) return showToast('Team Admin access is required.');
+  const data = new FormData(event.target);
+  state.platform = {
+    defaultView: data.get('defaultView'),
+    defaultTheme: data.get('defaultTheme'),
+    defaultRegion: data.get('defaultRegion'),
+    allowGuestAccess: data.has('allowGuestAccess'),
+    showEditorialLinks: data.has('showEditorialLinks'),
+  };
+  saveState(); updateShell();
+  showToast('App configuration saved on this device.');
+});
+$('#platformSettingsForm').addEventListener('click', (event) => {
+  if (!event.target.closest('[data-admin-action="reset-platform"]')) return;
+  state.platform = structuredClone(defaultState.platform);
+  saveState(); updateShell(); renderAdminSettings();
+  showToast('App configuration defaults restored.');
 });
 $('#accountSettingsBody').addEventListener('click', (event) => {
   const action = event.target.closest('[data-account-action]')?.dataset.accountAction;
@@ -3940,10 +4342,34 @@ $('#backgroundOptions').addEventListener('click', (event) => {
   if (!option) return;
   state.appearance.mode = 'override';
   state.background = option.dataset.background;
+  slideshowBackgroundId = state.background;
   saveState();
   updateShell();
   renderBackgroundOptions();
   showToast(`${allBackgrounds().find((item) => item.id === state.background)?.name} background selected.`);
+});
+
+$('#backgroundSetDefault').addEventListener('click', () => {
+  const background = effectiveAppearance().background;
+  state.appearance.defaultBackgroundId = background.id;
+  state.background = background.id;
+  saveState(); updateShell(); renderBackgroundOptions();
+  showToast(`${background.name} is now your default background.`);
+});
+
+$('#backgroundSlideshowEnabled').addEventListener('change', (event) => {
+  state.appearance.slideshow.enabled = event.target.checked;
+  slideshowBackgroundId = effectiveAppearance(false).background.id;
+  backgroundSlideshowSignature = '';
+  saveState(); updateShell(); renderBackgroundOptions();
+  showToast(event.target.checked ? 'Background slideshow started.' : 'Background slideshow stopped.');
+});
+
+$('#backgroundSlideshowInterval').addEventListener('change', (event) => {
+  state.appearance.slideshow.interval = Math.max(10, Number(event.target.value) || 20);
+  backgroundSlideshowSignature = '';
+  saveState(); updateShell(); renderBackgroundOptions();
+  showToast(`Backgrounds will change every ${state.appearance.slideshow.interval} seconds.`);
 });
 
 $('#backgroundOptions').addEventListener('click', (event) => {
@@ -3952,7 +4378,8 @@ $('#backgroundOptions').addEventListener('click', (event) => {
   const background = state.appearance.customBackgrounds.find((item) => item.id === remove.dataset.backgroundRemove);
   if (!background || !confirm(`Remove “${background.name}” from this device?`)) return;
   state.appearance.customBackgrounds = state.appearance.customBackgrounds.filter((item) => item.id !== background.id);
-  if (state.background === background.id) state.background = 'campus-walk';
+  if (state.background === background.id) state.background = 'academy-wide-courtyard';
+  if (state.appearance.defaultBackgroundId === background.id) state.appearance.defaultBackgroundId = 'academy-wide-courtyard';
   saveState(); updateShell(); renderBackgroundOptions();
   showToast(`${background.name} removed.`);
 });
@@ -3979,9 +4406,10 @@ $('#backgroundAddForm').addEventListener('submit', async (event) => {
   state.appearance.customBackgrounds.unshift(background);
   state.appearance.mode = 'override';
   state.background = background.id;
+  slideshowBackgroundId = background.id;
   try { saveState(); } catch {
     state.appearance.customBackgrounds = state.appearance.customBackgrounds.filter((item) => item.id !== background.id);
-    state.background = 'campus-walk';
+    state.background = 'academy-wide-courtyard';
     showToast('This image could not be stored. Try a smaller file or use an HTTPS image URL.');
     return;
   }
@@ -3992,9 +4420,13 @@ $('#backgroundAddForm').addEventListener('submit', async (event) => {
 $('#appearanceReset').addEventListener('click', () => {
   state.appearance.mode = 'default';
   state.theme = 'violet';
-  state.background = 'campus-walk';
+  state.background = 'academy-wide-courtyard';
+  state.appearance.defaultBackgroundId = 'academy-wide-courtyard';
+  state.appearance.slideshow = { enabled: false, interval: 20 };
+  slideshowBackgroundId = '';
+  backgroundSlideshowSignature = '';
   saveState(); updateShell(); renderBackgroundOptions();
-  showToast('Violet-purple and Campus walk restored. Personal backgrounds remain available.');
+  showToast('Violet-purple and Wide courtyard restored. Personal backgrounds remain available.');
 });
 
 let entryRole = 'student';
@@ -4018,6 +4450,7 @@ function setAuthMode(mode) {
   });
   $('#entryCreateFields').hidden = mode !== 'create';
   $('#entrySigninOptions').hidden = mode !== 'signin';
+  $('#seededLoginAccounts').hidden = mode !== 'signin';
   $('#entryTitle').textContent = mode === 'create' ? 'Create your profile.' : 'Welcome back.';
   $('#entryAuthCopy').textContent = mode === 'create' ? 'Separate profiles keep student ownership, parent support, and team publishing permissions clear.' : 'Sign in to the profile stored on this device. Your journey and communication choices will be restored.';
   $('#entrySubmit').innerHTML = mode === 'create' ? `Create <span id="entryRoleLabel">${entryRole}</span> profile →` : 'Sign in →';
@@ -4025,11 +4458,12 @@ function setAuthMode(mode) {
   $('#entryIdentifier').type = mode === 'create' ? 'email' : 'text';
   $('#entryIdentifier').placeholder = mode === 'create' ? 'you@example.com' : 'Email or profile name';
   $('#entryPassword').autocomplete = mode === 'create' ? 'new-password' : 'current-password';
+  $('#entryPassword').minLength = mode === 'create' ? 8 : 1;
   $('#entryPassword').placeholder = mode === 'create' ? 'At least 8 characters' : 'Enter your password';
   $('#profileName').required = mode === 'create' && entryRole === 'student';
   $('#parentName').required = mode === 'create' && entryRole === 'parent';
   $('#adminName').required = mode === 'create' && entryRole === 'admin';
-  $('#enterGuest').hidden = false;
+  $('#enterGuest').hidden = state.platform?.allowGuestAccess === false;
 }
 
 function setEntryRole(role) {
@@ -4055,6 +4489,14 @@ $('.entry-auth-tabs').addEventListener('click', (event) => {
 $('.entry-role-tabs').addEventListener('click', (event) => {
   const button = event.target.closest('[data-entry-role]');
   if (button) setEntryRole(button.dataset.entryRole);
+});
+
+$('#seededLoginAccounts').addEventListener('click', (event) => {
+  const account = event.target.closest('[data-seeded-login]');
+  if (!account) return;
+  $('#entryIdentifier').value = account.dataset.seededLogin;
+  $('#entryPassword').value = account.dataset.seededPassword;
+  $('#entryPassword').focus();
 });
 
 $('#enterSample').addEventListener('click', () => {
@@ -4092,31 +4534,18 @@ $('#enterSample').addEventListener('click', () => {
   showToast('Anya’s sample journey opened. Reset anytime to see the zipper again.');
 });
 
-$('#enterAdminSample').addEventListener('click', () => {
-  let account = state.accounts.find((item) => item.id === 'sample-admin');
-  if (!account) {
-    account = { id: 'sample-admin', email: 'editor.sample@zysham.local', role: 'admin', displayName: 'Kavya Iyer', teamRole: 'Editor', language: 'English', timezone: 'Asia/Kolkata', visibility: 'Private', emailVerified: false, sample: true, createdAt: new Date().toISOString(), lastLoginAt: new Date().toISOString() };
-    state.accounts.push(account);
-  }
-  restoreWorkspace(account.id);
-  account.lastLoginAt = new Date().toISOString();
-  state.session = { mode: 'profile', activeRole: 'admin', accountId: account.id };
-  state.onboarded = true;
-  captureWorkspace(account.id);
-  saveState(); setView('blog');
-  showToast('Team admin sample opened. Publishing stays local to this browser.');
-});
-
 let guestEntryPending = false;
 
 function enterGuestSession({ animateZipper = false } = {}) {
+  if (state.platform?.allowGuestAccess === false) return showToast('Guest exploration is disabled by the Team Admin.');
   if (guestEntryPending || state.session.mode !== 'signed_out') return;
   const gate = $('#entryGate');
   const pull = $('#entryZipPull');
   const finish = () => {
     state.onboarded = true;
     state.session = { mode: 'guest', activeRole: 'student', accountId: '' };
-    state.view = 'explore';
+    state.view = state.platform?.defaultView || 'calling';
+    state.regionScope = state.platform?.defaultRegion || 'All';
     saveState(); render();
     pull.classList.remove('dragging');
     pull.style.removeProperty('--zip-pull-top');
@@ -4139,7 +4568,7 @@ let zipDrag = null;
 let suppressZipClick = false;
 
 entryZipPull.addEventListener('pointerdown', (event) => {
-  if (guestEntryPending || state.session.mode !== 'signed_out') return;
+  if (guestEntryPending || state.session.mode !== 'signed_out' || state.platform?.allowGuestAccess === false) return;
   const gateRect = $('#entryGate').getBoundingClientRect();
   const horizontal = matchMedia('(max-width: 720px)').matches;
   zipDrag = {
@@ -4211,7 +4640,8 @@ $('#profileForm').addEventListener('submit', async (event) => {
   if (!name || !email || password.length < 8) return showToast('Add a name, valid email, and password of at least 8 characters.');
   if (state.accounts.some((account) => account.email === email)) return showToast('A profile with this email already exists on this device. Use Sign in.');
   const salt = newSalt();
-  const account = { id: `account-${Date.now()}`, email, role: entryRole, displayName: name, teamRole: entryRole === 'admin' ? $('#adminTeamRole').value : '', language: entryRole === 'parent' ? $('#parentLanguage').value : 'English', timezone: 'Asia/Kolkata', visibility: 'Private', emailVerified: false, salt, passwordHash: await passwordDigest(password, salt), createdAt: new Date().toISOString(), lastLoginAt: new Date().toISOString() };
+  const teamRole = entryRole === 'admin' ? $('#adminTeamRole').value : '';
+  const account = { id: `account-${Date.now()}`, email, role: entryRole, displayName: name, teamRole, language: entryRole === 'parent' ? $('#parentLanguage').value : 'English', timezone: 'Asia/Kolkata', visibility: 'Private', emailVerified: false, salt, passwordHash: await passwordDigest(password, salt), createdAt: new Date().toISOString(), lastLoginAt: new Date().toISOString(), profile: { role: entryRole, teamRole, accessLevel: entryRole === 'admin' ? 'administrator' : 'standard', status: 'active', permissions: rolePermissions[entryRole] } };
   state.accounts.push(account);
   restoreWorkspace(account.id);
   state.session = { mode: 'profile', activeRole: entryRole, accountId: account.id };
@@ -4233,7 +4663,11 @@ $('#profileForm').addEventListener('submit', async (event) => {
   captureWorkspace(account.id);
   saveState();
   updateMentor();
-  if (entryRole === 'admin') setView('blog'); else render();
+  if (entryRole === 'admin') setView('blog');
+  else {
+    state.regionScope = state.platform?.defaultRegion || 'All';
+    setView(state.platform?.defaultView || 'calling');
+  }
   showToast(`Welcome, ${name}. Your path starts here.`);
 });
 
@@ -4408,7 +4842,7 @@ function mentorStudentContext(stageId) {
     `NO-NOs: ${evidence.noNos.join(', ') || 'none recorded'}. Work-reality profile: ${work.label || 'not completed'}; ${work.answered || 0} answers.`,
     `Completed milestones: ${evidence.milestones.join('; ') || 'none'}. In progress: ${Object.entries(stageProgress).filter(([, status]) => status === 'doing').map(([name]) => name).join('; ') || 'none'}.`,
     `Stage reflection: ${state.journey.stageNotes[stageId]?.trim() || 'none'}. Performance context: ${state.journey.ranks[stageId] || 'not recorded'}.`,
-    `Calling reflections: ${calling.join(' | ') || 'none'}. Saved careers: ${savedCareers.join(', ') || 'none'}.`,
+    `Burning Desire reflections: ${calling.join(' | ') || 'none'}. Saved careers: ${savedCareers.join(', ') || 'none'}.`,
     `Student assessment: ${assessmentSummary || 'no trait evidence yet'}. Treat personality, desire and capability as separate evidence; never diagnose or predict success from these scores.`,
     `Dream-work north star: ${dreamJobNorthStar() || 'not recorded'}. Employer environment: ${dreamJobEmployers.find((item) => item.id === state.dreamJob.selectedId)?.name || 'none selected'}; role family: ${state.dreamJob.targetRole || 'not selected'}. Company prestige must never substitute for purpose or role fit.`,
     `Selected vocation: ${selectedVocation?.name || 'none selected'}; vocation stage: ${vocationStage}; completed vocation milestones: ${completedVocationMilestones.join('; ') || 'none'}. Remaining vocation milestones: ${vocationMilestones.filter((item) => !completedVocationMilestones.includes(item)).join('; ') || 'none'}.`,
@@ -4687,12 +5121,18 @@ document.addEventListener('keydown', (event) => {
 const initialView = location.hash.slice(1);
 const openInitialResearch = initialView === 'research';
 const openInitialStudyGuide = initialView === 'study-guide';
+const openInitialAIJourney = initialView === 'ai-journey';
 if (openInitialStudyGuide) {
   state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
   state.journeyStageTab = 'study';
   state.view = 'journey-stage';
   history.replaceState(null, '', '#journey-stage');
+} else if (openInitialAIJourney) {
+  state.overviewSection = 'ai';
+  state.view = 'overview';
+  history.replaceState(null, '', '#overview');
 } else if (viewMeta[initialView] && !openInitialResearch) state.view = initialView;
+setAuthMode('signin');
 updateMentor();
 render();
 if (openInitialResearch) requestAnimationFrame(() => openResearchShelf());

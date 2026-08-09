@@ -38,7 +38,7 @@ def generatedWebAssets = layout.buildDirectory.dir("generated/assets/www")
 tasks.register("syncWebAssets", Sync) {
     into generatedWebAssets
     from(rootProject.projectDir.parentFile) {
-        include "index.html", "app.js", "style.css", "theme.css", "prompts.html", "prompts.js", "prompts.css"
+        include "index.html", "app.js", "style.css", "theme.css", "prompts.html", "prompts.js", "prompts.css", "prompt-journal-data.js", "optimized-prompts.js"
         include "assets/**", "components/**", "data/**", "inputs/**"
         exclude "**/.DS_Store"
     }
