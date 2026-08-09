@@ -1,10 +1,18 @@
-const buildOptions = (question, foundations, lenses) => foundations.flatMap((foundation, foundationIndex) =>
-  lenses.map((lens, lensIndex) => ({
+const balancedOptionPairs = [
+  [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5],
+  [6, 6], [7, 7], [8, 8], [9, 0], [10, 1], [11, 2],
+  [0, 4], [2, 6], [3, 7], [4, 8], [7, 2], [11, 6],
+];
+
+const buildOptions = (question, foundations, lenses) => balancedOptionPairs.map(([foundationIndex, lensIndex]) => {
+  const foundation = foundations[foundationIndex];
+  const lens = lenses[lensIndex];
+  return {
     id: `${question}-${String(foundationIndex + 1).padStart(2, '0')}-${String(lensIndex + 1).padStart(2, '0')}`,
     category: foundation.category,
     text: `${foundation.text}${lens}`,
-  })),
-);
+  };
+});
 
 const freedomFoundations = [
   { category: 'Teach & guide', text: 'Teach, mentor and help young people find confidence' },
@@ -109,9 +117,9 @@ export const callingQuestions = [
 ];
 
 for (const question of callingQuestions) {
-  if (question.options.length !== 108 || new Set(question.options.map((option) => option.text)).size !== 108) {
-    throw new Error(`${question.id} must contain exactly 108 unique options.`);
+  if (question.options.length !== 18 || new Set(question.options.map((option) => option.text)).size !== 18) {
+    throw new Error(`${question.id} must contain exactly 18 unique options.`);
   }
 }
 
-export const callingMetadata = { questionCount: 3, optionsPerQuestion: 108, totalOptions: 324, context: 'India-first, duty-aware, family-aware' };
+export const callingMetadata = { questionCount: 3, optionsPerQuestion: 18, totalOptions: 54, context: 'India-first, duty-aware, family-aware' };

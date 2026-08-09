@@ -23,10 +23,13 @@ A student-led career guidance workspace for Indian students and their families.
 - A 70:30 profile entrance with an original nine-scene campus collage, separate student/parent identities, Miso/Ollie selection, and a read-only guest mode
 - Tamil Nadu-first Discussions with 532 distinct topics, 2,128 substantive responses, clickable list rows, region/lifecycle filters, helpful answers, local image attachments, saved topics, reporting, and contextual links from journey stops
 - A deterministic knowledge base of 1,000 fictional students: 900 covering every Indian state and union territory and 100 across 20 other countries
-- “Your Calling,” a private three-question reflection with exactly 108 India-contextual possibilities per question, searchable multi-select answers, and free writing
+- “Find Your Calling,” a private three-question reflection with 18 balanced India-contextual choices per question, multi-select answers, and free writing
+- Seven private career assessments under Find Your Calling: interests, work values, skills confidence, work style, environment fit, career motivation, and decision readiness, with saved progress, explainable scores, cross-assessment signals, a ten-field composite Career Fit Report, and practical micro-experiments
+- A six-page Master Jobs Hub with 33 India-contextual salary planning bands, a transparent 0–10 Karmic Genie lens, role-level context ranges, comparison, Vedic ethical foundations, and practical ways to improve harmful work patterns
 - A Study Guide adapted from Home-Manager Learning for Grade 11, Grade 12, JEE Main, and JEE Advanced: overview, curriculum, planner, progress evidence, and a seven-tab chapter workspace with original locally embedded fieldbooks
 - Certification Courses across seven categories, with recognised providers, learning-versus-credential cost clarity, saved routes, freshness dates, and official registration links
 - Traditional Courses across seven living-practice categories, including Bharatanatyam, Indian music, Sanskrit, yoga, theatre, craft, martial, and folk traditions
+- Entrance Exams with 45 decision-ready official-link routes across 22 career verticals, an exam-to-counselling planning workflow, and the complete indexed 116-page / 400+ exam handbook in an embedded reader
 - One adaptive right drawer shared by Research, journey-stage editing, Settings, and Miso/Ollie counselling, with a consistent header, scrolling model, close behavior, and responsive overlay
 - Hierarchical left navigation: the former chevron journey is represented by nine year-stage submenu links under My Journey, with contextual submenus generated for every major module
 
@@ -37,6 +40,12 @@ npx http-server . -p 4173
 ```
 
 Then open `http://localhost:4173`.
+
+## Android APK
+
+Settings includes a permanent **Download latest APK** link. The `Publish latest Android APK` GitHub Action packages the current static site into a native Android WebView app and replaces the `android-latest` release asset on every push to `main`.
+
+To build it locally, run `./gradlew assembleDebug` from the `android` directory. The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 See [the industry benchmark](docs/industry-benchmark.md) for the feature research and ethical implementation boundaries behind this redesign.
 
