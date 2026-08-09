@@ -717,8 +717,7 @@ initialiseRightDrawer();
 
 const sidebarMenuViews = {
   journey: ['overview', 'journey-stage', 'roadmap', 'evidence'],
-  discussions: ['discussions'], certifications: ['certifications'],
-  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job', 'jobs', 'explore', 'compare'], ethics: ['jobs'], calling: ['calling', 'assessments', 'compass', 'burning-desire', 'vedic-prediction'], blog: ['blog'], newsletters: ['newsletters'],
+  discussions: ['discussions'], learning: ['entrance-exams', 'certifications', 'traditional'], research: ['research'], dreamJob: ['dream-job', 'jobs', 'explore', 'compare'], ethics: ['jobs'], calling: ['calling', 'assessments', 'compass', 'burning-desire', 'vedic-prediction'], blog: ['blog'], newsletters: ['newsletters'],
 };
 const ethicsTabs = ['framework', 'improve', 'foundations'];
 function activeSidebarGroup() {
@@ -757,6 +756,16 @@ function sidebarMenuDefinitions() {
       { kind: 'jobs', value: 'framework', label: 'Work ethics' },
       { kind: 'jobs', value: 'improve', label: 'Improve the workplace' },
       { kind: 'jobs', value: 'foundations', label: 'Ethical foundations' },
+    ],
+    learning: [
+      { kind: 'view', value: 'entrance-exams', label: 'Entrance Exams' },
+      { kind: 'view', value: 'certifications', label: 'Certification Courses' },
+      { kind: 'view', value: 'traditional', label: 'Traditional Courses' },
+    ],
+    research: [
+      { kind: 'research-home', value: 'All evidence', label: `Evidence library · ${researchCatalog.length}` },
+      ...researchDomains.filter((domain) => domain !== 'All evidence').map((value) => ({ kind: 'research', value, label: `${value} · ${researchCatalog.filter((item) => item.researchDomain === value).length}` })),
+      { kind: 'research-saved', value: 'saved', label: `Saved · ${state.research.saved.length}` },
     ],
     calling: [
       { kind: 'view', value: 'compass', label: 'Know Thyself' },
@@ -815,7 +824,7 @@ function initialiseSidebarMenus() {
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'nav-subitem'; button.dataset.submenuKind = item.kind; button.dataset.value = item.value;
       button.style.setProperty('--item-accent', sidebarItemColors[index % sidebarItemColors.length]);
-      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.innerHTML = iconMarkup(item.kind === 'community' ? 'community' : item.kind === 'research' ? 'research' : item.kind === 'study' ? 'study' : item.kind === 'certification' ? 'certificate' : item.kind === 'traditional' ? 'traditional' : item.kind.startsWith('exam-') ? 'exam' : item.kind === 'dream-job' ? 'dream' : item.kind === 'jobs' ? 'karma' : item.kind === 'calling' ? 'calling' : item.value === 'overview' ? 'overview' : 'tool'); marker.setAttribute('aria-hidden', 'true');
+      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.innerHTML = iconMarkup(item.kind === 'community' ? 'community' : item.kind.startsWith('research') ? 'research' : item.kind === 'study' ? 'study' : item.kind === 'certification' || item.value === 'certifications' ? 'certificate' : item.kind === 'traditional' || item.value === 'traditional' ? 'traditional' : item.kind.startsWith('exam-') || item.value === 'entrance-exams' ? 'exam' : item.kind === 'dream-job' ? 'dream' : item.kind === 'jobs' ? 'karma' : item.kind === 'calling' ? 'calling' : item.value === 'overview' ? 'overview' : 'tool'); marker.setAttribute('aria-hidden', 'true');
       const copy = document.createElement('span'); const strong = document.createElement('strong'); strong.textContent = item.label; copy.append(strong);
       button.append(marker, copy); submenu.append(button);
     });
@@ -839,7 +848,9 @@ function updateSidebarMenus() {
     const active = kind === 'view' ? state.view === value
       : kind === 'journey-stage' ? state.view === 'journey-stage' && state.activeJourneyStage === value
       : kind === 'community' ? state.view === 'discussions' && state.communityMode === value
+      : kind === 'research-home' ? state.view === 'research' && !state.research.savedOnly && state.research.category === 'All evidence'
       : kind === 'research' ? state.view === 'research' && state.research.category === value
+      : kind === 'research-saved' ? state.view === 'research' && state.research.savedOnly
       : kind === 'study' ? state.view === 'study-guide' && state.studyGuide.track === value
       : kind === 'certification' ? state.view === 'certifications' && state.certifications.category === value
       : kind === 'traditional' ? state.view === 'traditional' && state.traditional.category === value
@@ -1038,7 +1049,6 @@ function rankedCareers() {
 
 function setView(view, { updateHash = true } = {}) {
   if (!viewMeta[view]) return;
-  if (view === 'research') { openResearchShelf(); return; }
   let redirectedView = false;
   if (view === 'study-guide') {
     state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
@@ -1072,12 +1082,8 @@ function regionOptionsMarkup() {
 }
 
 function renderResearchRail() {
-  const nav = $('#researchRailNav');
-  if (!nav) return;
-  const domainIcons = { 'Schools & subjects': 'study', 'Entrances & admissions': 'exam', 'Colleges & courses': 'overview', 'Cost & funding': 'karma', 'Careers & skills': 'calling', 'Campus placements': 'dream', Apprenticeships: 'tool', Employers: 'community', Locations: 'journey' };
-  nav.innerHTML = researchDomains.filter((domain) => domain !== 'All evidence').map((domain, index) => `<button data-research-rail="${escapeHtml(domain)}" class="${state.research.category === domain ? 'active' : ''}" style="--rail-accent:${sidebarItemColors[index % sidebarItemColors.length]}" aria-label="Open ${escapeHtml(domain)} research" title="${escapeHtml(domain)}"><span class="research-rail-icon" aria-hidden="true">${iconMarkup(domainIcons[domain] || 'research')}</span><strong>${escapeHtml(domain)}</strong><small>${researchCatalog.filter((item) => item.researchDomain === domain).length}</small></button>`).join('');
-  $('#researchRailTotal').textContent = `${researchCatalog.length} evidence records`;
-  $('#researchRailSaved').textContent = state.research.saved.length;
+  const savedLabel = $('[data-submenu-kind="research-saved"] strong');
+  if (savedLabel) savedLabel.textContent = `Saved · ${state.research.saved.length}`;
 }
 
 function updateShell() {
@@ -1352,6 +1358,10 @@ function openResearchShelf(id = '') {
 
 function renderResearch() {
   if (!researchDomains.includes(state.research.category)) state.research.category = 'All evidence';
+  const detail = researchCatalog.find((item) => item.id === state.research.detailId);
+  if (detail) {
+    return `<div class="research-view"><button class="button-quiet research-back" data-action="research-detail-close">← Back to research index</button><article class="research-detail"><span>${escapeHtml(detail.researchDomain)} · ${escapeHtml(detail.category)}</span><h2>${escapeHtml(detail.title)}</h2><p>${escapeHtml(detail.summary)}</p><div class="research-fact-grid">${detail.facts.map((fact) => `<section><small>${escapeHtml(fact.label)}</small><strong>${escapeHtml(String(fact.value))}</strong></section>`).join('')}</div><h3>Decision checks</h3><ol>${detail.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ol><h3>Official evidence</h3><div class="research-source-list">${detail.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.label)}</span><small>Checked ${escapeHtml(source.checkedAt)} · open ↗</small></a>`).join('')}</div><p class="research-caution"><strong>Limitation:</strong> ${escapeHtml(detail.caveat)}</p><div class="research-detail-actions"><button class="button-secondary" data-action="research-quick-save" data-id="${detail.id}">${state.research.saved.includes(detail.id) ? 'Saved ★' : 'Save evidence ☆'}</button><button class="button-secondary" data-action="research-compare" data-id="${detail.id}">${state.research.compare.includes(detail.id) ? 'Remove from compare' : 'Add to compare'}</button></div></article></div>`;
+  }
   const items = filteredResearchRecords();
   const compareItems = state.research.compare.map((id) => researchCatalog.find((item) => item.id === id)).filter(Boolean);
   const officialSources = new Set(researchCatalog.flatMap((item) => item.sources.map((source) => source.url))).size;
@@ -1919,15 +1929,28 @@ function vedicOption(value, label, selected) {
 function vedicPredictionResults() {
   const profile = state.vedicPrediction;
   const scores = Object.fromEntries(Object.keys(vedicCareerThemes).map((key) => [key, 0]));
-  const reasons = Object.fromEntries(Object.keys(vedicCareerThemes).map((key) => [key, []]));
-  const add = (keys, weight, reason) => (keys || []).forEach((key) => { scores[key] += weight; reasons[key].push(reason); });
-  if (profile.rashi) add(vedicRashiThemes[profile.rashi], 3, `${profile.rashi} Rashi`);
-  if (profile.nakshatra) add(vedicNakshatraThemes[profile.nakshatra], 4, `${profile.nakshatra} Nakshatra`);
-  if (profile.ascendant) add(vedicRashiThemes[profile.ascendant], 2, `${profile.ascendant} Lagna`);
-  if (profile.tenthHouse) add(vedicPlanetThemes[profile.tenthHouse], 3, `${profile.tenthHouse} as a stated 10th-house influence`);
-  if (profile.dominantPlanet) add(vedicPlanetThemes[profile.dominantPlanet], 2, `${profile.dominantPlanet} as a stated dominant planet`);
-  if (profile.interest) add(vedicInterestThemes[profile.interest], 4, `your practical interest in ${profile.interest.toLowerCase()}`);
-  return Object.entries(scores).map(([key, score]) => ({ key, score, ...vedicCareerThemes[key], reasons: [...new Set(reasons[key])] })).filter((item) => item.score).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title)).slice(0, 4);
+  const evidence = Object.fromEntries(Object.keys(vedicCareerThemes).map((key) => [key, []]));
+  const add = (keys, weight, signal) => (keys || []).forEach((key) => {
+    if (!(key in scores)) return;
+    scores[key] += weight;
+    evidence[key].push({ ...signal, why: `${signal.why} This overlaps with ${vedicCareerThemes[key].title.toLowerCase()}.` });
+  });
+  if (profile.rashi) {
+    const item = vedicRashiEvidence[profile.rashi];
+    add(vedicRashiThemes[profile.rashi], 3, { label: `${profile.rashi} Rashi`, why: `${profile.rashi} is described through ${item.ruler}, emphasising ${item.motif}. Representative fields include ${item.professions.join(', ')}.`, source: 'Career themes by Rashi', href: 'https://www.grahai.com/blog/best-career-by-rashi' });
+  }
+  if (profile.nakshatra) {
+    const item = vedicNakshatraEvidence[profile.nakshatra];
+    add(vedicNakshatraThemes[profile.nakshatra], 4, { label: `${profile.nakshatra} Nakshatra · ${item.lord}`, why: `${profile.nakshatra} is ruled by ${item.lord} and is associated here with ${item.motif}. The profession reference includes ${item.professions.join(', ')}.`, source: 'Nakshatras & professions', href: 'https://www.ambikaastro.com/nakshatras-related-profession/' });
+  }
+  if (profile.ascendant) {
+    const item = vedicRashiEvidence[profile.ascendant];
+    add(vedicRashiThemes[profile.ascendant], 2, { label: `${profile.ascendant} Lagna`, why: `The entered ascendant adds a secondary work-style layer associated with ${item.motif}; its representative fields include ${item.professions.join(', ')}.`, source: 'Multi-factor career analysis', href: 'https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/' });
+  }
+  if (profile.tenthHouse) add(vedicPlanetThemes[profile.tenthHouse], 3, { label: `${profile.tenthHouse} · stated 10th-house influence`, why: `The 10th house is treated by the cited framework as a primary profession indicator. ${profile.tenthHouse} is associated with ${vedicPlanetEvidence[profile.tenthHouse]}.`, source: 'Career houses and multi-factor analysis', href: 'https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/' });
+  if (profile.dominantPlanet) add(vedicPlanetThemes[profile.dominantPlanet], 2, { label: `${profile.dominantPlanet} · stated dominant planet`, why: `As a planet you identified as dominant, ${profile.dominantPlanet} contributes traditional associations with ${vedicPlanetEvidence[profile.dominantPlanet]}.`, source: 'Multi-factor career analysis', href: 'https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/' });
+  if (profile.interest) add(vedicInterestThemes[profile.interest], 4, { label: 'Your lived interest', why: `You selected ${profile.interest.toLowerCase()}. It receives equal weight to the Nakshatra because a present, observable interest is practical evidence you can test.`, source: 'Your input', href: '' });
+  return Object.entries(scores).map(([key, score]) => ({ key, score, ...vedicCareerThemes[key], evidence: evidence[key] })).filter((item) => item.score).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title)).slice(0, 4);
 }
 
 function renderVedicPrediction() {
@@ -1967,12 +1990,12 @@ function renderVedicPrediction() {
       </form>
       <aside class="vedic-results" aria-live="polite">
         ${results.length ? `<div class="vedic-result-head"><div><p class="eyebrow">YOUR REFLECTIVE SHORTLIST</p><h3>${escapeHtml(profile.name || 'Your')} career themes</h3><p>Built from ${inputCount} chart and lived-interest signals. Ordered by repeated overlap, not probability.</p></div><span>${new Date(profile.generatedAt).toLocaleDateString('en-IN')}</span></div>
-          <div class="vedic-result-list">${results.map((item,index) => `<article class="panel vedic-result-card"><div class="vedic-result-rank">0${index + 1}</div><div><h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.summary)}</p><div class="vedic-reason"><strong>Why it appeared</strong><span>${item.reasons.map(escapeHtml).join(' · ')}</span></div><div class="vedic-role-list">${item.roles.map((role) => `<span>${escapeHtml(role)}</span>`).join('')}</div><div class="vedic-experiment"><strong>Test before deciding</strong><p>${escapeHtml(item.experiment)}</p></div></div></article>`).join('')}</div>
+          <div class="vedic-result-list">${results.map((item,index) => `<article class="panel vedic-result-card"><div class="vedic-result-rank">0${index + 1}</div><div><h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.summary)}</p><div class="vedic-reason"><strong>Why this recommendation</strong><ul class="vedic-why-list">${item.evidence.map((reason) => `<li><div><b>${escapeHtml(reason.label)}</b>${reason.href ? `<a href="${reason.href}" target="_blank" rel="noopener">${escapeHtml(reason.source)} ↗</a>` : `<em>${escapeHtml(reason.source)}</em>`}</div><p>${escapeHtml(reason.why)}</p></li>`).join('')}</ul></div><div class="vedic-role-list">${item.roles.map((role) => `<span>${escapeHtml(role)}</span>`).join('')}</div><div class="vedic-experiment"><strong>Test before deciding</strong><p>${escapeHtml(item.experiment)}</p></div></div></article>`).join('')}</div>
           <div class="panel vedic-next"><p class="eyebrow">GROUND THE READING</p><h3>Compare the top themes with your Career Compass.</h3><p>Keep a theme only when your subjects, constraints, work preferences, and first-hand experiments support it.</p><button class="button-secondary" data-action="go" data-target="compass">Open Career Compass →</button></div>`
         : `<div class="panel vedic-empty"><span aria-hidden="true">✦</span><p class="eyebrow">RECOMMENDATIONS WAITING</p><h3>Start with three honest inputs.</h3><p>Add your Rashi, Nakshatra, and a lived interest. Lagna and 10th-house factors can add nuance when you already know them.</p><ol><li>Enter known chart factors.</li><li>Add what genuinely interests you now.</li><li>Generate themes, then test them in real life.</li></ol></div>`}
       </aside>
     </div>
-    <section class="panel vedic-method"><div><p class="eyebrow">METHOD & SOURCES</p><h3>What informs this lens</h3><p>The reference material associates professions with Nakshatras and Rashis, and describes career readings as multi-factor work involving the 10th, 6th, 2nd, 7th, and 11th houses, planetary influences, Lagna, and the D-10 chart. Zysham uses only the factors you explicitly enter and does not claim a complete chart reading.</p></div><div class="vedic-source-list"><a href="https://www.ambikaastro.com/nakshatras-related-profession/" target="_blank" rel="noopener">Nakshatras & professions <span>↗</span></a><a href="https://www.grahai.com/blog/best-career-by-rashi" target="_blank" rel="noopener">Career themes by Rashi <span>↗</span></a><a href="https://www.kptripathi.co.in/houses-career-astrology/" target="_blank" rel="noopener">Career and astrological houses <span>↗</span></a><a href="https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/" target="_blank" rel="noopener">Multi-factor career analysis <span>↗</span></a></div></section>
+    <section class="panel vedic-method" id="vedicSources"><div><p class="eyebrow">METHOD & SOURCES</p><h3>What informs this lens</h3><p>The supplied Nakshatra reference is now represented across all 27 birth stars through their planetary ruler, interpretive motif, and representative profession families. Rashi, Lagna, entered planetary influences, and your lived interest add separate layers. The linked methods also say a full reading would consider house lords and placements, the D-10 chart, dashas and other combinations; because this tool does not calculate those factors, it presents explainable hypotheses rather than a complete chart prediction.</p></div><div class="vedic-source-list"><a href="https://www.ambikaastro.com/nakshatras-related-profession/" target="_blank" rel="noopener">Nakshatras & professions <span>↗</span></a><a href="https://www.grahai.com/blog/best-career-by-rashi" target="_blank" rel="noopener">Career themes by Rashi <span>↗</span></a><a href="https://www.kptripathi.co.in/houses-career-astrology/" target="_blank" rel="noopener">Career and astrological houses <span>↗</span></a><a href="https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/" target="_blank" rel="noopener">Multi-factor career analysis <span>↗</span></a></div></section>
   </div>`;
 }
 
@@ -3388,7 +3411,9 @@ $('#sidebar').addEventListener('click', (event) => {
     if (kind === 'view') setView(value);
     if (kind === 'journey-stage') { state.activeJourneyStage = value; state.journeyStageTab = 'focus'; saveState(); setView('journey-stage'); }
     if (kind === 'community') { state.communityMode = value; state.detailDiscussion = ''; state.detailExperience = ''; state.newDiscussionOpen = false; state.shareExperienceOpen = false; saveState(); setView('discussions'); }
-    if (kind === 'research') { state.research.category = value; state.research.detailId = ''; saveState(); setView('research'); }
+    if (kind === 'research-home') { state.research.category = 'All evidence'; state.research.savedOnly = false; state.research.detailId = ''; state.research.search = ''; saveState(); setView('research'); }
+    if (kind === 'research') { state.research.category = value; state.research.savedOnly = false; state.research.detailId = ''; state.research.search = ''; saveState(); setView('research'); }
+    if (kind === 'research-saved') { state.research.category = 'All evidence'; state.research.savedOnly = true; state.research.detailId = ''; state.research.search = ''; saveState(); setView('research'); }
     if (kind === 'study') { state.studyGuide.track = value; state.studyGuide.subject = Object.keys(studyTracks[value].subjects)[0]; state.studyGuide.selectedChapterId = ''; state.studyGuide.search = ''; saveState(); setView('study-guide'); }
     if (kind === 'certification') { state.certifications.category = value; state.certifications.detailId = ''; state.certifications.search = ''; saveState(); setView('certifications'); }
     if (kind === 'traditional') { state.traditional.category = value; state.traditional.detailId = ''; state.traditional.search = ''; saveState(); setView('traditional'); }
@@ -3492,7 +3517,7 @@ $('#viewHost').addEventListener('click', (event) => {
     if (!assessment) return;
     assessment.items.forEach((item) => { delete state.assessments.answers[item.id]; }); delete state.assessments.completed[id]; saveState(); render(); showToast(`${assessment.title} reset.`);
   }
-  if (action === 'research-open') { state.research.savedOnly = false; openResearchShelf(); }
+  if (action === 'research-open') { state.research.savedOnly = false; state.research.detailId = ''; saveState(); setView('research'); }
   if (action === 'signal') toggleSignal(group, value);
   if (action === 'work-reality-reset') { state.workReality = structuredClone(defaultState.workReality); saveState(); render(); showToast('Work Reality Scan cleared.'); }
   if (action === 'journey-page-milestone') {
@@ -3566,7 +3591,8 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'thread-copy') { navigator.clipboard?.writeText(location.href).then(() => showToast('Discussion link copied.')).catch(() => showToast('Copy is unavailable in this browser.')); }
   if (action === 'thread-report') showToast('Report received for local review. Thank you for protecting the community.');
   if (action === 'research-section') { state.research.category = value; state.research.detailId = ''; saveState(); render(); }
-  if (action === 'research-detail') openResearchShelf(id);
+  if (action === 'research-detail') { state.research.detailId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'research-detail-close') { state.research.detailId = ''; saveState(); render(); }
   if (action === 'research-compare') {
     const alreadyCompared = state.research.compare.includes(id);
     if (!alreadyCompared && state.research.compare.length >= 3) { showToast('Compare up to three evidence records at a time.'); return; }
@@ -4085,18 +4111,13 @@ $('#leftSidebarToggle').addEventListener('click', (event) => {
   setLeftSidebarExpanded(!state.sidebarExpanded);
 });
 $('#researchRail').addEventListener('click', (event) => {
-  if (event.target.closest('#rightSidebarToggle, #mentorTrigger, .right-learning-nav')) return;
-  if (!state.researchRailExpanded) {
-    event.preventDefault();
-    event.stopPropagation();
-    setRightSidebarExpanded(true);
-  }
+  if (event.target.closest('#mentorTrigger')) return;
 }, true);
-$('#rightSidebarToggle').addEventListener('click', (event) => {
+$('#rightSidebarToggle')?.addEventListener('click', (event) => {
   event.stopPropagation();
   setRightSidebarExpanded(!state.researchRailExpanded);
 });
-$('.right-learning-nav').addEventListener('click', (event) => {
+$('.right-learning-nav')?.addEventListener('click', (event) => {
   const button = event.target.closest('[data-learning-view]');
   if (button) setView(button.dataset.learningView);
 });
@@ -4137,9 +4158,9 @@ dreamJobPanel.addEventListener('click', (event) => {
 $('#journeyInspectorClose').addEventListener('click', closeJourneyInspector);
 $('#journeyScrim').addEventListener('click', closeJourneyInspector);
 
-$('#researchButton').addEventListener('click', () => { state.research.savedOnly = false; state.research.detailId = ''; saveState(); openResearchShelf(); });
-$('#researchSavedButton').addEventListener('click', () => { state.research.category = 'All evidence'; state.research.savedOnly = true; state.research.detailId = ''; state.research.search = ''; saveState(); openResearchShelf(); });
-$('#researchRailNav').addEventListener('click', (event) => {
+$('#researchButton')?.addEventListener('click', () => { state.research.savedOnly = false; state.research.detailId = ''; saveState(); openResearchShelf(); });
+$('#researchSavedButton')?.addEventListener('click', () => { state.research.category = 'All evidence'; state.research.savedOnly = true; state.research.detailId = ''; state.research.search = ''; saveState(); openResearchShelf(); });
+$('#researchRailNav')?.addEventListener('click', (event) => {
   const button = event.target.closest('[data-research-rail]');
   if (!button) return;
   state.research.category = button.dataset.researchRail;
@@ -5184,4 +5205,4 @@ if (openInitialStudyGuide) {
 setAuthMode('signin');
 updateMentor();
 render();
-if (openInitialResearch) requestAnimationFrame(() => openResearchShelf());
+if (openInitialResearch) requestAnimationFrame(() => setView('research', { updateHash: false }));

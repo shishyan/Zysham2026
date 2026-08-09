@@ -2744,6 +2744,13 @@ body[data-theme="aurora"] .nav-subitem.active { background: transparent; box-sha
 .vedic-reason { display: grid; gap: 3px; margin-top: 10px; }
 .vedic-reason strong, .vedic-experiment strong { color: #8a5a17; font: 600 7px 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
 .vedic-reason span { color: var(--ink-soft); font-size: 9px; }
+.vedic-why-list { display: grid; gap: 8px; margin: 5px 0 0; padding: 0; list-style: none; }
+.vedic-why-list li { display: grid; gap: 4px; padding: 9px 10px; border: 1px solid color-mix(in srgb, #bd7d18 18%, var(--line)); border-radius: 9px; background: color-mix(in srgb, #f7c66d 8%, var(--surface-soft)); }
+.vedic-why-list li > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.vedic-why-list b { color: var(--ink); font-size: 9px; }
+.vedic-why-list :is(a,em) { color: #8a5a17; font: 600 7px 'DM Mono', monospace; font-style: normal; text-decoration: none; }
+.vedic-why-list a:hover { text-decoration: underline; }
+.vedic-why-list p { margin: 0; color: var(--ink-soft); font-size: 9px; line-height: 1.55; }
 .vedic-role-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .vedic-role-list span { padding: 5px 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--ink-soft); font-size: 8px; }
 .vedic-experiment { margin-top: 13px; padding: 11px 12px; border-radius: 10px; background: color-mix(in srgb, var(--secondary) 8%, var(--surface-soft)); }
@@ -4532,6 +4539,63 @@ body[data-drawer-kind="mentor"] #mentorPanel .mentor-disclosure { color: #62536f
 .ethics-manifesto > span { color: #edc978; font: 700 10px 'DM Mono', monospace; letter-spacing: .14em; }
 .ethics-manifesto h2 { max-width: 25ch; margin: 10px 0 12px; color: #fff; font: 800 clamp(28px, 4vw, 48px)/1.08 'Manrope', sans-serif; letter-spacing: -.045em; }
 .ethics-manifesto p { max-width: 68ch; margin: 0; color: rgba(255, 255, 255, .78); font-size: 14px; line-height: 1.6; }
+
+/* All discovery navigation now lives on the left; the right rail belongs only to AI Chat. */
+:root { --research-rail-expanded: var(--research-rail-collapsed); }
+.research-rail.ai-chat-rail {
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: end;
+  padding: 10px 7px;
+  overflow: visible;
+}
+.research-rail.ai-chat-rail .mentor-dock { grid-row: 2; }
+.nav-group-learning { --nav-accent: #91c8ff; }
+.nav-group-research { --nav-accent: #f4c66f; }
+
+/* Dark glass keeps the chat legible while retaining the campus atmosphere. */
+body[data-drawer-kind="mentor"] .right-drawer {
+  border-left-color: rgba(255, 255, 255, .18);
+  background:
+    radial-gradient(circle at 18% 4%, rgba(121, 82, 148, .24), transparent 36%),
+    linear-gradient(155deg, rgba(25, 18, 42, .94), rgba(42, 28, 59, .90));
+  color: #fbf9ff;
+  box-shadow: -22px 0 54px rgba(10, 6, 17, .42), inset 1px 0 rgba(255, 255, 255, .14);
+  backdrop-filter: blur(28px) saturate(.86);
+  -webkit-backdrop-filter: blur(28px) saturate(.86);
+}
+body[data-drawer-kind="mentor"] .right-drawer-head {
+  border-bottom-color: rgba(255, 255, 255, .14);
+  background: rgba(19, 13, 31, .48);
+  color: #fbf9ff;
+}
+body[data-drawer-kind="mentor"] .right-drawer-identity small { color: #d7cce2; }
+body[data-drawer-kind="mentor"] .right-drawer-head .icon-button { color: #fff; }
+body[data-drawer-kind="mentor"] #mentorPanel {
+  --ink: #fbf9ff;
+  --ink-soft: #e4dcec;
+  --muted: #c2b4cf;
+  --line: rgba(255, 255, 255, .14);
+  --line-strong: rgba(255, 255, 255, .24);
+  --surface: rgba(255, 255, 255, .08);
+  --surface-soft: rgba(255, 255, 255, .06);
+  --primary: #d5a5ff;
+  --primary-soft: rgba(184, 117, 239, .18);
+  color: var(--ink);
+}
+body[data-drawer-kind="mentor"] #mentorPanel :is(.mentor-context select, .mentor-chat-form textarea, .mentor-message) {
+  border-color: rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .08);
+  color: #fbf9ff;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .08);
+}
+body[data-drawer-kind="mentor"] #mentorPanel :is(select, textarea) option { color: #251a30; }
+body[data-drawer-kind="mentor"] #mentorPanel textarea::placeholder { color: #a99ab6; }
+body[data-drawer-kind="mentor"] #mentorPanel .mentor-message.user,
+body[data-drawer-kind="mentor"] #mentorPanel .mentor-recommendation {
+  border-color: rgba(211, 159, 255, .28);
+  background: rgba(156, 91, 203, .18);
+}
+body[data-drawer-kind="mentor"] #mentorPanel .mentor-disclosure { color: #bcaec8; }
 
 /* Final content-surface policy: wrapperless canvas + neutral milk glass. */
 #viewHost > .view-enter {

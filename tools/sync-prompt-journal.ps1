@@ -36,6 +36,7 @@ function Protect-PublicPrompt([string]$text) {
 }
 
 $cutoffUtc = (Get-Date).ToUniversalTime().AddHours(-$Hours)
+$maxPublicPromptChars = 100000
 $captured = @()
 
 & rg --no-heading --no-filename 'user_message' $sessionRoots | ForEach-Object {
@@ -54,10 +55,15 @@ $captured = @()
       ).ToLowerInvariant()
     }
 
+    $message = Protect-PublicPrompt(([string]$record.payload.message).TrimEnd())
+    if ($message.Length -gt $maxPublicPromptChars) {
+      $message = $message.Substring(0, $maxPublicPromptChars) + "`n`n[Truncated in the public journal; the complete original remains in Codex session history.]"
+    }
+
     $captured += [pscustomobject]@{
       id = $clientId
       timestamp = $timestampUtc.ToString('o')
-      message = Protect-PublicPrompt(([string]$record.payload.message).TrimEnd())
+      message = $message
     }
   } catch {
     # Ignore unrelated or partially written JSONL records while a chat is active.
@@ -75,17 +81,25 @@ if (Test-Path -LiteralPath $outputPath) {
 }
 
 $byId = @{}
-foreach ($entry in @($existing) + @($captured)) {
+foreach ($entry in @($existing)) {
   if (-not $entry.id) { continue }
-  if (-not $byId.ContainsKey([string]$entry.id)) {
-    $byId[[string]$entry.id] = $entry
-    continue
+  if (([string]$entry.message).Length -gt $maxPublicPromptChars) {
+    $entry.message = ([string]$entry.message).Substring(0, $maxPublicPromptChars) + "`n`n[Truncated in the public journal; the complete original remains in Codex session history.]"
   }
+  $byId[[string]$entry.id] = $entry
+}
 
-  if ([datetime]::Parse($entry.timestamp) -lt [datetime]::Parse($byId[[string]$entry.id].timestamp)) {
-    $byId[[string]$entry.id] = $entry
+# Fresh session records are canonical. Prefer the shortest duplicate because forked
+# histories can occasionally contain an expanded copy of the same client message.
+$freshById = @{}
+foreach ($entry in @($captured)) {
+  if (-not $entry.id) { continue }
+  $key = [string]$entry.id
+  if (-not $freshById.ContainsKey($key) -or ([string]$entry.message).Length -lt ([string]$freshById[$key].message).Length) {
+    $freshById[$key] = $entry
   }
 }
+foreach ($key in $freshById.Keys) { $byId[$key] = $freshById[$key] }
 
 $ordered = @($byId.Values | Sort-Object { [datetime]::Parse($_.timestamp) }, id)
 $json = ConvertTo-Json -InputObject $ordered -Depth 5
