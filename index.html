@@ -68,19 +68,13 @@
           <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" data-icon="calling" aria-hidden="true"></span><span>Find Your Calling</span></button>
           <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" data-icon="journey" aria-hidden="true"></span><span>My Journey</span></button>
           <button class="nav-item" data-view="dream-job" data-menu="dreamJob"><span class="nav-icon" data-icon="dream" aria-hidden="true"></span><span>The Dream Job</span></button>
-          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Discussions</span></button>
-        </nav>
-
-        <nav class="learning-nav" aria-label="Learning and skill building">
-          <button class="nav-item" data-view="entrance-exams" data-menu="exams"><span class="nav-icon" data-icon="exam" aria-hidden="true"></span><span>Entrance Exams</span></button>
-          <button class="nav-item" data-view="certifications" data-menu="certifications"><span class="nav-icon" data-icon="certificate" aria-hidden="true"></span><span>Certification Courses</span></button>
-          <button class="nav-item" data-view="traditional" data-menu="traditional"><span class="nav-icon" data-icon="traditional" aria-hidden="true"></span><span>Traditional Courses</span></button>
+          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Experience Forum</span></button>
         </nav>
 
         <div class="sidebar-footer">
           <a href="prompts.html" title="Prompt journal"><span class="utility-icon" data-icon="journal" aria-hidden="true"></span><span class="sidebar-footer-label">Prompt journal</span></a>
-          <button id="adminSettingsButton" hidden aria-controls="rightDrawer" aria-expanded="false" title="Admin Settings"><span class="utility-icon" data-icon="settings" aria-hidden="true"></span><span class="sidebar-footer-label">Admin Settings</span></button>
           <button id="signOutButton" title="Return to sign in"><span class="utility-icon" data-icon="signout" aria-hidden="true"></span><span class="sidebar-footer-label">Return to sign in</span></button>
+          <button id="adminSettingsButton" aria-controls="rightDrawer" aria-expanded="false" title="Admin Settings"><span class="utility-icon" data-icon="settings" aria-hidden="true"></span><span class="sidebar-footer-label">Admin Settings</span><span class="admin-access-mark" aria-hidden="true">LOCKED</span></button>
           <button class="sidebar-expand-toggle" id="leftSidebarToggle" aria-controls="sidebar" aria-expanded="false" title="Expand navigation"><span class="sidebar-toggle-icon" aria-hidden="true">›</span><span class="sidebar-footer-label">Expand navigation</span></button>
         </div>
       </aside>
@@ -95,6 +89,11 @@
               <div><span id="pageEyebrow">YOUR DECISION SPACE</span><h1 id="pageTitle">Overview</h1></div>
             </div>
 
+            <div class="header-actions" aria-label="Account and editorial links">
+              <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog" title="Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
+              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Newsletter" title="Newsletter"><span aria-hidden="true">✉</span><em>Newsletter</em></button>
+              <button class="header-profile-button" id="headerProfileButton" aria-label="Open profile and account settings" aria-controls="rightDrawer" title="Profile and account settings"><span id="headerProfileAvatar">GE</span><em id="headerProfileLabel">Guest</em><b aria-hidden="true">⌄</b></button>
+            </div>
           </div>
         </header>
 
@@ -102,11 +101,11 @@
       </main>
 
       <aside class="research-rail" id="researchRail" aria-label="Research navigation">
-        <div class="research-rail-utilities header-actions" aria-label="Account and editorial links">
-          <button class="header-profile-button" id="headerProfileButton" aria-label="Open profile and account settings" aria-controls="rightDrawer" title="Profile and account settings"><span id="headerProfileAvatar">GE</span><em id="headerProfileLabel">Guest</em><b aria-hidden="true">⌄</b></button>
-          <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog" title="Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
-          <button class="header-editorial-link" data-view="newsletters" aria-label="Open Infographics" title="Infographics"><span aria-hidden="true">◫</span><em>Infographics</em></button>
-        </div>
+        <nav class="right-learning-nav" aria-label="Learning and skill building">
+          <button type="button" data-learning-view="entrance-exams" title="Entrance Exams"><span class="utility-icon" data-icon="exam" aria-hidden="true"></span><strong>Entrance Exams</strong></button>
+          <button type="button" data-learning-view="certifications" title="Certification Courses"><span class="utility-icon" data-icon="certificate" aria-hidden="true"></span><strong>Certification Courses</strong></button>
+          <button type="button" data-learning-view="traditional" title="Traditional Courses"><span class="utility-icon" data-icon="traditional" aria-hidden="true"></span><strong>Traditional Courses</strong></button>
+        </nav>
         <button class="research-rail-home" id="researchButton" aria-label="Open Research" aria-controls="rightDrawer"><span class="utility-icon" data-icon="research" aria-hidden="true"></span><strong>Research</strong><small id="researchRailTotal">Evidence library</small></button>
         <nav id="researchRailNav" aria-label="Research domains"></nav>
         <button class="research-rail-saved" id="researchSavedButton" aria-controls="rightDrawer"><span aria-hidden="true">☆</span><strong>Saved</strong><small id="researchRailSaved">0</small></button>
@@ -157,9 +156,9 @@
       <aside class="admin-settings-panel" id="adminSettingsPanel" aria-label="Admin settings" aria-hidden="true">
         <div class="settings-head"><div><span>PLATFORM CONTROL</span><strong>Admin Settings</strong></div><button class="icon-button" id="adminSettingsClose" aria-label="Close admin settings">×</button></div>
         <section class="settings-section admin-access-settings"><p class="eyebrow">ADMIN ACCESS</p><h2>Product and publishing controls.</h2><p>These controls are available only to a signed-in Team Admin profile.</p><div id="adminSettingsBody"></div></section>
-        <section class="settings-section android-settings"><p class="eyebrow">ANDROID RELEASE</p><h2>Zysham, ready to go.</h2><p>Distribute the newest Android build from the official GitHub release channel.</p><div class="android-download-card"><span class="android-download-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3"></rect><path d="M12 7v7m-3-3 3 3 3-3M10 18h4"></path></svg></span><span><span class="android-latest-badge">LATEST</span><strong>Zysham for Android</strong><small>Android 7.0 or newer · Direct APK</small></span><a class="button-primary" href="https://github.com/shishyan/Zysham2026/releases/download/android-latest/zysham-latest.apk" download>Download latest APK</a></div><div class="android-release-facts"><span>Automatically refreshed</span><span>Official GitHub release</span><span>No account required</span></div></section>
-        <section class="settings-section generated-names-settings"><p class="eyebrow">COMMUNITY IDENTITIES</p><h2>Generated Names</h2><p>Choose the product-level name pool used for starter community content.</p><label>Name pool<select id="generatedNameScope"><option>Tamil Nadu</option><option>India</option><option>International</option></select></label><div class="generated-name-preview" id="generatedNamePreview"></div><small>These are content fixtures, never registered users.</small></section>
-        <section class="settings-section admin-danger-zone"><p class="eyebrow">LOCAL DATA</p><h2>Workspace maintenance.</h2><p>Reset only this browser’s Zysham workspace.</p><button class="button-secondary" id="resetData"><span class="utility-icon" data-icon="reset" aria-hidden="true"></span> Reset workspace</button></section>
+        <section class="settings-section android-settings" data-admin-control><p class="eyebrow">ANDROID RELEASE</p><h2>Zysham, ready to go.</h2><p>Distribute the newest Android build from the official GitHub release channel.</p><div class="android-download-card"><span class="android-download-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3"></rect><path d="M12 7v7m-3-3 3 3 3-3M10 18h4"></path></svg></span><span><span class="android-latest-badge">LATEST</span><strong>Zysham for Android</strong><small>Android 7.0 or newer · Direct APK</small></span><a class="button-primary" href="https://github.com/shishyan/Zysham2026/releases/download/android-latest/zysham-latest.apk" download>Download latest APK</a></div><div class="android-release-facts"><span>Automatically refreshed</span><span>Official GitHub release</span><span>No account required</span></div></section>
+        <section class="settings-section generated-names-settings" data-admin-control><p class="eyebrow">COMMUNITY IDENTITIES</p><h2>Generated Names</h2><p>Choose the product-level name pool used for starter community content.</p><label>Name pool<select id="generatedNameScope"><option>Tamil Nadu</option><option>India</option><option>International</option></select></label><div class="generated-name-preview" id="generatedNamePreview"></div><small>These are content fixtures, never registered users.</small></section>
+        <section class="settings-section admin-danger-zone" data-admin-control><p class="eyebrow">LOCAL DATA</p><h2>Workspace maintenance.</h2><p>Reset only this browser’s Zysham workspace.</p><button class="button-secondary" id="resetData"><span class="utility-icon" data-icon="reset" aria-hidden="true"></span> Reset workspace</button></section>
       </aside>
       <button class="settings-scrim" id="settingsScrim" aria-label="Close settings"></button>
     </div>
