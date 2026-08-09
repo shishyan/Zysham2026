@@ -3220,6 +3220,11 @@ body.nav-open .sidebar .nav-menu-chevron { width: 14px; margin-left: 0; justify-
   flex: 1 1 108px;
   min-height: 98px;
 }
+#viewHost .railway-journey .station-copy small {
+  max-width: 112px;
+  margin-inline: auto;
+  white-space: normal;
+}
 
 /* Stage curriculum: embedded learning and validation, not generic milestone filler. */
 .stage-outcome-summary > div:first-child > span,

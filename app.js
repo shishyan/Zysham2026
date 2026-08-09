@@ -1001,10 +1001,11 @@ function promoteViewHeading(host) {
   const candidates = [
     '.section-header', '.hero-main', '.journey-stage-hero', '.research-workspace-head',
     '.assessment-hub-main > section > header', '.assessment-hub-main .calling-question > header',
-    '.assessment-hero', '.dream-north-star', '.entrance-exams-hero',
+    '.assessment-hero', '.dream-north-star', '.entrance-exams-hero', '.exam-section-head',
     '.vedic-hero', '.forum-header', '.editorial-hero', '.ai-hero', '.jobs-hero',
-    '.jobs-page-head', '.compact-page-intro', '.job-detail-page > header',
-    '.experience-detail > header', '.editorial-detail article > header', '.share-experience'
+    '.infographic-hero', '.jobs-page-head', '.compact-page-intro', '.course-detail',
+    '.job-detail-page > header', '.experience-detail > header',
+    '.editorial-detail article > header', '.infographic-detail article > header', '.share-experience'
   ];
   const container = candidates
     .map((selector) => host.querySelector(selector))
@@ -1964,7 +1965,7 @@ function renderJourneyStagePage() {
   const hasStudyGuide = ['grade11', 'grade12'].includes(stageId);
   const validStageTabs = ['focus', 'guide', 'choices', 'evidence', 'community', 'ai', ...(hasStudyGuide ? ['study'] : [])];
   const stageTab = validStageTabs.includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
-  const tabs = [['focus', 'Milestone process'], ...(hasStudyGuide ? [['study', 'Study Guide']] : []), ['guide', 'Route guide'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
+  const tabs = [['focus', 'Year curriculum'], ...(hasStudyGuide ? [['study', 'Study Guide']] : []), ['guide', 'Route guide'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
   const phases = stageProcess(stageId);
   const activePhaseId = phases.some((phase) => phase.id === state.journey.stagePhase?.[stageId]) ? state.journey.stagePhase[stageId] : phases[0].id;
   const activePhase = phases.find((phase) => phase.id === activePhaseId) || phases[0];
@@ -3610,7 +3611,7 @@ $('#leftSidebarToggle').addEventListener('click', (event) => {
   setLeftSidebarExpanded(!state.sidebarExpanded);
 });
 $('#researchRail').addEventListener('click', (event) => {
-  if (event.target.closest('#rightSidebarToggle')) return;
+  if (event.target.closest('#rightSidebarToggle, .research-rail-utilities')) return;
   if (!state.researchRailExpanded) {
     event.preventDefault();
     event.stopPropagation();
