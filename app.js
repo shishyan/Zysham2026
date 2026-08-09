@@ -232,6 +232,55 @@ const rolePermissions = {
   parent: ['journey:view', 'family:edit', 'community:participate'],
 };
 
+const vedicNakshatraEvidence = {
+  Ashwini: { lord: 'Ketu', motif: 'service, rapid response, healing and movement', professions: ['medicine and therapy', 'sport and fitness', 'transport and aviation', 'mechanical engineering', 'early education'] },
+  Bharani: { lord: 'Venus', motif: 'care through demanding transitions, creative expression and weighing extremes', professions: ['childcare and fertility care', 'law and administration', 'photography and visual arts', 'hospitality and food', 'emergency response'] },
+  Krittika: { lord: 'Sun', motif: 'precision, decisive judgement, heat, tools and authority', professions: ['surgery', 'law and judiciary', 'teaching and management', 'defence and police', 'metal, glass and ceramic crafts'] },
+  Rohini: { lord: 'Moon', motif: 'cultivation, material stewardship, beauty and sensitivity to surroundings', professions: ['banking and finance', 'agriculture and food systems', 'hospitality and travel', 'fashion and beauty', 'building and interiors'] },
+  Mrigashira: { lord: 'Mars', motif: 'searching, exploration, observation and varied enquiry', professions: ['research and teaching', 'sales and business', 'travel and navigation', 'engineering', 'writing, music and fashion'] },
+  Ardra: { lord: 'Rahu', motif: 'technical complexity, investigation, sharp analysis and persuasive speech', professions: ['software and IT', 'electrical engineering', 'mathematics and research', 'medicine and diagnostics', 'law, politics and writing'] },
+  Punarvasu: { lord: 'Jupiter', motif: 'renewal, teaching, communication, travel and constructive expansion', professions: ['writing and publishing', 'teaching and psychology', 'architecture and civil engineering', 'science and space', 'travel, trade and communication'] },
+  Pushya: { lord: 'Saturn', motif: 'nourishment, education, stewardship and dependable institutions', professions: ['education and counselling', 'food and hospitality', 'management and public leadership', 'law and public service', 'agriculture and real estate'] },
+  Ashlesha: { lord: 'Mercury', motif: 'strategy, chemistry, hidden systems and psychological insight', professions: ['pharmacy and chemistry', 'medicine and surgery', 'psychology and investigation', 'petroleum and automotive products', 'markets and trading'] },
+  Magha: { lord: 'Ketu', motif: 'ancestry, authority, institutional memory and public responsibility', professions: ['administration and government', 'law and judiciary', 'corporate leadership', 'history, museums and archaeology', 'research and public speaking'] },
+  'Purva Phalguni': { lord: 'Venus', motif: 'arts, prosperity, hospitality, relationships and public appeal', professions: ['performance and music', 'design, beauty and photography', 'events and hospitality', 'retail and jewellery', 'diplomacy and management'] },
+  'Uttara Phalguni': { lord: 'Sun', motif: 'leadership joined with advice, contracts, service and social responsibility', professions: ['organisational leadership', 'diplomacy and advisory work', 'banking and credit', 'teaching and social work', 'media and public life'] },
+  Hasta: { lord: 'Moon', motif: 'skilled hands, observation, making, trade and practical communication', professions: ['craft, carpentry and sculpture', 'accounting and banking', 'therapy and rehabilitation', 'printing, writing and broadcasting', 'agriculture and food production'] },
+  Chitra: { lord: 'Mars', motif: 'construction, visual form, invention and versatile craftsmanship', professions: ['architecture and building', 'design and visual communication', 'engineering and machinery', 'fashion and jewellery', 'theatre, film and advertising'] },
+  Swati: { lord: 'Rahu', motif: 'independence, movement, trade, technology and the power of speech', professions: ['business and independent enterprise', 'software and research', 'aviation and transport', 'music and broadcasting', 'law and diplomacy'] },
+  Vishakha: { lord: 'Jupiter', motif: 'goal-directed effort, public influence, competition and authority', professions: ['politics and public administration', 'broadcasting', 'sport and performance', 'police and defence', 'customs and immigration'] },
+  Anuradha: { lord: 'Saturn', motif: 'organisation, collaboration, disciplined enquiry and foreign connections', professions: ['institutional management', 'science and mathematics', 'psychology and counselling', 'diplomacy and international work', 'travel and industrial operations'] },
+  Jyeshtha: { lord: 'Mercury', motif: 'seniority, protection, strategic communication and command under pressure', professions: ['administration and government', 'journalism and broadcasting', 'medicine and surgery', 'defence and aviation control', 'investigation and finance'] },
+  Mula: { lord: 'Ketu', motif: 'root-cause investigation, healing, extraction and work with difficult realities', professions: ['research and mathematics', 'medicine and dentistry', 'law and investigation', 'mining and energy', 'defence and protective work'] },
+  'Purva Ashadha': { lord: 'Venus', motif: 'inspiration, expression, water, travel and transforming raw material', professions: ['teaching and motivational work', 'writing, art and entertainment', 'marine and shipping work', 'fashion and beauty', 'aviation and recreation'] },
+  'Uttara Ashadha': { lord: 'Sun', motif: 'ethical responsibility, durable leadership, protection and organisation', professions: ['government and law', 'teaching and counselling', 'business leadership', 'defence and security', 'construction and exploration'] },
+  Shravana: { lord: 'Moon', motif: 'listening, learning, transmission, preservation and coordinated service', professions: ['teaching and scholarship', 'languages and interpretation', 'audio, music and broadcasting', 'counselling and healthcare', 'travel, hospitality and organisations'] },
+  Dhanishtha: { lord: 'Mars', motif: 'rhythm, coordinated groups, technical skill and material resources', professions: ['computing and science', 'music and performance', 'finance and real estate', 'sport and group coordination', 'medicine and defence'] },
+  Shatabhisha: { lord: 'Rahu', motif: 'healing systems, technology, networks, space and unconventional enquiry', professions: ['medicine and pharmaceuticals', 'electronics and imaging', 'space and aviation', 'film and photography', 'recycling and environmental systems'] },
+  'Purva Bhadrapada': { lord: 'Jupiter', motif: 'intense transformation, difficult subjects, advocacy and high-stakes systems', professions: ['medicine and psychiatry', 'environmental activism', 'pharmaceutical work', 'metals and high-temperature industries', 'mystery and speculative writing'] },
+  'Uttara Bhadrapada': { lord: 'Saturn', motif: 'depth, contemplation, service and sustained work behind the scenes', professions: ['counselling and healing', 'charity and social service', 'research and philosophy', 'writing, music and art', 'history and libraries'] },
+  Revati: { lord: 'Mercury', motif: 'guidance, journeys, timing, care and imaginative communication', professions: ['arts and entertainment', 'transport and road planning', 'aviation and maritime service', 'care organisations', 'religious and community institutions'] },
+};
+
+const vedicRashiEvidence = {
+  Mesha: { ruler: 'Mars', motif: 'initiative, competition and decisive action', professions: ['leadership', 'defence', 'engineering', 'emergency medicine'] },
+  Vrishabha: { ruler: 'Venus', motif: 'patience, resources, land and aesthetic quality', professions: ['finance', 'agriculture', 'real estate', 'arts and hospitality'] },
+  Mithuna: { ruler: 'Mercury', motif: 'communication, adaptability and information work', professions: ['media', 'software', 'writing', 'teaching and marketing'] },
+  Karka: { ruler: 'Moon', motif: 'nurture, home, emotional intelligence and community', professions: ['healthcare', 'hospitality', 'psychology', 'education and real estate'] },
+  Simha: { ruler: 'Sun', motif: 'authority, visibility and creative leadership', professions: ['government', 'management', 'performance', 'public administration'] },
+  Kanya: { ruler: 'Mercury', motif: 'analysis, precision, health and service', professions: ['accounting', 'medicine', 'research', 'data and quality control'] },
+  Tula: { ruler: 'Venus', motif: 'balance, aesthetics, negotiation and partnership', professions: ['law', 'diplomacy', 'design', 'HR and consulting'] },
+  Vrishchika: { ruler: 'Mars and Ketu', motif: 'depth, transformation, risk and hidden information', professions: ['research', 'forensics', 'finance', 'psychology and surgery'] },
+  Dhanu: { ruler: 'Jupiter', motif: 'higher learning, principles, exploration and expansion', professions: ['education', 'law', 'publishing', 'travel and international work'] },
+  Makara: { ruler: 'Saturn', motif: 'discipline, structure and long-term construction', professions: ['engineering', 'government', 'operations', 'construction and management'] },
+  Kumbha: { ruler: 'Saturn and Rahu', motif: 'systems, innovation and collective welfare', professions: ['technology', 'science', 'social impact', 'aviation and environmental work'] },
+  Meena: { ruler: 'Jupiter and Ketu', motif: 'compassion, imagination and reflective service', professions: ['arts', 'healing', 'psychology', 'education and social service'] },
+};
+
+const vedicPlanetEvidence = {
+  Sun: 'authority, visibility, administration and leadership', Moon: 'care, public contact, imagination and responsiveness', Mars: 'action, engineering, surgery, defence and competition', Mercury: 'analysis, commerce, writing, technology and communication', Jupiter: 'teaching, law, counsel, ethics and expansion', Venus: 'design, arts, hospitality, relationships and value', Saturn: 'structure, engineering, service, endurance and institutions', Rahu: 'technology, unconventional systems, research and foreign links', Ketu: 'investigation, healing, depth and detachment from convention',
+};
+
 const seededAccounts = [
   { id: 'admin-default', email: 'admin@zysham.local', role: 'admin', displayName: 'Admin', teamRole: 'Platform Administrator', accessLevel: 'administrator', salt: 'zysham-admin-seed', passwordHash: '76ecb6ba491c79f326a7d032cb51dec63f6f409f37e82bfcff001fc732fcb4f7' },
   { id: 'admin-sasha', email: 'sasha@zysham.local', role: 'admin', displayName: 'Sasha', teamRole: 'Owner', accessLevel: 'owner', salt: 'zysham-sasha-seed', passwordHash: '4e6be4c3d8a8697f80114540d1886676efffd036ec87a238d7336355256c2b6a' },
