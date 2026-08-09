@@ -835,7 +835,6 @@ function allSignals() {
 
 function ratingColor(value) {
   const score = Number(value) || 0;
-  if (score === 0) return '#8b94a7';
   if (score <= 3) return '#e54862';
   if (score <= 6) return '#e6a323';
   if (score <= 8) return '#18a6a6';
@@ -1349,6 +1348,151 @@ const noNoCareerExclusions = {
   'Heavy rote learning': ['chartered-accountant'],
 };
 
+const stageLearningBlueprints = {
+  grade10: {
+    outcome: 'Choose Grade 11 subjects from evidence—not prestige, fear, or family habit.',
+    learn: [
+      ['Core foundations', 'Strengthen mathematics, science, language and social-science fundamentals; record where effort produces improvement.', 'study-guide', 'grade11'],
+      ['Route literacy', 'Learn what PCM, PCB/PCMB, Commerce, Humanities, Polytechnic, ITI and flexible schooling actually require.', 'entrance-exams', 'planning'],
+      ['Human breadth', 'Try one arts, language, craft, sport or service discipline long enough to notice genuine energy.', 'traditional', 'Language & Knowledge'],
+    ],
+    assess: [
+      ['Know Thyself', 'Complete the work-reality scan and name hard constraints before choosing a route.', 'compass', ''],
+      ['Discovery + student assessment', 'Test interests, work values, personality, desire and current capability.', 'assessments', 'signals'],
+      ['Subject evidence check', 'Compare marks with unaided problem-solving, curiosity, recovery after difficulty and teacher feedback.', 'assessments', 'career:skills'],
+    ],
+    build: ['Run six short subject trials across at least three route families.', 'Interview one senior student and one practitioner from each surviving route.', 'Create a route matrix covering subjects, workload, cost, commute and reversibility.'],
+    verify: ['Two viable routes remain.', 'Required subjects are verified.', 'A primary and alternate Grade 11 plan are written.'],
+  },
+  grade11: {
+    outcome: 'Finish the year with strong foundations, a sustainable study system and the first proof of applied ability.',
+    learn: [
+      ['Grade 11 subject mastery', 'Study the actual syllabus in cumulative weekly blocks; close prerequisite gaps before coaching speed.', 'study-guide', 'grade11'],
+      ['Digital and AI literacy', 'Learn responsible research, spreadsheets, data handling and AI verification as supporting tools.', 'certifications', 'Digital & AI'],
+      ['Communication practice', 'Build clear writing, explanation and presentation alongside technical or academic study.', 'certifications', 'Employability & Communication'],
+    ],
+    assess: [
+      ['Skills confidence', 'Rate only capabilities you can demonstrate, then compare the result with teacher feedback and work samples.', 'assessments', 'career:skills'],
+      ['Work style', 'Test concentration, collaboration, structure and recovery under a real Grade 11 workload.', 'assessments', 'career:work-style'],
+      ['Monthly mastery audit', 'Use unaided quizzes, error logs and teach-back—not hours studied—as the evidence.', 'study-guide', 'grade11'],
+    ],
+    build: ['Complete one syllabus-linked mini-project with a real question and documented method.', 'Explain one difficult concept each month without notes or AI.', 'Keep an error log showing correction and retest.'],
+    verify: ['Foundational backlogs are controlled.', 'Study rhythm is sustainable.', 'One reviewable project and teacher critique exist.'],
+  },
+  grade12: {
+    outcome: 'Convert course intent into board readiness, verified applications and affordable alternatives.',
+    learn: [
+      ['Grade 12 mastery', 'Prioritise board concepts, past-paper patterns, practicals and timed retrieval.', 'study-guide', 'grade12'],
+      ['Entrance preparation', 'Prepare only for exams attached to a verified course plan; maintain one calendar for dates and documents.', 'entrance-exams', 'catalogue'],
+      ['Application communication', 'Practise statements, portfolios, interviews and professional communication where the route requires them.', 'certifications', 'Employability & Communication'],
+    ],
+    assess: [
+      ['Decision readiness', 'Check whether the shortlist is based on curriculum, affordability, eligibility and lived evidence.', 'assessments', 'career:readiness'],
+      ['Timed capability checks', 'Run board and entrance mocks, classify errors and retest weak concepts.', 'study-guide', 'grade12'],
+      ['Environment fit', 'Assess campus size, language, location, support, pace and financial constraints.', 'assessments', 'career:environment'],
+    ],
+    build: ['Create primary, alternate and financial-safety course lists.', 'Maintain a live deadline, document and scholarship tracker.', 'Prepare a first-semester foundation bridge after exams.'],
+    verify: ['Eligibility checked on official sources.', 'Applications submitted early.', 'Every option passes cost and course-content checks.'],
+  },
+  college1: {
+    outcome: 'Understand the discipline, master its foundations and verify whether the course deserves deeper commitment.',
+    learn: [
+      ['Course foundations', 'Map prerequisites, core papers, laboratories, grading and academic-integrity rules from the full curriculum.', 'study-guide', 'grade12'],
+      ['Foundational digital skill', 'Build spreadsheet, research, presentation and responsible AI competence useful in any discipline.', 'certifications', 'Digital & AI'],
+      ['Wellbeing discipline', 'Use a sustainable physical or contemplative practice to protect sleep, attention and recovery.', 'traditional', 'Yoga & Wellbeing'],
+    ],
+    assess: [
+      ['Interest pattern', 'Retake interest assessment after real labs, lectures, clubs and assignments—not during orientation.', 'assessments', 'career:interests'],
+      ['Learning capability', 'Validate conceptual understanding through unaided explanation and practical work.', 'assessments', 'career:skills'],
+      ['Course-fit review', 'Compare expectations with actual curriculum, peer culture and daily work.', 'assessments', 'career:environment'],
+    ],
+    build: ['Complete one small foundation project from problem to reflection.', 'Sample one lab, club, studio, service group or student team.', 'Build relationships with two peers, one senior and one faculty member.'],
+    verify: ['No unmanaged foundational backlog.', 'One work sample is explainable unaided.', 'Course fit is reviewed with evidence.'],
+  },
+  college2: {
+    outcome: 'Choose a special-interest direction and assemble the capability stack needed to investigate it seriously.',
+    learn: [
+      ['Domain electives', 'Select modules because they deepen a question or problem—not because they are easy or fashionable.', 'study-guide', 'grade12'],
+      ['Applied capability', 'Add one relevant technical, business, data, health, sustainability or communication course.', 'certifications', 'Data & Software'],
+      ['Creative range', 'Use theatre, storytelling, visual craft, music or language to strengthen observation and communication.', 'traditional', 'Theatre & Storytelling'],
+    ],
+    assess: [
+      ['Capability profile', 'Compare self-rating with assignments, mentor critique and a real user’s response.', 'assessments', 'student'],
+      ['Career motivation', 'Separate love of the problem from status, salary or tool fascination.', 'assessments', 'career:motivation'],
+      ['Values check', 'Identify the people affected, ethical boundaries and kinds of contribution worth sustaining.', 'assessments', 'career:values'],
+    ],
+    build: ['Publish one reviewable special-interest project for a defined user.', 'Conduct five problem interviews or field observations.', 'Ask a domain mentor to critique the question, method and next skill gap.'],
+    verify: ['A special-interest question is named.', 'Electives and skill courses support it.', 'External critique changed the work.'],
+  },
+  college3: {
+    outcome: 'Produce credible external proof through a serious project and real field experience.',
+    learn: [
+      ['Role-specific depth', 'Study tools and concepts repeatedly requested in target-role descriptions.', 'certifications', 'Data & Software'],
+      ['Workplace communication', 'Practise briefs, documentation, presentations, feedback and professional correspondence.', 'certifications', 'Employability & Communication'],
+      ['Research and verification', 'Learn evidence quality, measurement, consent, attribution and limits relevant to the project.', 'certifications', 'Digital & AI'],
+    ],
+    assess: [
+      ['Skills gap audit', 'Map target-role tasks against demonstrated, developing and missing capabilities.', 'assessments', 'career:skills'],
+      ['Environment fit', 'Compare internship realities: pace, manager, team, field/desk mix and ethics.', 'assessments', 'career:environment'],
+      ['Project defence', 'Explain the problem, decisions, failures and results without slides or AI assistance.', 'evidence', ''],
+    ],
+    build: ['Complete an internship, apprenticeship, research role or community field placement.', 'Build a flagship project with version history, user feedback and measured outcomes.', 'Interview recent alumni about actual entry work and hiring evidence.'],
+    verify: ['One external supervisor can verify the work.', 'Portfolio shows decisions and outcomes.', 'Target roles are supported by evidence.'],
+  },
+  collegeFinal: {
+    outcome: 'Turn academic and field evidence into a role-specific campus and off-campus launch.',
+    learn: [
+      ['Selection preparation', 'Practise aptitude, technical, case, portfolio and behavioural rounds used by target roles.', 'certifications', 'Employability & Communication'],
+      ['Role and employer literacy', 'Compare daily tasks, team quality, location, contract, learning and ethical consequence.', 'jobs', 'atlas'],
+      ['Gap-specific revision', 'Revise only the foundational and applied gaps exposed by mocks and job descriptions.', 'certifications', 'Data & Software'],
+    ],
+    assess: [
+      ['Decision readiness', 'Test offer choices against role reality, learning, health, ethics and financial needs.', 'assessments', 'career:readiness'],
+      ['Mock selection loops', 'Run repeated timed tests and interviews with scored feedback.', 'assessments', 'career:skills'],
+      ['Evidence audit', 'Remove claims you cannot defend and strengthen the proof behind the remaining ones.', 'evidence', ''],
+    ],
+    build: ['Finish and defend one flagship capstone.', 'Create role-specific resume, portfolio and interview stories.', 'Run campus and alternate applications in parallel.'],
+    verify: ['Every claim survives live questioning.', 'At least two launch routes are active.', 'Offers are compared by role—not logo alone.'],
+  },
+  firstJob: {
+    outcome: 'Become dependable, compound one valuable capability and prepare an evidence-led next move.',
+    learn: [
+      ['Work system mastery', 'Learn stakeholders, standards, workflow, quality controls and the business or public purpose behind the role.', 'jobs', 'framework'],
+      ['Deep-skill course', 'Choose one certification tied to repeated work—not a collection of badges.', 'certifications', 'Business & Entrepreneurship'],
+      ['Ethical AI at work', 'Use AI with privacy, verification, attribution and clear personal accountability.', 'certifications', 'Digital & AI'],
+    ],
+    assess: [
+      ['Work values', 'Compare stated company values with incentives, manager behaviour and consequences for others.', 'assessments', 'career:values'],
+      ['Work style', 'Review energy, autonomy, people intensity, pace and learning after six months.', 'assessments', 'career:work-style'],
+      ['Capability evidence', 'Separate tasks performed from outcomes delivered and skills independently repeatable.', 'evidence', ''],
+    ],
+    build: ['Deliver one measurable, ethical outcome.', 'Maintain a privacy-safe evidence log and quarterly reflection.', 'Build internal and external mentor relationships.'],
+    verify: ['Core work is independently reliable.', 'One skill is compounding.', 'A stay, internal move or external move is evidence-backed.'],
+  },
+  dreamJob: {
+    outcome: 'Reach and sustain meaningful work through deliberate capability, relationship and role moves.',
+    learn: [
+      ['Advanced specialisation', 'Study the hardest recurring problems in the desired work and build depth that survives tool changes.', 'certifications', 'Business & Entrepreneurship'],
+      ['Leadership and stewardship', 'Learn to make decisions that protect people, quality, truth and long-term consequence.', 'jobs', 'framework'],
+      ['Communication and teaching', 'Practise mentoring, writing and explanation so expertise benefits others.', 'certifications', 'Employability & Communication'],
+    ],
+    assess: [
+      ['Role consequence review', 'Compare salary, daily work, company business model and karmic consequence without confusing title with service.', 'jobs', 'compare'],
+      ['Values and motivation', 'Reassess what contribution, autonomy, mastery and relationships now matter.', 'assessments', 'career:motivation'],
+      ['Life-fit audit', 'Review health, family, location, pace and financial runway before each major move.', 'compass', ''],
+    ],
+    build: ['Produce high-signal outcomes in the desired problem space.', 'Build trusted practitioner relationships through contribution.', 'Run small role experiments before irreversible moves.'],
+    verify: ['The daily work—not only the title—is desirable.', 'Capability and access gaps are explicit.', 'Growth does not require abandoning health, integrity or relationships.'],
+  },
+};
+
+function renderStageLearningPlan(stageId, completion, statusCounts, nextMilestones) {
+  const plan = stageLearningBlueprints[stageId] || stageLearningBlueprints.grade10;
+  const resource = ([title, copy, target, value]) => `<article><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div><button data-action="stage-resource" data-target="${target}" data-value="${value || ''}">Open workspace →</button></article>`;
+  return `<section class="stage-progress-summary panel stage-outcome-summary"><div><span>YEAR OUTCOME</span><h3>${escapeHtml(plan.outcome)}</h3><div class="stage-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${completion}"><span style="width:${completion}%"></span></div></div><dl><div><dt>Complete</dt><dd>${statusCounts.complete}</dd></div><div><dt>Doing</dt><dd>${statusCounts.doing}</dd></div><div><dt>Queued</dt><dd>${statusCounts.todo}</dd></div></dl>${nextMilestones.length ? `<aside><span>NEXT CHECKPOINT</span><strong>${escapeHtml(nextMilestones[0])}</strong></aside>` : ''}</section>
+    <section class="stage-learning-plan"><header><div><span>LEARN · ASSESS · APPLY · VERIFY</span><h3>Your curriculum for this stage</h3><p>These are the learning and evidence blocks a student should actually complete this year. Dedicated pages remain available for deeper work.</p></div></header><div class="stage-learning-grid"><section class="stage-learning-lane learn"><div class="stage-lane-head"><span>01</span><div><strong>Learn and prepare</strong><small>Courses and knowledge</small></div></div>${plan.learn.map(resource).join('')}</section><section class="stage-learning-lane assess"><div class="stage-lane-head"><span>02</span><div><strong>Assess and validate</strong><small>Capability, fit and constraints</small></div></div>${plan.assess.map(resource).join('')}</section><section class="stage-learning-lane build"><div class="stage-lane-head"><span>03</span><div><strong>Apply in real work</strong><small>Projects and experience</small></div></div>${plan.build.map((item) => `<article><i>→</i><p>${escapeHtml(item)}</p></article>`).join('')}</section><section class="stage-learning-lane verify"><div class="stage-lane-head"><span>04</span><div><strong>Evidence gate</strong><small>Move on only when true</small></div></div>${plan.verify.map((item) => `<article><i>✓</i><p>${escapeHtml(item)}</p></article>`).join('')}</section></div></section>`;
+}
+
 const subjectCareerConstraints = {
   Physics: ['biomedical-engineer', 'doctor'],
   Chemistry: ['doctor'],
@@ -1681,7 +1825,7 @@ function renderCompass() {
           ${workRealityQuestions.map((question, index) => {
             const answered = Object.hasOwn(state.workReality.answers, question.id);
             const answer = Number(state.workReality.answers[question.id] ?? 0);
-            return `<article class="reality-question ${answered ? 'answered' : ''}" style="--rating-color:${ratingColor(answer)}">
+            return `<article class="reality-question ${answered ? 'answered' : ''}" style="--rating-color:${answered ? ratingColor(answer) : '#8b94a7'}">
               <span class="reality-question-number">${String(index + 1).padStart(2, '0')}</span>
               <strong>${question.question}</strong>
               <span class="range-readout" id="readout-${question.id}">${answerLabel(question)}</span>
@@ -1788,22 +1932,26 @@ function renderJourneyStagePage() {
   const progressPoints = statusCounts.complete + (statusCounts.doing * .5);
   const completion = Math.round((progressPoints / config.milestones.length) * 100);
   const nextMilestones = config.milestones.filter((milestone) => milestoneStatus(milestone) !== 'complete').slice(0, 2);
-  const stageTab = ['focus', 'guide', 'choices', 'evidence', 'community', 'ai'].includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
-  const tabs = [['focus', 'Milestone process'], ['guide', 'Route guide'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
+  const hasStudyGuide = ['grade11', 'grade12'].includes(stageId);
+  const validStageTabs = ['focus', 'guide', 'choices', 'evidence', 'community', 'ai', ...(hasStudyGuide ? ['study'] : [])];
+  const stageTab = validStageTabs.includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
+  const tabs = [['focus', 'Milestone process'], ...(hasStudyGuide ? [['study', 'Study Guide']] : []), ['guide', 'Route guide'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
   const phases = stageProcess(stageId);
   const activePhaseId = phases.some((phase) => phase.id === state.journey.stagePhase?.[stageId]) ? state.journey.stagePhase[stageId] : phases[0].id;
   const activePhase = phases.find((phase) => phase.id === activePhaseId) || phases[0];
   const phaseCompletion = (phase) => phase.milestones.every((milestone) => milestoneStatus(milestone) === 'complete');
   const guide = stageGuideContent[stageId];
   const routeGuide = stageId === 'grade10' ? `<div class="route-atlas-table"><div><strong>Route</strong><strong>Learning foundation</strong><strong>What it can open</strong><strong>Reality check</strong></div>${grade10RouteAtlas.map(([route, foundation, opens, reality]) => `<article><h4>${escapeHtml(route)}</h4><p>${escapeHtml(foundation)}</p><p>${escapeHtml(opens)}</p><p>${escapeHtml(reality)}</p></article>`).join('')}</div><div class="route-source-actions"><a href="https://cbseacademic.nic.in/curriculum_2026.html" target="_blank" rel="noopener">CBSE curriculum ↗</a><a href="https://www.dge.tn.gov.in/docs/examina/HSE_E.pdf" target="_blank" rel="noopener">Tamil Nadu HSE groups ↗</a><a href="https://www.tnpoly.in/public/" target="_blank" rel="noopener">TN Polytechnic ↗</a><a href="https://dgt.gov.in/en/CTS" target="_blank" rel="noopener">DGT / ITI routes ↗</a><a href="https://www.nios.ac.in/" target="_blank" rel="noopener">NIOS ↗</a></div>` : '';
-  const tabContent = {
+  const legacyTabContent = {
     focus: `<section class="stage-progress-summary panel"><div><p class="eyebrow">WHO THIS STAGE SERVES</p><h3>${escapeHtml(config.purpose)}</h3><div class="stage-progress-track" role="progressbar" aria-label="Stage progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${completion}"><span style="width:${completion}%"></span></div></div><dl><div><dt>Completed</dt><dd>${statusCounts.complete}</dd></div><div><dt>In progress</dt><dd>${statusCounts.doing}</dd></div><div><dt>Not started</dt><dd>${statusCounts.todo}</dd></div></dl>${nextMilestones.length ? `<aside><span>NEXT HIGH-ROAD TARGET</span><strong>${escapeHtml(nextMilestones[0])}</strong><small>Does this move you toward the person you want to become?</small></aside>` : '<aside><span>STAGE COMPLETE</span><strong>Reflect, document the evidence, then move forward.</strong></aside>'}</section><section class="stage-process-workspace"><ol class="milestone-chevron-flow" aria-label="${escapeHtml(config.step)} milestone process">${phases.map((phase, phaseIndex) => `<li><button data-action="stage-phase" data-stage="${stageId}" data-value="${phase.id}" class="${phase.id === activePhaseId ? 'active' : ''} ${phaseCompletion(phase) ? 'complete' : ''}" aria-current="${phase.id === activePhaseId ? 'step' : 'false'}"><span>${String(phaseIndex + 1).padStart(2, '0')}</span><strong>${escapeHtml(phase.label)}</strong><small>${phaseCompletion(phase) ? 'Complete' : `${phase.milestones.filter((milestone) => milestoneStatus(milestone) === 'complete').length}/${phase.milestones.length}`}</small></button></li>`).join('')}</ol><section class="panel stage-milestone-board"><div class="panel-head"><div><p class="eyebrow">STEP ${String(phases.findIndex((phase) => phase.id === activePhaseId) + 1).padStart(2, '0')}</p><h3>${escapeHtml(activePhase.label)}</h3></div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Add reflection</button></div><div class="stage-phase-milestones">${activePhase.milestones.map((milestone) => { const status = milestoneStatus(milestone); const number = config.milestones.indexOf(milestone) + 1; return `<button class="stage-milestone ${status}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${escapeHtml(milestone)}" data-status="${status}" aria-label="${escapeHtml(milestone)}. ${status === 'complete' ? 'Complete' : status === 'doing' ? 'In progress' : 'Not started'}. Click to advance status."><span>${String(number).padStart(2, '0')}</span><strong>${escapeHtml(milestone)}</strong><em>${status === 'complete' ? '✓ Complete' : status === 'doing' ? '◐ In progress' : '○ Not started'}</em></button>`; }).join('')}</div></section></section>`,
+    study: hasStudyGuide ? renderJourneyStudyGuide(stageId) : '',
     guide: `<section class="panel stage-route-guide"><header><div><p class="eyebrow">DECISION KNOWLEDGE</p><h3>${escapeHtml(guide.title)}</h3></div><button class="button-secondary" data-action="research-open">Open verified research</button></header><ol>${guide.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ol>${routeGuide}<p class="source-caution">Rules, programmes and admissions change. Verify current eligibility on the linked official source before acting.</p></section>`,
     choices: `<div class="journey-stage-layout"><section class="panel stage-nono-card"><p class="eyebrow">WHAT IS RULED OUT</p><h3>${combinedNoNos.length ? `${combinedNoNos.length} NO-NO signals` : 'Start with what you know you do not want'}</h3><div class="stage-nono-tags">${combinedNoNos.length ? combinedNoNos.map((item) => `<span>${escapeHtml(item)}</span>`).join('') : '<p>Record working conditions, subjects and trade-offs that feel clearly wrong.</p>'}</div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Review NO-NOs</button></section><section class="panel stage-shortlist"><p class="eyebrow">REMAINING WORLDS TO TEST</p>${survivors.map((career) => `<button data-action="career-detail" data-id="${career.id}"><span>${career.glyph}</span><strong>${career.title}</strong><small>${career.fit.label}</small></button>`).join('')}</section></div>`,
     evidence: `<section class="panel stage-proof-card stage-tab-panel"><p class="eyebrow">CURRENT EVIDENCE</p><dl><div><dt>Performance</dt><dd>${escapeHtml(rank || 'Not recorded')}</dd></div><div><dt>Reflection</dt><dd>${escapeHtml(note || 'No reflection recorded')}</dd></div><div><dt>Completed milestones</dt><dd>${selected.length} of ${config.milestones.length}</dd></div></dl><button class="button-primary" data-action="journey-edit" data-id="${stageId}">Add evidence and reflection</button></section>`,
     community: `<section class="panel stage-tab-panel"><p class="eyebrow">LEARN FROM CONTEXT, NOT CONSENSUS</p><h3>See how other learners approached ${escapeHtml(config.title)}.</h3><p>Compare constraints, doubts, reversals and evidence. A popular answer is not automatically the right answer for you.</p><button class="button-primary" data-action="stage-community" data-id="${stageId}">Open related discussions</button></section>`,
     ai: `<section class="panel stage-tab-panel"><p class="eyebrow">AI LENS</p><h3>${state.aiJourney.stageAnswers[stageId]?.trim() ? 'You have an AI reflection for this stage.' : 'One AI question is still open.'}</h3><p>${escapeHtml(aiStagePrompts[stageId])}</p>${state.aiJourney.stageAnswers[stageId]?.trim() ? `<blockquote>${escapeHtml(state.aiJourney.stageAnswers[stageId])}</blockquote>` : ''}<button class="button-primary" data-action="journey-edit" data-id="${stageId}">${state.aiJourney.stageAnswers[stageId]?.trim() ? 'Review AI evidence' : 'Answer the AI question'}</button></section>`,
   }[stageTab];
+  const tabContent = stageTab === 'focus' ? renderStageLearningPlan(stageId, completion, statusCounts, nextMilestones) : legacyTabContent;
   return `<div class="view-enter journey-stage-page">
     <header class="journey-stage-hero panel"><div><p class="eyebrow">${config.step}</p><h2>${config.title}</h2><p>${config.copy}</p></div><div class="stage-completion"><strong>${completion}%</strong><span>${statusCounts.complete} complete · ${statusCounts.doing} active</span></div></header>
     <nav class="stage-tabs" aria-label="${escapeHtml(config.title)} sections">${tabs.map(([id, label]) => `<button data-action="stage-tab" data-value="${id}" class="${stageTab === id ? 'active' : ''}" aria-current="${stageTab === id ? 'page' : 'false'}">${label}</button>`).join('')}</nav>
@@ -2218,7 +2366,7 @@ function renderStudentAssessment() {
   const active = callingAssessmentTypes.find((type) => type.id === activeId) || callingAssessmentTypes[0];
   const answered = callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[active.id] || {}, trait.id)).length;
   const activeIndex = callingAssessmentTypes.findIndex((type) => type.id === active.id);
-  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[type.id] || {}, trait.id)).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const hasValue = Object.hasOwn(state.calling.assessment?.[active.id] || {}, trait.id); const value = Number(state.calling.assessment?.[active.id]?.[trait.id] ?? 0); return `<article class="assessment-trait-row ${hasValue ? 'answered' : ''}" style="--trait:${trait.color};--rating-color:${ratingColor(value)}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><div class="trait-prompt"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></div><div class="trait-scale nps-scale" role="radiogroup" aria-label="${escapeHtml(trait.label)}: ${escapeHtml(question[0])}"><div class="nps-options">${Array.from({ length: 11 }, (_, score) => `<label class="nps-score" title="${score === 0 ? escapeHtml(question[1]) : score === 10 ? escapeHtml(question[2]) : `${score} out of 10`}"><input type="radio" name="assessment-${active.id}-${trait.id}" value="${score}" data-calling-assessment="${active.id}:${trait.id}" ${hasValue && value === score ? 'checked' : ''}><span>${score}</span></label>`).join('')}</div><div class="nps-anchors"><small>${escapeHtml(question[1])}</small><output id="assessment-${active.id}-${trait.id}-readout">${hasValue ? `${value}/10` : 'Not answered'}</output><small>${escapeHtml(question[2])}</small></div></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
+  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[type.id] || {}, trait.id)).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const hasValue = Object.hasOwn(state.calling.assessment?.[active.id] || {}, trait.id); const value = Number(state.calling.assessment?.[active.id]?.[trait.id] ?? 0); return `<article class="assessment-trait-row ${hasValue ? 'answered' : ''}" style="--trait:${trait.color};--rating-color:${hasValue ? ratingColor(value) : '#8b94a7'}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><div class="trait-prompt"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></div><div class="trait-scale nps-scale" role="radiogroup" aria-label="${escapeHtml(trait.label)}: ${escapeHtml(question[0])}"><div class="nps-options">${Array.from({ length: 11 }, (_, score) => `<label class="nps-score" title="${score === 0 ? escapeHtml(question[1]) : score === 10 ? escapeHtml(question[2]) : `${score} out of 10`}"><input type="radio" name="assessment-${active.id}-${trait.id}" value="${score}" data-calling-assessment="${active.id}:${trait.id}" ${hasValue && value === score ? 'checked' : ''}><span>${score}</span></label>`).join('')}</div><div class="nps-anchors"><small>${escapeHtml(question[1])}</small><output id="assessment-${active.id}-${trait.id}-readout">${hasValue ? `${value}/10` : 'Not answered'}</output><small>${escapeHtml(question[2])}</small></div></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
 }
 
 function renderAssessmentRecommendations() {
@@ -2434,6 +2582,28 @@ function renderStudyChapter(context) {
     : tab === 'assignments' ? `<div class="chapter-reading"><h3>One meaningful assignment</h3><p>Create a one-page teaching sheet for ${escapeHtml(item.title)}: a concept map, one worked example, one plausible wrong answer, and a correction. For JEE tracks, add a mixed problem that combines this topic with an earlier one.</p><button class="button-primary" data-action="study-assignment" data-id="${item.id}">Add assignment to planner</button></div>`
     : `<div class="mastery-control"><p>Mastery should mean you can explain, retrieve, apply, and repair—not that you have seen the page.</p><output>${mastery}%</output><input data-study-mastery="${item.id}" type="range" min="0" max="100" step="10" value="${mastery}"><div>${['not-started','learning','revision','mastered'].map((value) => `<button data-action="study-status" data-id="${item.id}" data-value="${value}" class="${status === value ? 'active' : ''}">${value.replace('-',' ')}</button>`).join('')}</div></div>`;
   return `<div class="study-chapter-workspace"><button class="chapter-back" data-action="study-chapter-close">← Back to curriculum</button><header><span>${escapeHtml(context.track.label)} · ${escapeHtml(state.studyGuide.subject)} · Chapter ${item.number}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.focus)}</p></header><nav class="chapter-tabs" aria-label="Chapter workspace">${tabs.map(([id,label]) => `<button data-action="study-chapter-tab" data-value="${id}" class="${tab === id ? 'active' : ''}">${escapeHtml(label)}</button>`).join('')}</nav><section class="chapter-tab-body">${body}</section></div>`;
+}
+
+function journeyStudyTrackIds(stageId) {
+  return stageId === 'grade11' ? ['grade11'] : stageId === 'grade12' ? ['grade12', 'jeeMain', 'jeeAdvanced'] : [];
+}
+
+function renderJourneyStudyGuide(stageId) {
+  const availableTrackIds = journeyStudyTrackIds(stageId);
+  if (!availableTrackIds.length) return '';
+  const activeTrackId = availableTrackIds.includes(state.studyGuide.track) ? state.studyGuide.track : availableTrackIds[0];
+  if (state.studyGuide.track !== activeTrackId) {
+    state.studyGuide.track = activeTrackId;
+    state.studyGuide.subject = Object.keys(studyTracks[activeTrackId].subjects)[0];
+    state.studyGuide.selectedChapterId = '';
+    state.studyGuide.search = '';
+  }
+  const context = activeStudyContext();
+  if (context.selected) return `<section class="journey-study-guide">${renderStudyChapter(context)}</section>`;
+  const sections = [['overview','Overview'],['curriculum','Curriculum'],['planner','Planner'],['progress','Progress']];
+  const content = state.studyGuide.section === 'curriculum' ? renderStudyCurriculum(context) : state.studyGuide.section === 'planner' ? renderStudyPlanner(context) : state.studyGuide.section === 'progress' ? renderStudyProgress(context) : renderStudyOverview(context);
+  const trackSwitch = availableTrackIds.length > 1 ? `<nav class="journey-study-tracks" aria-label="Grade 12 study routes">${availableTrackIds.map((trackId) => { const track = studyTracks[trackId]; return `<button data-action="study-track" data-value="${trackId}" class="${trackId === context.track.id ? 'active' : ''}" aria-pressed="${trackId === context.track.id}"><strong>${escapeHtml(track.label)}</strong><small>${escapeHtml(track.short)}</small></button>`; }).join('')}</nav>` : `<div class="journey-study-track-label"><strong>${escapeHtml(context.track.label)}</strong><span>${escapeHtml(context.track.short)}</span></div>`;
+  return `<section class="journey-study-guide"><header class="journey-study-head"><div><h3>${escapeHtml(context.track.label)} learning workspace</h3><p>Curriculum, planning and mastery evidence now stay with this year of your journey.</p></div><span>${Object.values(context.track.subjects).flat().length} chapters</span></header>${trackSwitch}<div class="study-command"><nav aria-label="Study Guide sections">${sections.map(([id,label]) => `<button data-action="study-section" data-value="${id}" class="${state.studyGuide.section === id ? 'active' : ''}">${label}</button>`).join('')}</nav><label>Subject<select data-study-subject>${context.subjects.map((subject) => `<option ${subject === state.studyGuide.subject ? 'selected' : ''}>${escapeHtml(subject)}</option>`).join('')}</select></label></div>${content}</section>`;
 }
 
 function renderStudyGuide() {
