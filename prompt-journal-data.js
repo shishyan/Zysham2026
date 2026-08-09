@@ -1,5 +1,30 @@
 window.PROMPT_JOURNAL_ENTRIES = [
     {
+        "id":  "c5f92bea-e0b3-441f-87f0-43fa793f2166",
+        "timestamp":  "2026-08-08T08:26:49.2190000Z",
+        "message":  "first step, I need a new page to document all my prompts as-is so my daughter can learn when she does this herself."
+    },
+    {
+        "id":  "39b2236d-fb74-4dfb-b507-fca58e031874",
+        "timestamp":  "2026-08-08T08:26:49.2200000Z",
+        "message":  "After obsorbing what has been developed so far, find the top 5 industry players on Career Guidance, then choose their best features and implement them from scrach and then integrate the unique features from existing development. Give 3 different theme options -- Aurora mild theme is prefered, then green-teal, and violet-purple theme. No unncessary background. Keep the App background as the primary background as in Home-Manager app. Design should be whatever appropriate for Career guidance (target audience is Students and Parents).\n\nEnsure this is award winning clever design. Use 3 Sol Agents."
+    },
+    {
+        "id":  "09813d46-d1b0-4f6f-81d9-9c170484b6cf",
+        "timestamp":  "2026-08-08T09:25:48.1450000Z",
+        "message":  "Sidebar Navigation design \u003e Use this design as inspiration, but make the thicker part as the top side (flip it vertically)\n\nAlso, now I prefer the Career Journey must be tracked horizontally in the top bar a progression bar (like railway journey with stops -- and each stop should correspond to major decision points starting from 10th grade to getting employed. The choices should be absolutely comprehensive -- starting with CBSE, ICSE, and so on, then subjects, schools, and what not. The recommendation is easier in the early stages based on location, later it opens up at college level, based on real burning desire of the student. (Getting employment itself a transient journey, but the end is more towards retirement -- but that\u0027s very advanced level right now -- so park that)."
+    },
+    {
+        "id":  "d9e21a9d-1cc1-4094-a722-502d1aa6e0bb",
+        "timestamp":  "2026-08-08T09:25:48.1470000Z",
+        "message":  "Replace Plan background with Images of Students in College/University background. Give 6 different options in Settings panel. Background is 85% dimmed."
+    },
+    {
+        "id":  "3475492c-71da-41fa-9e39-c63685293f4a",
+        "timestamp":  "2026-08-08T09:25:48.1800000Z",
+        "message":  "Also enhance this app as a Career Experience Platform to share experiences of all students of the india on their career journey (download 500 different experiences story from real and simulated journey from different sources and perspectives (even different countries) -- Add an experience menu to capture all that, both to view, share their own, search and see metrics .\nAlso, the add a dedicated \"AI Journey\" menu -- how AI is impacting everyone in all parts of their career journey -- This should also be tagged in their main journey lifecycle -- as AI has become the default knowledge source, and human becoming the decision makers -- this now creates new set of challenges to the students on their career choice. So, ensure you integrate this perspective and related questions in their journey path and questions. -- Implement this however approprate as you see fit. Use agents as needed."
+    },
+    {
         "id":  "8335aac0-4434-42af-bcd6-97e4e7bfcffa",
         "timestamp":  "2026-08-08T14:23:00.7900000Z",
         "message":  "can you build the workspace for this git? [https://sashanaga.github.io/Zysham/](https://sashanaga.github.io/Zysham/)"
@@ -10,34 +35,9 @@ window.PROMPT_JOURNAL_ENTRIES = [
         "message":  "Now push this has Zysham2026 (to new repository) -- and rename the local repo as well so we keep the original as intact"
     },
     {
-        "id":  "c5f92bea-e0b3-441f-87f0-43fa793f2166",
-        "timestamp":  "2026-08-08T14:23:00.7910000Z",
-        "message":  "first step, I need a new page to document all my prompts as-is so my daughter can learn when she does this herself."
-    },
-    {
-        "id":  "39b2236d-fb74-4dfb-b507-fca58e031874",
-        "timestamp":  "2026-08-08T14:23:00.7920000Z",
-        "message":  "After obsorbing what has been developed so far, find the top 5 industry players on Career Guidance, then choose their best features and implement them from scrach and then integrate the unique features from existing development. Give 3 different theme options -- Aurora mild theme is prefered, then green-teal, and violet-purple theme. No unncessary background. Keep the App background as the primary background as in Home-Manager app. Design should be whatever appropriate for Career guidance (target audience is Students and Parents).\n\nEnsure this is award winning clever design. Use 3 Sol Agents."
-    },
-    {
         "id":  "73fc67c6-fae3-42b3-b5b5-42e47e0863cf",
         "timestamp":  "2026-08-08T14:23:00.7940000Z",
         "message":  "Content area should be curved.  Then ensure you bring the original design ideas of animal assistants and zipped login page as well.  Create a right sidebar that shows the career progression (starting at the bottom with 10th, then at each stage, you need show milestones, then choices made etc. The progression must be tree of choices. Your design hasn\u0027t shown the end as a progressive workflow -- a series of choices and the performances in each stage. Think wise, and architect accordingly."
-    },
-    {
-        "id":  "09813d46-d1b0-4f6f-81d9-9c170484b6cf",
-        "timestamp":  "2026-08-08T14:23:00.7960000Z",
-        "message":  "Sidebar Navigation design \u003e Use this design as inspiration, but make the thicker part as the top side (flip it vertically)\n\nAlso, now I prefer the Career Journey must be tracked horizontally in the top bar a progression bar (like railway journey with stops -- and each stop should correspond to major decision points starting from 10th grade to getting employed. The choices should be absolutely comprehensive -- starting with CBSE, ICSE, and so on, then subjects, schools, and what not. The recommendation is easier in the early stages based on location, later it opens up at college level, based on real burning desire of the student. (Getting employment itself a transient journey, but the end is more towards retirement -- but that\u0027s very advanced level right now -- so park that)."
-    },
-    {
-        "id":  "d9e21a9d-1cc1-4094-a722-502d1aa6e0bb",
-        "timestamp":  "2026-08-08T14:23:00.7970000Z",
-        "message":  "Replace Plan background with Images of Students in College/University background. Give 6 different options in Settings panel. Background is 85% dimmed."
-    },
-    {
-        "id":  "3475492c-71da-41fa-9e39-c63685293f4a",
-        "timestamp":  "2026-08-08T14:23:00.8330000Z",
-        "message":  "Also enhance this app as a Career Experience Platform to share experiences of all students of the india on their career journey (download 500 different experiences story from real and simulated journey from different sources and perspectives (even different countries) -- Add an experience menu to capture all that, both to view, share their own, search and see metrics .\nAlso, the add a dedicated \"AI Journey\" menu -- how AI is impacting everyone in all parts of their career journey -- This should also be tagged in their main journey lifecycle -- as AI has become the default knowledge source, and human becoming the decision makers -- this now creates new set of challenges to the students on their career choice. So, ensure you integrate this perspective and related questions in their journey path and questions. -- Implement this however approprate as you see fit. Use agents as needed."
     },
     {
         "id":  "58c3932a-380d-419d-9381-cbc3e299ed4d",
@@ -181,152 +181,152 @@ window.PROMPT_JOURNAL_ENTRIES = [
     },
     {
         "id":  "cc57b9c4-38f8-47c6-93b7-b7580cc3d7f6",
-        "timestamp":  "2026-08-08T14:56:48.7070000Z",
+        "timestamp":  "2026-08-08T14:56:35.2840000Z",
         "message":  "Combine Travel, Entertainment, Web Life as one menu called \"Leisure\" and have those menu items as tabs."
     },
     {
         "id":  "6ae1d752-91b3-4880-8a29-4eeb6010febc",
-        "timestamp":  "2026-08-08T14:56:48.7590000Z",
+        "timestamp":  "2026-08-08T14:56:35.2850000Z",
         "message":  "And Today menu item should be a page and first page -- within Household (rename it as Home) -- and not a dedicated menu."
     },
     {
-        "id":  "30a898f8-1f0b-4240-ba0b-3159f9f74449",
-        "timestamp":  "2026-08-08T14:56:48.7620000Z",
-        "message":  "And rename \"Care\" menu as \"Health\""
-    },
-    {
         "id":  "26dd98bd-a416-4211-909f-2eef1802421c",
-        "timestamp":  "2026-08-08T14:56:48.7630000Z",
+        "timestamp":  "2026-08-08T14:56:35.2870000Z",
         "message":  "Household/home and Family menu are messed up, so many duplicates or disorgniazed. Combine them as one, then organize it as nice tabs and sub menu items as apporpriate."
     },
     {
+        "id":  "30a898f8-1f0b-4240-ba0b-3159f9f74449",
+        "timestamp":  "2026-08-08T14:56:35.2870000Z",
+        "message":  "And rename \"Care\" menu as \"Health\""
+    },
+    {
         "id":  "0f2f69b2-af3c-46a9-88c2-ab60f04a147e",
-        "timestamp":  "2026-08-08T14:56:48.7670000Z",
+        "timestamp":  "2026-08-08T14:56:35.2890000Z",
         "message":  "ok make it warm red without green mix on the left side and purple violet on the right side"
     },
     {
         "id":  "25ec941b-a858-4826-9625-525f6022b413",
-        "timestamp":  "2026-08-08T14:56:48.7670000Z",
+        "timestamp":  "2026-08-08T14:56:35.2890000Z",
         "message":  "Make the left side of the app slightly warm red (255,70,45) gradient with dark green mixed -- than the current blue gradient."
     },
     {
         "id":  "bdd60fd0-7fa9-4749-93c7-fa60ce8ed26e",
-        "timestamp":  "2026-08-08T14:56:48.7690000Z",
+        "timestamp":  "2026-08-08T14:56:35.2900000Z",
         "message":  "this is not good. give me your best options (3-5 in settings - and choose your professional default)"
     },
     {
         "id":  "4c0749ea-9fb9-4765-9ec3-281ef96c8a48",
-        "timestamp":  "2026-08-08T14:56:48.7710000Z",
+        "timestamp":  "2026-08-08T14:56:35.2920000Z",
         "message":  "ok add teal green gradient"
     },
     {
         "id":  "7f50b978-07ad-4191-8564-0f1433d48cda",
-        "timestamp":  "2026-08-08T14:56:48.7710000Z",
+        "timestamp":  "2026-08-08T14:56:35.2920000Z",
         "message":  "make teal green as default"
     },
     {
-        "id":  "724c1f76-9122-474a-a6b3-60961ce93667",
-        "timestamp":  "2026-08-08T14:56:48.7720000Z",
-        "message":  "Move the lanugage switcher to the top right section"
-    },
-    {
         "id":  "69fd9892-2516-476a-8b93-4a67c01b9714",
-        "timestamp":  "2026-08-08T14:56:48.7730000Z",
+        "timestamp":  "2026-08-08T14:56:35.2930000Z",
         "message":  "In fact I prefer teal-green colored abstract background (instead of plain gradient)"
     },
     {
-        "id":  "7bdcc21d-a921-472d-a649-4e7833453406",
-        "timestamp":  "2026-08-08T14:56:48.7730000Z",
-        "message":  "Scrolling the settings page is going over the top bar (green color)"
+        "id":  "724c1f76-9122-474a-a6b3-60961ce93667",
+        "timestamp":  "2026-08-08T14:56:35.2930000Z",
+        "message":  "Move the lanugage switcher to the top right section"
     },
     {
         "id":  "634a3b2b-b524-4a2c-9194-95d3d8a96fcb",
-        "timestamp":  "2026-08-08T14:56:48.7890000Z",
+        "timestamp":  "2026-08-08T14:56:35.2940000Z",
         "message":  "Replace the menu samaiyalarai with \"Unavu\" in tamil."
     },
     {
+        "id":  "7bdcc21d-a921-472d-a649-4e7833453406",
+        "timestamp":  "2026-08-08T14:56:35.2940000Z",
+        "message":  "Scrolling the settings page is going over the top bar (green color)"
+    },
+    {
         "id":  "57ef831d-2979-4734-81ab-50c87afbb171",
-        "timestamp":  "2026-08-08T14:56:48.7900000Z",
+        "timestamp":  "2026-08-08T14:56:35.2950000Z",
         "message":  "The abstract design for green background should more like modern electronics CPU chip like design, not random circles"
     },
     {
         "id":  "beed1acc-455f-4a79-bf88-191108d8a419",
-        "timestamp":  "2026-08-08T14:56:48.7910000Z",
+        "timestamp":  "2026-08-08T14:56:35.2950000Z",
         "message":  "I started the google sycn, but I see no progress that I can check and I dont know what has synced so far."
     },
     {
         "id":  "7bd710d2-f4f6-48da-93ae-e343337dabf7",
-        "timestamp":  "2026-08-08T14:56:48.7930000Z",
+        "timestamp":  "2026-08-08T14:56:35.2960000Z",
         "message":  "I want google contacts to sync first automatically"
     },
     {
         "id":  "552b29c3-1d41-4809-957b-c72f0c6dc155",
-        "timestamp":  "2026-08-08T14:56:48.7940000Z",
+        "timestamp":  "2026-08-08T14:56:35.2970000Z",
         "message":  "then google calendar, tasks"
     },
     {
         "id":  "4a5896c0-4e18-4b48-a97b-5a06070ffaad",
-        "timestamp":  "2026-08-08T14:56:48.7950000Z",
+        "timestamp":  "2026-08-08T14:56:35.2980000Z",
         "message":  "background design -- not good -- look for teal color background or create one using imagegen -- install"
     },
     {
         "id":  "4022883e-3304-4e8a-9485-04ff49fb596b",
-        "timestamp":  "2026-08-08T14:56:48.8040000Z",
+        "timestamp":  "2026-08-08T14:56:35.3050000Z",
         "message":  "உணவு - this should be in tamil only when Tamil language is selected."
     },
     {
-        "id":  "16562b9f-22ab-48f7-bd64-051a44a0a16e",
-        "timestamp":  "2026-08-08T14:56:48.8050000Z",
-        "message":  "ok merge all tree branches into one branch ALWAYS. I dont need multiple branch. for anyhting. During development, it makes no sense to me, if I am the only developer. I can always revert commits."
-    },
-    {
         "id":  "7fae4302-ea7e-4a03-87d2-27f633b2874d",
-        "timestamp":  "2026-08-08T14:56:48.8050000Z",
+        "timestamp":  "2026-08-08T14:56:35.3050000Z",
         "message":  "Why the Github pages build don\u0027t show the latest version??"
     },
     {
+        "id":  "16562b9f-22ab-48f7-bd64-051a44a0a16e",
+        "timestamp":  "2026-08-08T14:56:35.3060000Z",
+        "message":  "ok merge all tree branches into one branch ALWAYS. I dont need multiple branch. for anyhting. During development, it makes no sense to me, if I am the only developer. I can always revert commits."
+    },
+    {
         "id":  "8c309983-b207-411d-879d-ef652e01340e",
-        "timestamp":  "2026-08-08T14:56:48.8070000Z",
+        "timestamp":  "2026-08-08T14:56:35.3080000Z",
         "message":  "ensure future commits have versioning prefixed and it auto increments without having to enter it manually."
     },
     {
         "id":  "cbb7acc8-da7d-4491-a0cc-336932341232",
-        "timestamp":  "2026-08-08T14:56:48.8080000Z",
+        "timestamp":  "2026-08-08T14:56:35.3100000Z",
         "message":  "Can  you make food images for relevant recipes? I see the app is lacking images in most places. This is the right time to implement that. Use 3 agents if needed."
     },
     {
         "id":  "723ef0d2-a7dc-4e70-bf23-eaad15bd7677",
-        "timestamp":  "2026-08-08T14:56:48.8120000Z",
+        "timestamp":  "2026-08-08T14:56:35.3120000Z",
         "message":  "The contacts I imported didn\u0027t go through. I want to ensure all imported Google contacts are stored in database."
     },
     {
         "id":  "85de64c0-2f3b-43e7-9292-59198bc739cd",
-        "timestamp":  "2026-08-08T14:56:48.8160000Z",
+        "timestamp":  "2026-08-08T14:56:35.3140000Z",
         "message":  "Make the Midnight Indigo as the default theme for the app."
     },
     {
         "id":  "b9de8386-d456-4c85-b892-e41df8160019",
-        "timestamp":  "2026-08-08T14:56:48.8190000Z",
+        "timestamp":  "2026-08-08T14:56:35.3160000Z",
         "message":  "scrolling is overflowing the content area? fix -- this is happening for few other pages as well such as settings and other. The top bar should remain visible, no overlay from any otherpage content.\n\nOnce done, my daughter wanted ALL formuale for all chapters displayed in their respective tabs, not just few."
     },
     {
         "id":  "76ba4846-7d39-4ca1-b3f9-3cd1d50448b3",
-        "timestamp":  "2026-08-08T14:56:48.8240000Z",
+        "timestamp":  "2026-08-08T14:56:35.3190000Z",
         "message":  "push and deploy github pages"
     },
     {
         "id":  "fdaac9d5-943c-4506-b11f-0b175e6adbb5",
-        "timestamp":  "2026-08-08T14:56:48.8260000Z",
+        "timestamp":  "2026-08-08T14:56:35.3220000Z",
         "message":  "Sub-chapters are a mess? there are so many irrelevant or invalid subjects with just 1 or 2 letter as the chapter name??"
     },
     {
         "id":  "f1bea839-257d-4feb-9658-e4617fcd1e1c",
-        "timestamp":  "2026-08-08T14:56:48.8350000Z",
+        "timestamp":  "2026-08-08T14:56:35.3290000Z",
         "message":  "We just tested this in Mobile -- it\u0027s a mess. The menu is transparent? and the top bar is cluttered. Test it fully and adjust the layouts accordingly."
     },
     {
         "id":  "69b0a115-d65b-4f84-9371-865487547662",
-        "timestamp":  "2026-08-08T14:56:48.8390000Z",
+        "timestamp":  "2026-08-08T14:56:35.3320000Z",
         "message":  "Look at the usless sub-chapter summary -- Take time to do this properly if you can. Use few agents as needed."
     },
     {
@@ -366,127 +366,127 @@ window.PROMPT_JOURNAL_ENTRIES = [
     },
     {
         "id":  "ae451add-3ab7-45e1-b921-4c80e241ae14",
-        "timestamp":  "2026-08-09T00:01:02.1890000Z",
+        "timestamp":  "2026-08-09T00:01:10.0620000Z",
         "message":  "FInd your calling and Decision Tools should be merged as on \"Find Your Calling\" -- make that as the primary menu. Then My Journey should start with Overview, then convert the yearly path menu items as dedicated tabs within the My Journey itself."
     },
     {
         "id":  "3dd526a1-ddba-438f-aea0-5cde7837ff56",
-        "timestamp":  "2026-08-09T00:01:02.1900000Z",
+        "timestamp":  "2026-08-09T00:01:10.0630000Z",
         "message":  "Login Page \u003e Remove Nine Glimpses and etc \u003e\u003e Rename it with the \"Figure your life out\" in same font as the original design. Add sub-title \"Who do you want to become?\""
     },
     {
         "id":  "94d91943-757c-4014-baca-cdc345a307a6",
-        "timestamp":  "2026-08-09T00:01:02.1900000Z",
+        "timestamp":  "2026-08-09T00:01:10.0630000Z",
         "message":  "Team Blog and Newseltter menu items should move to the top right corner. And enusre they have proper industry standard templates with modern colroful designs."
     },
     {
         "id":  "96a4cfe8-c092-42cb-a3be-9d709ebf1276",
-        "timestamp":  "2026-08-09T00:01:02.1920000Z",
+        "timestamp":  "2026-08-09T00:01:10.0650000Z",
         "message":  "commit push then ensure github deploy pages complete"
     },
     {
         "id":  "f13360bb-3a6c-49e4-ae61-0714a21946ed",
-        "timestamp":  "2026-08-09T00:01:02.1930000Z",
+        "timestamp":  "2026-08-09T00:01:10.0660000Z",
         "message":  "Allow for progress tracking at each stage level and milestones level -- provide list of milestones for each stage that student can track. Think like a student and design what matters the most for you and what could each milestone be for each stage -- when in doubt , takethe high road and purpose driven targets, not random or peer pressure."
     },
     {
         "id":  "f1d79948-b877-4de9-8326-4f9e8ac47e2d",
-        "timestamp":  "2026-08-09T00:01:02.1940000Z",
+        "timestamp":  "2026-08-09T00:01:10.0680000Z",
         "message":  "commit push then ensure github deploy pages complete"
     },
     {
         "id":  "317e43c5-ec76-4ee8-8445-8e1890a7096e",
-        "timestamp":  "2026-08-09T00:01:02.1950000Z",
+        "timestamp":  "2026-08-09T00:01:10.0690000Z",
         "message":  "Find your calling -- Three questions should be prominent. And your taste for page design is F GRADE."
     },
     {
         "id":  "22038250-cc58-4186-8006-53952466a0c9",
-        "timestamp":  "2026-08-09T00:01:02.1960000Z",
+        "timestamp":  "2026-08-09T00:01:10.0700000Z",
         "message":  "commit push then ensure github deploy pages complete"
     },
     {
-        "id":  "a2efea28-3476-411d-97e9-08dee144222a",
-        "timestamp":  "2026-08-09T00:01:02.1960000Z",
-        "message":  "Stop repeating what I am saying -- Show by design , not by literal copy paste - -are you using your brain? **Begin with three honest questions. \u003e\u003e Remove that.**"
-    },
-    {
         "id":  "7109ca4e-eb17-4686-846f-d9922cf73355",
-        "timestamp":  "2026-08-09T00:01:02.1970000Z",
+        "timestamp":  "2026-08-09T00:01:10.0710000Z",
         "message":  "Left Sidebar \u003e Use proper menu icons for the menu items.\n\n Make the top bar transparent."
     },
     {
+        "id":  "a2efea28-3476-411d-97e9-08dee144222a",
+        "timestamp":  "2026-08-09T00:01:10.0710000Z",
+        "message":  "Stop repeating what I am saying -- Show by design , not by literal copy paste - -are you using your brain? **Begin with three honest questions. \u003e\u003e Remove that.**"
+    },
+    {
         "id":  "5449dceb-1a30-4d20-bee7-f7565da89c84",
-        "timestamp":  "2026-08-09T00:01:02.1980000Z",
+        "timestamp":  "2026-08-09T00:01:10.0720000Z",
         "message":  "Content background -- make it more opaque"
     },
     {
-        "id":  "3e20121f-ee71-4a1a-a51d-da484faf87e4",
-        "timestamp":  "2026-08-09T00:01:02.1990000Z",
-        "message":  "AI CHat is useless. Ensure it uses SLM and the app content properly. Train it accordingly."
-    },
-    {
         "id":  "94d63ba6-330f-41a2-9868-d6d54937664e",
-        "timestamp":  "2026-08-09T00:01:02.1990000Z",
+        "timestamp":  "2026-08-09T00:01:10.0730000Z",
         "message":  "Use colorful title text / header text for most pages."
     },
     {
-        "id":  "88b9bffc-575d-429e-b673-21e51264ace2",
-        "timestamp":  "2026-08-09T00:01:02.2010000Z",
-        "message":  "commit push and deploy github pages"
+        "id":  "3e20121f-ee71-4a1a-a51d-da484faf87e4",
+        "timestamp":  "2026-08-09T00:01:10.0740000Z",
+        "message":  "AI CHat is useless. Ensure it uses SLM and the app content properly. Train it accordingly."
     },
     {
         "id":  "88c217a5-2251-4eb2-b94e-60418a56c8bb",
-        "timestamp":  "2026-08-09T00:01:02.2010000Z",
+        "timestamp":  "2026-08-09T00:01:10.0750000Z",
         "message":  "Make the violet-purple as the default color theme for the app."
     },
     {
+        "id":  "88b9bffc-575d-429e-b673-21e51264ace2",
+        "timestamp":  "2026-08-09T00:01:10.0760000Z",
+        "message":  "commit push and deploy github pages"
+    },
+    {
         "id":  "d263cb2c-7754-4a6d-a497-16f1dd0d5e4f",
-        "timestamp":  "2026-08-09T00:01:02.2020000Z",
+        "timestamp":  "2026-08-09T00:01:10.0760000Z",
         "message":  "Questions cant be answered?? may be due to no profile? this should not be the case. Only when saving the data you need profile"
     },
     {
         "id":  "bdc1e7bf-d7ac-4aff-a588-d46e83666c80",
-        "timestamp":  "2026-08-09T00:01:02.2040000Z",
+        "timestamp":  "2026-08-09T00:01:10.0780000Z",
         "message":  "**The local model could not run (Unable to find a compatible GPU. This issue might be because your computer doesn\u0027t have a GPU, or your system settings are not configured properly. Please check if your device has a GPU properly set up and if your your browser supports WebGPU. You can also consult your browser\u0027s compatibility chart to see if it supports WebGPU. For more information about WebGPU support in your browser, visit https://webgpureport.org/). Let’s separate pressure from evidence. For GRADE 10, the most useful next move is “Write the first NO-NO list”. Make it small enough to complete, then record what felt energising, draining, difficult, and worth repeating. Paths still worth testing in the current sample: Biomedical Engineer, Sustainability Analyst, Doctor / MBBS route. Based on 1 work-reality answers. This is a recommendation to test, not a verdict.**"
     },
     {
         "id":  "c97817e2-1ca5-4858-b2d9-6372d1b487de",
-        "timestamp":  "2026-08-09T00:01:02.2040000Z",
+        "timestamp":  "2026-08-09T00:01:10.0790000Z",
         "message":  "download SLM and imlement"
     },
     {
         "id":  "33bb151c-2eff-4b59-a3eb-655212c3c330",
-        "timestamp":  "2026-08-09T00:01:02.2070000Z",
+        "timestamp":  "2026-08-09T00:01:10.0820000Z",
         "message":  "ok Find your calling -- related to 3 questions -- 108 options is too much. Make it 18 options ."
     },
     {
         "id":  "28a2b18b-ef25-4556-a20a-927f525199aa",
-        "timestamp":  "2026-08-09T00:01:02.2080000Z",
+        "timestamp":  "2026-08-09T00:01:10.0830000Z",
         "message":  "***Team Blog, Newsletter \u003e\u003e These are not visible. Also, where is the user profile icon in the top right corner? and is there any right sidebar hiddne?***"
     },
     {
         "id":  "89d6610e-a8b8-40fd-b712-3893d351c479",
-        "timestamp":  "2026-08-09T00:01:02.2090000Z",
+        "timestamp":  "2026-08-09T00:01:10.0840000Z",
         "message":  "I dont see the proper worklfow for Student assessment. Perhaps there are 3 different types of assessments, one is personality, burning desire, and capability. In true sense, there should be 7 traits and each should be assessed, then 7 recommendations be given for the current stage they are in, and the next steps for the immediate stages as well."
     },
     {
         "id":  "311ace9c-3595-40c7-813d-2784fbea9688",
-        "timestamp":  "2026-08-09T00:01:02.2110000Z",
+        "timestamp":  "2026-08-09T00:01:10.0870000Z",
         "message":  "Remove all clutters in the left sidebar -- I dont need unncessary headings, subtitle, inside the menu items -- Icons, Menu, Menu items, colorful. Clicking on menu group should auto -expand and collapse"
     },
     {
         "id":  "d43de27b-1f4b-48d0-935a-eab07e8afa63",
-        "timestamp":  "2026-08-09T00:01:02.2120000Z",
+        "timestamp":  "2026-08-09T00:01:10.0880000Z",
         "message":  "USE 3 AGENTS.\n\nEach grade page should have a milestones process workflow using Chevron steppers.  Implement all features and content from this website beyond10th.com, [https://brighttutorials.in/blogs/career-options-after-class-10-complete-guide-parents-2026](https://brighttutorials.in/blogs/career-options-after-class-10-complete-guide-parents-2026)\n[https://dizitaladda.com/blogs/career-guidance-after-10th-complete-guide-2026](https://dizitaladda.com/blogs/career-guidance-after-10th-complete-guide-2026)\n\n[https://www.curominds.com/blog/career-options-after-10th/](https://www.curominds.com/blog/career-options-after-10th/)\n\nCreate a new menu The Dream Job \u003e\u003e And add this and similar content for prestigious companies [https://careershuru.com/blog/how-to-get-job-at-google-after-10th/](https://careershuru.com/blog/how-to-get-job-at-google-after-10th/)  (Iwould recommend copy most of the good features and content from this site -- this is good).\n\nHOWEVER, REMEMBER, OUR SITE IS MUCH DEEPER AND PROFOUND THAN MOST. IT ASKS THE MOST IMPORTANT QUESTION OF THEIR LIFE. WHO DO THEY WANT TO BE COME OR KNOWN FOR? -- That should be driving factor. All else is side process."
     },
     {
         "id":  "8d827817-e09f-46e7-b340-e371ea2a621b",
-        "timestamp":  "2026-08-09T00:01:02.2140000Z",
+        "timestamp":  "2026-08-09T00:01:10.0910000Z",
         "message":  "Copy content from this site as well but for Blog and Newsletters.\n\n[https://www.infichoice.com/articles](https://www.infichoice.com/articles)"
     },
     {
         "id":  "efaeed52-1985-42bf-9410-0fe6ed8306ca",
-        "timestamp":  "2026-08-09T00:01:02.2160000Z",
+        "timestamp":  "2026-08-09T00:01:10.0920000Z",
         "message":  "Add these content under \"The Dream Job\" menu - Use 3 Agents\n\n[https://thepallikoodam.com/from-passion-to-profession-how-to-make-a-career-in-performing-arts/](https://thepallikoodam.com/from-passion-to-profession-how-to-make-a-career-in-performing-arts/)\n[https://www.edumilestones.com/career-library/How-to-become-a-Performing-Artist-in-India-Career-Guidance](https://www.edumilestones.com/career-library/How-to-become-a-Performing-Artist-in-India-Career-Guidance)\n[https://www.edumilestones.com/career-library/How-to-become-a-Performing-Artist-in-India-Career-Guidance](https://www.edumilestones.com/career-library/How-to-become-a-Performing-Artist-in-India-Career-Guidance)\n[https://advocategandhi.com/building-a-career-in-music-opportunities-challenges-and-the-path-to-professional-success/](https://advocategandhi.com/building-a-career-in-music-opportunities-challenges-and-the-path-to-professional-success/)\n[https://www.sarvgyan.com/courses/music](https://www.sarvgyan.com/courses/music)\n[https://www.mindgroom.com/blog/career-in-dancing/](https://www.mindgroom.com/blog/career-in-dancing/)\n[https://www.careerplanb.co/performing-arts-courses-career-dance-theatre/](https://www.careerplanb.co/performing-arts-courses-career-dance-theatre/)"
     },
     {
@@ -893,5 +893,15 @@ window.PROMPT_JOURNAL_ENTRIES = [
         "id":  "b1c561bc-abea-4686-a51c-3b7125129584",
         "timestamp":  "2026-08-09T05:04:42.2990000Z",
         "message":  "ok enabled pages"
+    },
+    {
+        "id":  "1abb8e18-a7fe-4907-9ff5-281efd850815",
+        "timestamp":  "2026-08-09T05:06:54.2560000Z",
+        "message":  "[https://github.com/SashaNaga/Zysham2026/actions/runs/31295877427](https://github.com/SashaNaga/Zysham2026/actions/runs/31295877427)"
+    },
+    {
+        "id":  "6f99c458-475c-4ae8-ad62-0a948a82e3cd",
+        "timestamp":  "2026-08-09T08:13:48.1440000Z",
+        "message":  "push all deploy github pages"
     }
 ];
