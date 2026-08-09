@@ -2,7 +2,7 @@ import { experienceStories, experienceCorpusMetadata } from './data/experiences.
 import { discussionTopics, discussionCorpusMetadata } from './data/discussions.js';
 import { demoStudents as generatedProfiles, demoStudentMetadata as generatedNameMetadata } from './data/demo-students.js';
 import { callingQuestions, callingMetadata } from './data/calling-options.js';
-import { teamBlogEntries, newsletterIssues, editorialMetadata } from './data/editorial.js';
+import { teamBlogEntries, newsletterIssues, infographicTopics, editorialMetadata } from './data/editorial.js';
 import { studyTracks, studyGuideMeta } from './data/study-guide.js';
 import { certificationCategories, certificationCourses } from './data/certification-courses.js';
 import { traditionalCategories, traditionalCourses } from './data/traditional-courses.js';
@@ -227,7 +227,7 @@ const careers = [
 ];
 
 const defaultState = {
-  version: 5,
+  version: 6,
   onboarded: false,
   session: { mode: 'signed_out', activeRole: 'student', accountId: '' },
   accounts: [],
@@ -308,9 +308,7 @@ const defaultState = {
     selections: { freedom: [], boundary: [], legacy: [] },
     custom: { freedom: '', boundary: '', legacy: '' },
     assessment: {
-      personality: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
-      desire: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
-      capability: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
+      personality: {}, desire: {}, capability: {},
     },
   },
   generatedNames: { scope: 'Tamil Nadu' },
@@ -343,7 +341,7 @@ const viewMeta = {
   research: ['VERIFY BEFORE YOU RANK', 'Research'],
   calling: ['3 ASSESSMENTS · 7 TRAITS · 7 NEXT MOVES', 'Find Your Calling'],
   blog: ['FROM THE ZYSHAM TEAM', 'Team Blog'],
-  newsletters: ['FIELD NOTES FOR THE JOURNEY', 'Newsletter'],
+  newsletters: ['SEVEN VISUAL DECISION GUIDES', 'Infographics'],
   'study-guide': ['LEARN · PRACTISE · MASTER', 'Study Guide'],
   certifications: ['RECOGNISED SELF-LEARNING', 'Certification Courses'],
   traditional: ['HERITAGE · DISCIPLINE · EXPRESSION', 'Traditional Courses'],
@@ -509,6 +507,11 @@ if (state.session.mode === 'profile' && !state.accounts.some((account) => accoun
 }
 if (state.communityMode === 'students') state.communityMode = 'discussions';
 if (state.view === 'research') state.view = 'overview';
+if (state.view === 'study-guide') {
+  state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
+  state.journeyStageTab = 'study';
+  state.view = 'journey-stage';
+}
 let toastTimer;
 let rightDrawerReturnFocus = null;
 
@@ -638,7 +641,7 @@ function sidebarMenuDefinitions() {
       ...[['explore','Explore careers'],['compare','Compare paths'],['roadmap','Action plan'],['ai-journey','AI Journey'],['evidence','Evidence wallet']].map(([value,label]) => ({ kind: 'view', value, label, group: 'Decision tools' })),
     ],
     blog: [{ kind: 'blog', value: 'All', label: 'All viewpoints' }, ...[...new Set(teamBlogEntries.map((item) => item.category))].map((value) => ({ kind: 'blog', value, label: value }))],
-    newsletters: [{ kind: 'newsletter', value: 'latest', label: 'Latest issue' }, { kind: 'newsletter', value: 'archive', label: 'Issue archive' }, { kind: 'newsletter', value: 'subscribe', label: 'Subscribe & preferences' }],
+    newsletters: infographicTopics.map((topic) => ({ kind: 'newsletter', value: topic.id, label: `${topic.number} · ${topic.label}`, meta: topic.title })),
   };
 }
 
@@ -723,7 +726,7 @@ function updateSidebarMenus() {
       : kind === 'calling-mode' ? state.view === 'calling' && state.calling.mode === value
       : kind === 'calling' ? state.view === 'calling' && state.calling.activeQuestion === value
       : kind === 'blog' ? state.view === 'blog' && state.editorial.blogCategory === value
-      : kind === 'newsletter' ? state.view === 'newsletters' && (value === 'latest' ? Boolean(state.editorial.selectedNewsletterId) : value === 'archive' ? !state.editorial.selectedNewsletterId : false)
+      : kind === 'newsletter' ? state.view === 'newsletters' && state.editorial.selectedNewsletterId === value
       : false;
     button.classList.toggle('active', active); button.setAttribute('aria-current', active ? 'page' : 'false');
   });
@@ -738,7 +741,8 @@ function escapeHtml(value = '') {
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!stored || ![2, 3, 4, 5].includes(stored.version)) return structuredClone(defaultState);
+    if (!stored || ![2, 3, 4, 5, 6].includes(stored.version)) return structuredClone(defaultState);
+    const callingAssessmentValues = (type) => Object.fromEntries(Object.entries(stored.calling?.assessment?.[type] || {}).filter(([, value]) => stored.version >= 6 || Number(value) > 0));
     return {
       ...structuredClone(defaultState),
       ...stored,
@@ -783,9 +787,9 @@ function loadState() {
         })),
         custom: { ...structuredClone(defaultState.calling.custom), ...(stored.calling?.custom || {}) },
         assessment: {
-          personality: { ...structuredClone(defaultState.calling.assessment.personality), ...(stored.calling?.assessment?.personality || {}) },
-          desire: { ...structuredClone(defaultState.calling.assessment.desire), ...(stored.calling?.assessment?.desire || {}) },
-          capability: { ...structuredClone(defaultState.calling.assessment.capability), ...(stored.calling?.assessment?.capability || {}) },
+          personality: callingAssessmentValues('personality'),
+          desire: callingAssessmentValues('desire'),
+          capability: callingAssessmentValues('capability'),
         },
       },
       communications: { ...structuredClone(defaultState.communications), ...(stored.communications || {}), campaigns: Array.isArray(stored.communications?.campaigns) ? stored.communications.campaigns : [], outbox: Array.isArray(stored.communications?.outbox) ? stored.communications.outbox : [] },
@@ -796,7 +800,7 @@ function loadState() {
       entranceExams: { ...structuredClone(defaultState.entranceExams), ...(stored.entranceExams || {}) },
       dreamJob: { ...structuredClone(defaultState.dreamJob), ...(stored.dreamJob || {}), saved: Array.isArray(stored.dreamJob?.saved) ? stored.dreamJob.saved : [] },
       jobsHub: { ...structuredClone(defaultState.jobsHub), ...(stored.jobsHub || {}), selectedIds: Array.isArray(stored.jobsHub?.selectedIds) ? stored.jobsHub.selectedIds : [] },
-      version: 5,
+      version: 6,
     };
   } catch {
     return structuredClone(defaultState);
@@ -899,14 +903,16 @@ function rankedCareers() {
 function setView(view, { updateHash = true } = {}) {
   if (!viewMeta[view]) return;
   if (view === 'research') { openResearchShelf(); return; }
+  let redirectedStudyGuide = false;
   if (view === 'study-guide') {
     state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
     state.journeyStageTab = 'study';
     view = 'journey-stage';
+    redirectedStudyGuide = true;
   }
   state.view = view;
   saveState();
-  if (updateHash) history.replaceState(null, '', `#${view}`);
+  if (updateHash || redirectedStudyGuide) history.replaceState(null, '', `#${view}`);
   render();
   window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
@@ -989,6 +995,29 @@ function updateShell() {
   }
   renderResearchRail();
   updateSidebarMenus();
+}
+
+function promoteViewHeading(host) {
+  const candidates = [
+    '.section-header', '.hero-main', '.journey-stage-hero', '.research-workspace-head',
+    '.assessment-hub-main > section > header', '.assessment-hub-main .calling-question > header',
+    '.assessment-hero', '.dream-north-star', '.entrance-exams-hero',
+    '.vedic-hero', '.forum-header', '.editorial-hero', '.ai-hero', '.jobs-hero',
+    '.jobs-page-head', '.compact-page-intro', '.job-detail-page > header',
+    '.experience-detail > header', '.editorial-detail article > header', '.share-experience'
+  ];
+  const container = candidates
+    .map((selector) => host.querySelector(selector))
+    .find((element) => element?.querySelector(':scope h2, :scope h3, h2, h3'));
+  const heading = container?.querySelector(':scope h2, :scope h3, h2, h3');
+  if (!heading) return;
+
+  const eyebrow = container.querySelector(':scope > .eyebrow, :scope > div > .eyebrow, .eyebrow');
+  $('#pageTitle').textContent = heading.textContent.trim();
+  if (eyebrow?.textContent.trim()) $('#pageEyebrow').textContent = eyebrow.textContent.trim();
+  container.classList.add('app-heading-promoted');
+  heading.classList.add('promoted-page-heading');
+  eyebrow?.classList.add('promoted-page-eyebrow');
 }
 
 function allBackgrounds() {
@@ -1940,6 +1969,7 @@ function renderJourneyStagePage() {
   const activePhaseId = phases.some((phase) => phase.id === state.journey.stagePhase?.[stageId]) ? state.journey.stagePhase[stageId] : phases[0].id;
   const activePhase = phases.find((phase) => phase.id === activePhaseId) || phases[0];
   const phaseCompletion = (phase) => phase.milestones.every((milestone) => milestoneStatus(milestone) === 'complete');
+  const phaseStepper = `<ol class="milestone-chevron-flow" aria-label="${escapeHtml(config.step)} milestone process">${phases.map((phase, phaseIndex) => `<li><button data-action="stage-phase" data-stage="${stageId}" data-value="${phase.id}" class="${phase.id === activePhaseId ? 'active' : ''} ${phaseCompletion(phase) ? 'complete' : ''}" aria-current="${phase.id === activePhaseId ? 'step' : 'false'}"><span>${String(phaseIndex + 1).padStart(2, '0')}</span><strong>${escapeHtml(phase.label)}</strong><small>${phaseCompletion(phase) ? 'Complete' : `${phase.milestones.filter((milestone) => milestoneStatus(milestone) === 'complete').length}/${phase.milestones.length}`}</small></button></li>`).join('')}</ol>`;
   const guide = stageGuideContent[stageId];
   const routeGuide = stageId === 'grade10' ? `<div class="route-atlas-table"><div><strong>Route</strong><strong>Learning foundation</strong><strong>What it can open</strong><strong>Reality check</strong></div>${grade10RouteAtlas.map(([route, foundation, opens, reality]) => `<article><h4>${escapeHtml(route)}</h4><p>${escapeHtml(foundation)}</p><p>${escapeHtml(opens)}</p><p>${escapeHtml(reality)}</p></article>`).join('')}</div><div class="route-source-actions"><a href="https://cbseacademic.nic.in/curriculum_2026.html" target="_blank" rel="noopener">CBSE curriculum ↗</a><a href="https://www.dge.tn.gov.in/docs/examina/HSE_E.pdf" target="_blank" rel="noopener">Tamil Nadu HSE groups ↗</a><a href="https://www.tnpoly.in/public/" target="_blank" rel="noopener">TN Polytechnic ↗</a><a href="https://dgt.gov.in/en/CTS" target="_blank" rel="noopener">DGT / ITI routes ↗</a><a href="https://www.nios.ac.in/" target="_blank" rel="noopener">NIOS ↗</a></div>` : '';
   const legacyTabContent = {
@@ -1953,6 +1983,7 @@ function renderJourneyStagePage() {
   }[stageTab];
   const tabContent = stageTab === 'focus' ? renderStageLearningPlan(stageId, completion, statusCounts, nextMilestones) : legacyTabContent;
   return `<div class="view-enter journey-stage-page">
+    ${phaseStepper}
     <header class="journey-stage-hero panel"><div><p class="eyebrow">${config.step}</p><h2>${config.title}</h2><p>${config.copy}</p></div><div class="stage-completion"><strong>${completion}%</strong><span>${statusCounts.complete} complete · ${statusCounts.doing} active</span></div></header>
     <nav class="stage-tabs" aria-label="${escapeHtml(config.title)} sections">${tabs.map(([id, label]) => `<button data-action="stage-tab" data-value="${id}" class="${stageTab === id ? 'active' : ''}" aria-current="${stageTab === id ? 'page' : 'false'}">${label}</button>`).join('')}</nav>
     ${tabContent}
@@ -2483,12 +2514,16 @@ function renderAdminBlogComposer() {
 function renderBlog() {
   const posts = allBlogPosts();
   const selected = posts.find((post) => post.id === state.editorial.selectedBlogId);
-  if (selected) return `<div class="view-enter editorial-detail"><button class="button-quiet" data-action="blog-close">← All Team Blog entries</button><article class="panel"><header><span>${escapeHtml(selected.category)} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.deck)}</p><div><strong>${escapeHtml(selected.author)}</strong><small>${escapeHtml(selected.authorRole)} · ${editorialDate(selected.publishedAt)} · ${selected.readMinutes || 5} min read</small></div></header><div class="editorial-body">${String(selected.body).split(/\n\n+/).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${selected.source ? `<aside class="editorial-source-note"><span>RESEARCH SOURCE</span><p>This Zysham article is independently written. It was informed by <a href="${selected.source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(selected.source.title)} · ${escapeHtml(selected.source.publisher)} ↗</a></p><small>${escapeHtml(selected.source.relationship)}</small></aside>` : ''}<footer><p>Team viewpoint · challenge assumptions, verify changing claims, and keep the final decision with the student.</p><button class="button-secondary" data-action="newsletter-view">Get the monthly field notes →</button></footer></article></div>`;
+  if (selected) {
+    const paragraphs = String(selected.body).split(/\n\n+/);
+    const actions = selected.actions || ['Name what is true now', 'Test one assumption gently', 'Choose one next conversation'];
+    return `<div class="view-enter editorial-detail longform-detail"><button class="button-quiet" data-action="blog-close">← All Team Blog entries</button><article class="panel"><header><span>${escapeHtml(selected.category)} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.deck)}</p><div><strong>${escapeHtml(selected.author)}</strong><small>${escapeHtml(selected.authorRole)} · ${editorialDate(selected.publishedAt)} · ${selected.readMinutes || 5} min read</small></div></header><div class="longform-layout"><div class="editorial-body">${paragraphs.map((paragraph, index) => `${index === 1 && selected.pullQuote ? `<blockquote>${escapeHtml(selected.pullQuote)}</blockquote>` : ''}<p>${escapeHtml(paragraph)}</p>`).join('')}</div><aside class="blog-reading-map" aria-label="A gentle way to use this article"><span>PAUSE · NOTICE · MOVE</span><h3>A gentle way forward</h3><ol>${actions.map((action) => `<li><i aria-hidden="true"></i><strong>${escapeHtml(action)}</strong></li>`).join('')}</ol><p>This is a reflection map, not a prescription. Adapt it to health, safety, money and the people involved.</p></aside></div>${selected.source ? `<aside class="editorial-source-note"><span>RESEARCH SOURCE</span><p>This Zysham article is independently written. It was informed by <a href="${selected.source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(selected.source.title)} · ${escapeHtml(selected.source.publisher)} ↗</a></p><small>${escapeHtml(selected.source.relationship)}</small></aside>` : ''}<footer><p>Team viewpoint · challenge assumptions, make room for emotion, and keep the final decision with the person who must live it.</p><button class="button-secondary" data-action="newsletter-view">Explore the seven infographics →</button></footer></article></div>`;
+  }
   const categories = ['All', ...new Set(posts.map((post) => post.category))];
   const query = state.editorial.blogSearch.trim().toLowerCase();
   const filtered = posts.filter((post) => (state.editorial.blogCategory === 'All' || post.category === state.editorial.blogCategory) && (!query || `${post.title} ${post.deck} ${post.category} ${post.author}`.toLowerCase().includes(query)));
   const featured = filtered.find((post) => post.featured) || filtered[0];
-  return `<div class="view-enter editorial-view"><header class="editorial-hero"><div><p class="eyebrow">TEAM BLOG · ${editorialMetadata.blogCount} STARTER ESSAYS</p><h2>Viewpoints with their assumptions showing.</h2><p>Notes from the people designing, researching and questioning career guidance. These essays are prompts for better decisions—not instructions from authority.</p></div>${featured ? `<button data-action="blog-open" data-id="${featured.id}"><span>FEATURED</span><strong>${escapeHtml(featured.title)}</strong><small>${escapeHtml(featured.deck)}</small></button>` : ''}</header>${renderAdminBlogComposer()}<form class="editorial-toolbar" id="blogFilters"><label>Search Team Blog<input id="blogSearch" type="search" value="${escapeHtml(state.editorial.blogSearch)}" placeholder="Projects, placements, family, AI…"></label><label>Topic<select name="category">${categories.map((category) => `<option ${state.editorial.blogCategory === category ? 'selected' : ''}>${escapeHtml(category)}</option>`).join('')}</select></label><span>${filtered.length} entries</span></form><section class="editorial-list">${filtered.map((post) => `<button data-action="blog-open" data-id="${post.id}"><span>${escapeHtml(post.category)}${post.status === 'draft' ? ' · DRAFT' : ''}</span><div><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.deck)}</p><small>${escapeHtml(post.author)} · ${editorialDate(post.publishedAt)}</small></div><em>${post.readMinutes || 5} min →</em></button>`).join('') || '<p class="panel">No entries match this search.</p>'}</section></div>`;
+  return `<div class="view-enter editorial-view"><header class="editorial-hero"><div><p class="eyebrow">TEAM BLOG · ${editorialMetadata.blogCount} HUMAN STORIES</p><h2>Room for the feelings inside a decision.</h2><p>Long-form reflections about results, family, money, belonging, work and recovery. Written to be sat with, shared, and questioned — never used as instructions from authority.</p></div>${featured ? `<button data-action="blog-open" data-id="${featured.id}"><span>FEATURED LONG READ</span><strong>${escapeHtml(featured.title)}</strong><small>${escapeHtml(featured.deck)}</small></button>` : ''}</header>${renderAdminBlogComposer()}<form class="editorial-toolbar" id="blogFilters"><label>Search Team Blog<input id="blogSearch" type="search" value="${escapeHtml(state.editorial.blogSearch)}" placeholder="Family, belonging, recovery, work…"></label><label>Topic<select name="category">${categories.map((category) => `<option ${state.editorial.blogCategory === category ? 'selected' : ''}>${escapeHtml(category)}</option>`).join('')}</select></label><span>${filtered.length} entries</span></form><section class="editorial-list">${filtered.map((post) => `<button data-action="blog-open" data-id="${post.id}"><span>${escapeHtml(post.category)}${post.status === 'draft' ? ' · DRAFT' : ''}</span><div><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.deck)}</p><small>${escapeHtml(post.author)} · ${editorialDate(post.publishedAt)}</small></div><em>${post.readMinutes || 5} min →</em></button>`).join('') || '<p class="panel">No entries match this search.</p>'}</section></div>`;
 }
 
 function renderAdminNewsletterComposer() {
@@ -2497,12 +2532,9 @@ function renderAdminNewsletterComposer() {
 }
 
 function renderNewsletters() {
-  const issues = allNewsletterIssues();
-  const selected = issues.find((issue) => issue.id === state.editorial.selectedNewsletterId);
-  if (selected) return `<div class="view-enter editorial-detail newsletter-detail"><button class="button-quiet" data-action="newsletter-close">← All newsletters</button><article class="panel"><header><span>ISSUE ${String(selected.issue || 'NEW').padStart(2, '0')} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.summary)}</p><div><strong>${escapeHtml(selected.editor)}</strong><small>${editorialDate(selected.publishedAt)} · ${escapeHtml(selected.status)}</small></div></header><ol class="newsletter-sections">${selected.sections.map((section) => `<li>${escapeHtml(section)}</li>`).join('')}</ol>${selected.sourceLinks?.length ? `<aside class="editorial-source-note"><span>FURTHER READING</span>${selected.sourceLinks.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} · ${escapeHtml(source.publisher)} ↗</a>`).join('')}</aside>` : ''}<footer><p>You received this preview because you opened it inside Zysham. Email delivery is not connected in this prototype.</p></footer></article></div>`;
-  const account = currentAccount();
-  const preferences = account?.communication || state.communications;
-  return `<div class="view-enter editorial-view newsletter-view"><header class="editorial-hero newsletter-hero"><div><p class="eyebrow">NEWSLETTER · ${editorialMetadata.newsletterCount} SAMPLE ISSUES</p><h2>One useful field note. No manufactured urgency.</h2><p>Monthly decision prompts for students and families, with a separate preference for product announcements.</p></div><form id="newsletterSubscribeForm" class="newsletter-subscribe"><label>Email address<input name="email" type="email" required value="${escapeHtml(preferences.subscriberEmail || account?.email || '')}" placeholder="you@example.com"></label><label class="consent-line"><input name="consent" type="checkbox" required ${preferences.newsletterSubscribed ? 'checked' : ''}> Send me the career field-notes newsletter</label><button class="button-primary">${preferences.newsletterSubscribed ? 'Update subscription' : 'Subscribe'}</button><small>Consent is recorded separately. Unsubscribe anytime in Settings.</small></form></header>${renderAdminNewsletterComposer()}<section class="newsletter-status panel"><div><strong>${issues.filter((item) => item.status === 'sent').length}</strong><span>published issues</span></div><div><strong>${preferences.newsletterSubscribed ? 'On' : 'Off'}</strong><span>your subscription</span></div><div><strong>${state.communications.outbox.length}</strong><span>local outbox items</span></div></section><section class="newsletter-grid">${issues.map((issue) => `<button data-action="newsletter-open" data-id="${issue.id}"><span>ISSUE ${String(issue.issue || 'NEW').padStart(2, '0')} · ${issue.status.toUpperCase()}</span><h3>${escapeHtml(issue.title)}</h3><p>${escapeHtml(issue.summary)}</p><ul>${issue.sections.slice(0, 3).map((section) => `<li>${escapeHtml(section)}</li>`).join('')}</ul><small>${editorialDate(issue.publishedAt)} · Open issue →</small></button>`).join('')}</section></div>`;
+  const selected = infographicTopics.find((topic) => topic.id === state.editorial.selectedNewsletterId);
+  if (selected) return `<div class="view-enter infographic-detail" style="--infographic-accent:${selected.accent}"><button class="button-quiet" data-action="newsletter-close">← All infographics</button><article class="panel"><header><span>${selected.number} · ${escapeHtml(selected.label)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.summary)}</p><strong>${escapeHtml(selected.stat)}</strong></header><div class="infographic-flow" aria-label="${escapeHtml(selected.title)} diagram">${selected.steps.map(([label, copy], index) => `<section><b>${String(index + 1).padStart(2, '0')}</b><div><h3>${escapeHtml(label)}</h3><p>${escapeHtml(copy)}</p></div></section>`).join('')}</div><blockquote><span>REFLECTION</span>${escapeHtml(selected.reflection)}</blockquote><footer><p>Use this visual as a conversation aid. Context, safety and current official requirements always come first.</p></footer></article></div>`;
+  return `<div class="view-enter infographic-view"><header class="infographic-hero"><div><p class="eyebrow">INFOGRAPHICS · ${editorialMetadata.infographicCount} VISUAL GUIDES</p><h2>See the whole decision, not just the next gate.</h2><p>Seven visual tools for students, families and educators. Each one turns a pressured conversation into a sequence you can inspect together.</p></div><figure><img src="assets/visuals/seven-pathways-infographic.png" alt="A student supported by family and educators beneath seven connected career pathways: self, subjects, cost, college, projects, work and wellbeing."><figcaption>One person. Seven connected lenses. No single score decides the route.</figcaption></figure></header><section class="infographic-grid">${infographicTopics.map((topic) => `<button data-action="newsletter-open" data-id="${topic.id}" style="--infographic-accent:${topic.accent}"><span>${topic.number} · ${escapeHtml(topic.label)}</span><strong>${escapeHtml(topic.stat)}</strong><h3>${escapeHtml(topic.title)}</h3><p>${escapeHtml(topic.summary)}</p><div aria-hidden="true">${topic.steps.map(([label]) => `<i title="${escapeHtml(label)}"></i>`).join('')}</div><small>Open the visual guide →</small></button>`).join('')}</section><aside class="infographic-method panel"><span>HOW TO USE THESE</span><p>Start with the visual that matches the tension in the room. Read it slowly, let each person answer the reflection question, and finish with one action small enough to complete without panic.</p></aside></div>`;
 }
 
 function renderAIJourney() {
@@ -2897,6 +2929,7 @@ function render() {
       stagePage.prepend(phaseStepper);
     }
   }
+  promoteViewHeading(host);
   updateMentor();
 }
 
@@ -2964,9 +2997,8 @@ $('#sidebar').addEventListener('click', (event) => {
     if (kind === 'calling') { state.calling.mode = 'questions'; state.calling.activeQuestion = value; state.calling.search = ''; state.calling.limit = 18; saveState(); setView('calling'); }
     if (kind === 'blog') { state.editorial.blogCategory = value; state.editorial.selectedBlogId = ''; saveState(); setView('blog'); }
     if (kind === 'newsletter') {
-      state.editorial.selectedNewsletterId = value === 'latest' ? ([...state.editorial.localNewsletters, ...newsletterIssues][0]?.id || '') : '';
+      state.editorial.selectedNewsletterId = infographicTopics.some((topic) => topic.id === value) ? value : '';
       saveState(); setView('newsletters');
-      if (value === 'subscribe') requestAnimationFrame(() => $('.newsletter-subscribe')?.scrollIntoView({ block: 'center' }));
     }
     closeNavigation();
     return;
@@ -3038,8 +3070,38 @@ $('#viewHost').addEventListener('click', (event) => {
   }
   if (action === 'journey-edit') renderJourneyInspector(id);
   if (action === 'journey-stage-nav') { state.activeJourneyStage = id; state.journeyStageTab = 'focus'; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-  if (action === 'stage-tab') { state.journeyStageTab = value; saveState(); render(); }
-  if (action === 'stage-phase') { state.journey.stagePhase ||= {}; state.journey.stagePhase[control.dataset.stage] = value; saveState(); render(); }
+  if (action === 'stage-tab') {
+    state.journeyStageTab = value;
+    if (value === 'study') {
+      const availableTracks = journeyStudyTrackIds(state.activeJourneyStage);
+      const nextTrack = availableTracks.includes(state.studyGuide.track) ? state.studyGuide.track : availableTracks[0];
+      if (nextTrack && state.studyGuide.track !== nextTrack) {
+        state.studyGuide.track = nextTrack;
+        state.studyGuide.subject = Object.keys(studyTracks[nextTrack].subjects)[0];
+        state.studyGuide.selectedChapterId = '';
+        state.studyGuide.search = '';
+      }
+    }
+    saveState(); render();
+  }
+  if (action === 'stage-phase') { state.journey.stagePhase ||= {}; state.journey.stagePhase[control.dataset.stage] = value; state.journeyStageTab = 'focus'; saveState(); render(); }
+  if (action === 'stage-resource') {
+    if (target === 'assessments') {
+      state.assessments.hub = value || 'signals';
+      if (value?.startsWith('career:')) state.assessments.active = value.slice(7);
+    }
+    if (target === 'study-guide' && studyTracks[value]) {
+      state.studyGuide.track = value;
+      state.studyGuide.subject = Object.keys(studyTracks[value].subjects)[0];
+      state.studyGuide.section = 'overview';
+      state.studyGuide.selectedChapterId = '';
+    }
+    if (target === 'certifications' && certificationCategories.includes(value)) { state.certifications.category = value; state.certifications.detailId = ''; }
+    if (target === 'traditional' && traditionalCategories.includes(value)) { state.traditional.category = value; state.traditional.detailId = ''; }
+    if (target === 'entrance-exams') { state.entranceExams.section = value || 'catalogue'; state.entranceExams.category = 'all'; }
+    if (target === 'jobs') { state.jobsHub.tab = value || 'overview'; state.jobsHub.detailId = ''; }
+    saveState(); setView(target);
+  }
   if (action === 'stage-community') { state.communityMode = 'discussions'; state.discussionFilters.stage = discussionStageMap[id] || 'All'; setView('discussions'); }
   if (action === 'stream') { state.streamChoice = state.streamChoice === value ? '' : value; saveState(); refreshView(`[data-action="stream"][data-value="${CSS.escape(value)}"]`); }
   if (action === 'filter') { state.careerFilter = value; saveState(); refreshView(`[data-action="filter"][data-value="${CSS.escape(value)}"]`); }
@@ -3114,7 +3176,7 @@ $('#viewHost').addEventListener('click', (event) => {
   }
   if (action === 'blog-open') { state.editorial.selectedBlogId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'blog-close') { state.editorial.selectedBlogId = ''; saveState(); render(); }
-  if (action === 'newsletter-view') setView('newsletters');
+  if (action === 'newsletter-view') { state.editorial.selectedNewsletterId = ''; saveState(); setView('newsletters'); }
   if (action === 'newsletter-open') { state.editorial.selectedNewsletterId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'newsletter-close') { state.editorial.selectedNewsletterId = ''; saveState(); render(); }
   if (action === 'calling-clear' && confirm(`Clear all three calling reflections ${isGuest() ? 'from this session' : 'saved on this device'}?`)) {
@@ -4532,7 +4594,13 @@ document.addEventListener('keydown', (event) => {
 
 const initialView = location.hash.slice(1);
 const openInitialResearch = initialView === 'research';
-if (viewMeta[initialView] && !openInitialResearch) state.view = initialView;
+const openInitialStudyGuide = initialView === 'study-guide';
+if (openInitialStudyGuide) {
+  state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
+  state.journeyStageTab = 'study';
+  state.view = 'journey-stage';
+  history.replaceState(null, '', '#journey-stage');
+} else if (viewMeta[initialView] && !openInitialResearch) state.view = initialView;
 updateMentor();
 render();
 if (openInitialResearch) requestAnimationFrame(() => openResearchShelf());
