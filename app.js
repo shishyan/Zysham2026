@@ -241,11 +241,13 @@ const defaultState = {
   activeJourneyStage: 'grade10',
   theme: 'violet',
   regionScope: 'All',
+  sidebarExpanded: false,
+  researchRailExpanded: false,
   background: 'campus-walk',
   appearance: { mode: 'default', customBackgrounds: [] },
   audience: 'student',
   mentor: 'miso',
-  mentorChat: { open: true, stage: 'auto', messages: [] },
+  mentorChat: { open: false, stage: 'auto', messages: [] },
   signals: { interests: [], strengths: [], subjects: [], subjectAvoidance: [], values: [], workStyle: [] },
   workReality: { answers: {}, confirmed: false, updatedAt: '' },
   saved: [],
@@ -300,7 +302,7 @@ const defaultState = {
   journeyStageTab: 'focus',
   studentDirectoryFilters: { search: '', country: 'All', stage: 'All' },
   studentDirectoryLimit: 24,
-  research: { category: 'All evidence', search: '', geography: 'All', saved: [], compare: [], detailId: '' },
+  research: { category: 'All evidence', search: '', geography: 'All', savedOnly: false, saved: [], compare: [], detailId: '' },
   calling: {
     mode: 'assessment', activeAssessment: 'personality', activeQuestion: 'freedom', search: '', limit: 18,
     selections: { freedom: [], boundary: [], legacy: [] },
@@ -321,12 +323,12 @@ const defaultState = {
   dreamJob: { tab: 'discover', selectedId: 'google', selectedVocationId: 'performing-artist', previewStage: '', search: '', saved: [], identity: '', targetRole: '', evidence: '', vocationEvidence: '', vocationProgress: {} },
   jobsHub: { tab: 'overview', search: '', category: 'All', karmaBand: 'All', salaryBand: 'All', selectedIds: [], detailId: '' },
   vedicPrediction: { name: '', birthDate: '', birthTime: '', birthPlace: '', rashi: '', nakshatra: '', ascendant: '', tenthHouse: '', dominantPlanet: '', interest: '', workPreference: '', goal: '', generatedAt: '' },
-  assessments: { active: 'interests', answers: {}, completed: {}, updatedAt: '' },
+  assessments: { active: 'interests', hub: 'signals', answers: {}, completed: {}, updatedAt: '' },
 };
 
 const viewMeta = {
   overview: ['YOUR DECISION SPACE', 'Overview'],
-  compass: ['KNOW YOURSELF', 'Career compass'],
+  compass: ['KNOW THYSELF', 'Know Thyself'],
   explore: ['DISCOVER POSSIBILITIES', 'Explore careers'],
   experiences: ['LEARN FROM MANY ROUTES', 'Experience exchange'],
   discussions: ['A GLOBAL DECISION COMMONS', 'Discussions'],
@@ -337,7 +339,7 @@ const viewMeta = {
   evidence: ['PROOF OVER PRESSURE', 'Evidence wallet'],
   'journey-stage': ['YEAR-BY-YEAR JOURNEY', 'Journey stage'],
   'vedic-prediction': ['TRADITION AS A REFLECTIVE LENS', 'Vedic Prediction'],
-  assessments: ['SEVEN LENSES · ONE EXPLORATION PROFILE', 'Assessments'],
+  assessments: ['ALL ASSESSMENTS · ONE WORKSPACE', 'Assessments'],
   research: ['VERIFY BEFORE YOU RANK', 'Research'],
   calling: ['3 ASSESSMENTS · 7 TRAITS · 7 NEXT MOVES', 'Find Your Calling'],
   blog: ['FROM THE ZYSHAM TEAM', 'Team Blog'],
@@ -380,14 +382,119 @@ const legacyResearchCatalog = [
   { id: 'legacy-route', category: 'Pathways', title: 'Test a family legacy without surrendering choice', subtitle: 'Inheritance can be an asset, obligation, or both.', checks: ['Which daily work—not title—would be inherited', 'Skills, trust, capital and networks genuinely available', 'Freedom to modernise, specialise or leave', 'One outside alternative tested on equal terms'] },
 ];
 
-const researchDomains = ['All evidence', 'Schools & subjects', 'Entrances & admissions', 'Colleges & courses', 'Cost & funding', 'Careers & skills', 'Apprenticeships', 'Employers', 'Locations'];
-const researchCatalog = [...schoolExamResearch, ...collegeCourseResearch, ...jobLocationResearch].map((item) => {
+const campusPlacementSource = (label, url) => ({ label, url, checkedAt: '2026-08-09' });
+const campusPlacementResearch = [
+  {
+    id: 'placement-process-map', domain: 'campus-placements', category: 'Process map', title: 'Map the campus placement process before final year',
+    summary: 'Treat placement as a sequence you can prepare for: institute eligibility and registration, employer briefing, assessment, role-specific selection rounds, interview, documentation and offer review.', geography: 'India',
+    tags: ['campus placement', 'final year', 'workflow', 'TPO'],
+    facts: [{ label: 'Common sequence', value: 'Eligibility → registration → assessment → discussion or role round → interview → offer' }, { label: 'Student output', value: 'One dated tracker for employers, roles, stages, evidence and next action' }],
+    checks: ['Get the current placement policy and calendar from your institute.', 'Record the role and eligibility for every employer separately.', 'Prepare for the announced process; do not assume every company uses every round.'],
+    sources: [campusPlacementSource('Placement Preparation — campus placement process', 'https://www.placementpreparation.io/blog/campus-placement-process-in-india/'), campusPlacementSource('TCS campus hiring process example', 'https://www.tcs.com/careers/india/slp')],
+    compare: { stage: 'College final year', evidence: 'Placement tracker', risk: 'Assuming one universal process', nextMove: 'Ask the placement cell for the current calendar' },
+    caveat: 'The supplied guide is a useful process overview, not an official rulebook. Rounds and eligibility vary by institute, role and employer.'
+  },
+  {
+    id: 'placement-cell-brief', domain: 'campus-placements', category: 'Placement cell', title: 'Build your placement-cell briefing',
+    summary: 'Know the institute rules, eligibility calculations, registration deadlines, attendance requirements, offer policy and escalation contact before applications open.', geography: 'India',
+    tags: ['placement cell', 'eligibility', 'calendar', 'policy'],
+    facts: [{ label: 'Capture', value: 'Policy, calendar, eligible branches, marks rule, backlogs rule and offer limits' }, { label: 'Verify with', value: 'The current institute placement office or TPO' }],
+    checks: ['Save the dated policy rather than relying on senior-year memory.', 'Ask how CGPA conversion and active backlogs are treated.', 'Clarify whether accepting one offer changes eligibility for later drives.'],
+    sources: [campusPlacementSource('AICTE Internship Policy', 'https://internship.aicte-india.org/dashboard/state/maharashtra/extra-images/6-AICTE-Internship-Policy.pdf')],
+    compare: { stage: 'College years 2–final', evidence: 'Verified policy brief', risk: 'Missing an administrative gate', nextMove: 'Book a TPO clarification' },
+    caveat: 'Placement policies are institute-specific and can change during an academic year.'
+  },
+  {
+    id: 'placement-resume-evidence', domain: 'campus-placements', category: 'Application evidence', title: 'Create a role-specific resume and proof pack',
+    summary: 'Make each claim inspectable. Connect projects, internships, coursework and responsibilities to the work in the actual job description.', geography: 'India',
+    tags: ['resume', 'portfolio', 'projects', 'job description'],
+    facts: [{ label: 'Core pack', value: 'One-page resume, transcript, project proof, portfolio or repository, and concise project explanations' }, { label: 'Quality test', value: 'You can defend every line without AI or a teammate answering for you' }],
+    checks: ['Mirror role language only when it is truthful.', 'Quantify outcomes only when you can explain the baseline and measurement.', 'Remove unsupported skill lists and confidential project data.'],
+    sources: [campusPlacementSource('NCS — From Campus to Corporate mentoring', 'https://betacloud.ncs.gov.in/ncs-pmvbry')],
+    compare: { stage: 'College years 2–final', evidence: 'Audited resume + proof links', risk: 'Generic or inflated claims', nextMove: 'Run a line-by-line evidence audit' },
+    caveat: 'A polished resume may improve clarity; it cannot replace relevant capability evidence.'
+  },
+  {
+    id: 'placement-assessment-plan', domain: 'campus-placements', category: 'Assessments', title: 'Prepare from a diagnostic, not random question volume',
+    summary: 'Identify the tested capabilities for the target role, take a timed baseline, keep an error log and revisit weak concepts until performance is reliable.', geography: 'India',
+    tags: ['aptitude', 'coding', 'technical test', 'diagnostic'],
+    facts: [{ label: 'Useful loop', value: 'Baseline → error category → concept repair → timed retest → explanation' }, { label: 'Role first', value: 'Aptitude, coding, case, writing and domain tests require different preparation' }],
+    checks: ['Use the employer or placement-cell test notice as the syllabus.', 'Track accuracy and reasoning, not just questions attempted.', 'Practise under the time and tool constraints actually announced.'],
+    sources: [campusPlacementSource('Placement Preparation — process overview', 'https://www.placementpreparation.io/blog/campus-placement-process-in-india/'), campusPlacementSource('TCS selection process example', 'https://www.tcs.com/careers/india/slp')],
+    compare: { stage: 'College years 3–final', evidence: 'Timed baselines + error log', risk: 'High volume without learning', nextMove: 'Take one role-aligned diagnostic' },
+    caveat: 'Test formats change. Verify the current employer communication before investing in a preparation pattern.'
+  },
+  {
+    id: 'placement-group-rounds', domain: 'campus-placements', category: 'Group rounds', title: 'Practise contribution, listening and respectful disagreement',
+    summary: 'Where a group discussion, interaction or case is used, demonstrate structured thinking and help the group progress instead of competing for airtime.', geography: 'India',
+    tags: ['group discussion', 'case', 'communication', 'collaboration'],
+    facts: [{ label: 'Strong evidence', value: 'Frame the question, add one reasoned point, invite evidence, synthesise and correct gracefully' }, { label: 'Avoid', value: 'Interrupting, memorised speeches and dominating quieter candidates' }],
+    checks: ['Record a practice round and review speaking time.', 'Practise summarising a view you disagree with fairly.', 'Use current evidence for factual topics.'],
+    sources: [campusPlacementSource('TCS campus process example', 'https://www.tcs.com/careers/india/slp')],
+    compare: { stage: 'College final year', evidence: 'Reviewed practice recording', risk: 'Performance without collaboration', nextMove: 'Run one six-person practice round' },
+    caveat: 'Many roles do not use group rounds. Prepare only when the announced process requires one.'
+  },
+  {
+    id: 'placement-interview-project', domain: 'campus-placements', category: 'Interviews', title: 'Defend your college project as evidence of judgment',
+    summary: 'Explain the problem, your exact contribution, alternatives, failures, decisions, measurements and what you would change—not only the final demo.', geography: 'India',
+    tags: ['interview', 'college project', 'technical', 'STAR'],
+    facts: [{ label: 'Project story', value: 'Context → constraint → your decision → result → failure or trade-off → next revision' }, { label: 'Integrity test', value: 'Clearly separate your work, team work and AI-assisted work' }],
+    checks: ['Prepare a two-minute and ten-minute version.', 'Reproduce one core part without AI assistance.', 'Invite a mentor to challenge assumptions and weak evidence.'],
+    sources: [campusPlacementSource('NCS — From Campus to Corporate mentoring', 'https://betacloud.ncs.gov.in/ncs-pmvbry'), campusPlacementSource('Placement Preparation — process overview', 'https://www.placementpreparation.io/blog/campus-placement-process-in-india/')],
+    compare: { stage: 'College years 2–final', evidence: 'Project defence + artifact', risk: 'Claiming team output as personal work', nextMove: 'Record a mock project defence' },
+    caveat: 'Interview focus varies by role. Use the job description and official process communication to choose examples.'
+  },
+  {
+    id: 'placement-offer-audit', domain: 'campus-placements', category: 'Offer decision', title: 'Read the complete offer, not only the CTC headline',
+    summary: 'Compare the actual role, fixed and variable pay, work location, shifts, probation, training terms, service agreement, notice period, benefits and joining conditions.', geography: 'India',
+    tags: ['offer', 'CTC', 'bond', 'location', 'probation'],
+    facts: [{ label: 'Decision record', value: 'Role, team, fixed pay, variable conditions, location, start date, restrictions and unanswered questions' }, { label: 'Human check', value: 'Discuss unclear legal or financial terms with a qualified adult or adviser' }],
+    checks: ['Ask for the written offer and annexures.', 'Separate fixed cash, variable pay and one-time benefits.', 'Check role/location flexibility and service-agreement exit terms before accepting.'],
+    sources: [campusPlacementSource('NCS — career and employment services', 'https://www.ncs.gov.in/')],
+    compare: { stage: 'College final year', evidence: 'Written offer comparison', risk: 'Choosing by headline compensation', nextMove: 'Complete the offer audit before accepting' },
+    caveat: 'This is a decision checklist, not legal or financial advice. Obtain qualified review for consequential terms.'
+  },
+  {
+    id: 'placement-internship-evidence', domain: 'campus-placements', category: 'Internship bridge', title: 'Turn an internship into inspectable placement evidence',
+    summary: 'Document the agreed work, supervision, attendance, deliverables, feedback, learning and final artifact while respecting confidentiality.', geography: 'India',
+    tags: ['internship', 'evaluation', 'certificate', 'evidence'],
+    facts: [{ label: 'Evidence chain', value: 'Joining record → work log → supervisor feedback → report or artifact → completion record' }, { label: 'Placement value', value: 'A credible account of contribution, learning and professional behaviour' }],
+    checks: ['Agree deliverables and supervisor before starting.', 'Keep a weekly decision and learning log.', 'Request feedback early enough to improve, not only at completion.'],
+    sources: [campusPlacementSource('AICTE Internship Policy', 'https://internship.aicte-india.org/dashboard/state/maharashtra/extra-images/6-AICTE-Internship-Policy.pdf')],
+    compare: { stage: 'College years 1–final', evidence: 'Supervisor-reviewed work record', risk: 'Certificate without meaningful work', nextMove: 'Define one verifiable deliverable' },
+    caveat: 'Follow your institution and employer confidentiality rules; never publish protected work merely to strengthen a portfolio.'
+  },
+  {
+    id: 'placement-fraud-safety', domain: 'campus-placements', category: 'Safety', title: 'Verify every recruiter and never pay for a job offer',
+    summary: 'Use the institute placement cell, the employer’s official careers domain and government services to verify unfamiliar messages, links and requests.', geography: 'India',
+    tags: ['fraud', 'recruitment fee', 'safety', 'verification'],
+    facts: [{ label: 'Red flags', value: 'Payment demand, rushed secrecy, personal accounts, unofficial domains, guaranteed selection or unnecessary identity data' }, { label: 'Official principle', value: 'NCS states its services are free; TCS states it does not charge recruitment fees' }],
+    checks: ['Verify the sender and opening independently.', 'Do not pay for registration, interview, offer or mandatory equipment.', 'Report suspicious campus messages to the placement cell and the named organisation.'],
+    sources: [campusPlacementSource('NCS fraud warning and free-service statement', 'https://www.ncs.gov.in/placement-agency/hi-in/Pages/default.aspx'), campusPlacementSource('TCS recruitment disclaimer', 'https://www.tcs.com/careers/india/slp')],
+    compare: { stage: 'Any hiring stage', evidence: 'Verified official vacancy or drive', risk: 'Payment or identity theft', nextMove: 'Cross-check on the official domain' },
+    caveat: 'A familiar logo or forwarded college message is not proof of authenticity.'
+  },
+  {
+    id: 'placement-off-campus-fallback', domain: 'campus-placements', category: 'Mobility', title: 'Run an off-campus path in parallel',
+    summary: 'Campus access is useful but transient. Maintain a role shortlist, alerts, official applications, referrals grounded in evidence and a weekly outreach rhythm.', geography: 'India',
+    tags: ['off campus', 'NCS', 'job fair', 'mobility'],
+    facts: [{ label: 'Parallel system', value: 'Official portals + employer career pages + alumni conversations + evidence-led applications' }, { label: 'Weekly rhythm', value: 'Research roles, improve one proof item, apply selectively, follow up and review outcomes' }],
+    checks: ['Search by role and skill rather than company prestige alone.', 'Log application source, date, status and next action.', 'Keep learning and project evidence moving while waiting.'],
+    sources: [campusPlacementSource('National Career Service', 'https://www.ncs.gov.in/'), campusPlacementSource('NCS job-seeker FAQs', 'https://www.ncs.gov.in/job-seeker/_layouts/15/ncsp/faqs.aspx')],
+    compare: { stage: 'College final year–first job', evidence: 'Application and learning tracker', risk: 'Treating campus rejection as career verdict', nextMove: 'Create a ten-role evidence map' },
+    caveat: 'Portal listings and job fairs are access channels, not guarantees. Verify each role and employer independently.'
+  }
+];
+
+const researchDomains = ['All evidence', 'Schools & subjects', 'Entrances & admissions', 'Colleges & courses', 'Cost & funding', 'Careers & skills', 'Campus placements', 'Apprenticeships', 'Employers', 'Locations'];
+const researchCatalog = [...schoolExamResearch, ...collegeCourseResearch, ...jobLocationResearch, ...campusPlacementResearch].map((item) => {
   const raw = String(item.domain).toLowerCase();
   const domain = raw === 'school' || raw === 'planning' || (raw === 'verification' && item.category?.toLowerCase().includes('school')) ? 'Schools & subjects'
     : raw === 'exam' || raw === 'admissions' ? 'Entrances & admissions'
     : raw === 'college research' || raw === 'verification' ? 'Colleges & courses'
     : raw === 'affordability' ? 'Cost & funding'
     : raw === 'jobs' || raw === 'skills' ? 'Careers & skills'
+    : raw === 'campus-placements' ? 'Campus placements'
     : raw === 'apprenticeships' ? 'Apprenticeships'
     : raw === 'employers' ? 'Employers'
     : raw === 'locations' ? 'Locations' : 'Colleges & courses';
@@ -401,6 +508,7 @@ if (state.session.mode === 'profile' && !state.accounts.some((account) => accoun
   state.onboarded = false;
 }
 if (state.communityMode === 'students') state.communityMode = 'discussions';
+if (state.view === 'research') state.view = 'overview';
 let toastTimer;
 let rightDrawerReturnFocus = null;
 
@@ -426,8 +534,9 @@ document.body.append(dreamJobPanel);
 
 const drawerDefinitions = {
   journey: { source: '#journeyInspector', kicker: 'YEAR-BY-YEAR JOURNEY', title: 'Journey stage', width: 470 },
-  research: { source: '#researchPanel', kicker: 'EVIDENCE BEFORE DECISIONS', title: 'Research', width: 500 },
-  settings: { source: '#settingsPanel', kicker: 'PERSONALISE ZYSHAM', title: 'Settings', width: 540 },
+  research: { source: '#researchPanel', kicker: 'EVIDENCE BEFORE DECISIONS', title: 'Research', width: 1120 },
+  settings: { source: '#settingsPanel', kicker: 'YOUR PROFILE', title: 'User Profile Preferences', width: 560 },
+  adminSettings: { source: '#adminSettingsPanel', kicker: 'PLATFORM CONTROL', title: 'Admin Settings', width: 600 },
   mentor: { source: '#mentorPanel', kicker: 'AI-ASSISTED COUNSELLING', title: 'Miso · Career counsellor', width: 390 },
   dream: { source: '#dreamJobPanel', kicker: 'VOCATION BEFORE PRESTIGE', title: 'Performing arts path', width: 560 },
 };
@@ -457,6 +566,7 @@ function openRightDrawer(kind, overrides = {}) {
   drawer.style.setProperty('--drawer-width', `${definition.width}px`);
   document.body.style.setProperty('--drawer-width', `${definition.width}px`);
   drawer.dataset.kind = kind;
+  document.body.dataset.drawerKind = kind;
   rightDrawerReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   drawer.setAttribute('role', 'dialog');
   drawer.setAttribute('aria-modal', 'true');
@@ -465,6 +575,7 @@ function openRightDrawer(kind, overrides = {}) {
   $('#toast')?.classList.remove('show');
   clearTimeout(toastTimer);
   $('#headerProfileButton')?.setAttribute('aria-expanded', String(kind === 'settings'));
+  $('#adminSettingsButton')?.setAttribute('aria-expanded', String(kind === 'adminSettings'));
   if (kind !== 'mentor') { $('#mentorDock').classList.remove('open'); document.body.classList.remove('mentor-open'); }
   $('#rightDrawerClose')?.focus({ preventScroll: true });
 }
@@ -474,8 +585,10 @@ function closeRightDrawer(kind = '') {
   if (kind && drawer.dataset.kind !== kind) return;
   drawer.setAttribute('aria-hidden', 'true');
   drawer.dataset.kind = '';
-  document.body.classList.remove('right-drawer-open', 'journey-open', 'research-open', 'settings-open', 'mentor-open');
+  delete document.body.dataset.drawerKind;
+  document.body.classList.remove('right-drawer-open', 'journey-open', 'research-open', 'settings-open', 'admin-settings-open', 'mentor-open');
   $('#headerProfileButton')?.setAttribute('aria-expanded', 'false');
+  $('#adminSettingsButton')?.setAttribute('aria-expanded', 'false');
   $('#mentorDock').classList.remove('open');
   $$('.right-drawer-view', drawer).forEach((view) => { view.hidden = true; view.classList.remove('active'); view.setAttribute('aria-hidden', 'true'); });
   if (rightDrawerReturnFocus?.isConnected) rightDrawerReturnFocus.focus();
@@ -486,8 +599,8 @@ initialiseRightDrawer();
 
 const sidebarMenuViews = {
   journey: ['overview', 'journey-stage', 'vedic-prediction'],
-  discussions: ['discussions'], research: ['research'], study: ['study-guide'], certifications: ['certifications'],
-  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job'], jobs: ['jobs'], calling: ['calling', 'assessments', 'compass', 'explore', 'compare', 'roadmap', 'ai-journey', 'evidence'], blog: ['blog'], newsletters: ['newsletters'],
+  discussions: ['discussions'], study: ['study-guide'], certifications: ['certifications'],
+  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job', 'jobs'], calling: ['calling', 'assessments', 'compass', 'explore', 'compare', 'roadmap', 'ai-journey', 'evidence'], blog: ['blog'], newsletters: ['newsletters'],
 };
 let expandedSidebarGroup = Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
 const sidebarItemColors = ['#d6a8ff', '#78ddd4', '#ff9fbe', '#f4c66f', '#91c8ff', '#9ce0aa', '#ffb67f'];
@@ -499,7 +612,6 @@ function sidebarMenuDefinitions() {
       { kind: 'view', value: 'vedic-prediction', label: 'Vedic Prediction', meta: 'Reflective career lens', group: 'Workspace' },
     ],
     discussions: [['discussions','Discussions'],['experiences','Experience Exchange'],['saved','Saved topics']].map(([value,label]) => ({ kind: 'community', value, label })),
-    research: researchDomains.map((value) => ({ kind: 'research', value, label: value })),
     study: Object.values(studyTracks).map((track) => ({ kind: 'study', value: track.id, label: track.label, meta: track.short })),
     certifications: certificationCategories.map((value) => ({ kind: 'certification', value, label: value })),
     traditional: traditionalCategories.map((value) => ({ kind: 'traditional', value, label: value })),
@@ -513,12 +625,8 @@ function sidebarMenuDefinitions() {
     dreamJob: [
       { kind: 'dream-job', value: 'discover', label: 'Discover employers' },
       { kind: 'dream-job', value: 'performing', label: 'Performing arts' },
-      { kind: 'dream-job', value: 'roadmap', label: 'Year-by-year path' },
-      { kind: 'dream-job', value: 'evidence', label: 'Evidence gap' },
       { kind: 'dream-job', value: 'reality', label: 'Reality check' },
-    ],
-    jobs: [
-      { kind: 'jobs', value: 'overview', label: 'Jobs hub' },
+      { kind: 'jobs', value: 'overview', label: 'Master Jobs Hub' },
       { kind: 'jobs', value: 'atlas', label: 'Job atlas' },
       { kind: 'jobs', value: 'framework', label: 'Karma lens' },
       { kind: 'jobs', value: 'compare', label: 'Compare roles' },
@@ -526,11 +634,9 @@ function sidebarMenuDefinitions() {
       { kind: 'jobs', value: 'foundations', label: 'Vedic foundations' },
     ],
     calling: [
-      { kind: 'view', value: 'assessments', label: 'Assessments', meta: '7 career lenses', group: 'Assessment workflow' },
-      { kind: 'calling-mode', value: 'assessment', label: 'Student assessment', meta: 'Personality · desire · capability', group: 'Assessment workflow' },
-      { kind: 'calling-mode', value: 'recommendations', label: '7 recommendations', meta: 'Current stage · next bridge', group: 'Assessment workflow' },
-      ...callingQuestions.map((question) => ({ kind: 'calling', value: question.id, label: question.short, meta: `Question ${question.number}`, group: 'Calling questions' })),
-      ...[['compass','Know yourself'],['explore','Explore careers'],['compare','Compare paths'],['roadmap','Action plan'],['ai-journey','AI Journey'],['evidence','Evidence wallet']].map(([value,label]) => ({ kind: 'view', value, label, group: 'Decision tools' })),
+      { kind: 'view', value: 'compass', label: 'Know Thyself', meta: 'First step · reality scan', group: 'Find Your Calling' },
+      { kind: 'view', value: 'assessments', label: 'Assessments', meta: 'All assessments · one workspace', group: 'Find Your Calling' },
+      ...[['explore','Explore careers'],['compare','Compare paths'],['roadmap','Action plan'],['ai-journey','AI Journey'],['evidence','Evidence wallet']].map(([value,label]) => ({ kind: 'view', value, label, group: 'Decision tools' })),
     ],
     blog: [{ kind: 'blog', value: 'All', label: 'All viewpoints' }, ...[...new Set(teamBlogEntries.map((item) => item.category))].map((value) => ({ kind: 'blog', value, label: value }))],
     newsletters: [{ kind: 'newsletter', value: 'latest', label: 'Latest issue' }, { kind: 'newsletter', value: 'archive', label: 'Issue archive' }, { kind: 'newsletter', value: 'subscribe', label: 'Subscribe & preferences' }],
@@ -728,23 +834,34 @@ function allSignals() {
   return Object.entries(state.signals).filter(([key]) => key !== 'subjectAvoidance').flatMap(([, values]) => values);
 }
 
+function ratingColor(value) {
+  const score = Number(value) || 0;
+  if (score === 0) return '#8b94a7';
+  if (score <= 3) return '#e54862';
+  if (score <= 6) return '#e6a323';
+  if (score <= 8) return '#18a6a6';
+  return '#239b56';
+}
+
 function workRealityResult() {
-  const values = workRealityQuestions.map((question) => Number(state.workReality.answers[question.id] || 0));
-  const answered = values.filter(Boolean).length;
+  const entries = workRealityQuestions.map((question) => ({ value: Number(state.workReality.answers[question.id] ?? 0), answered: Object.hasOwn(state.workReality.answers, question.id) }));
+  const values = entries.map((entry) => entry.value);
+  const answered = entries.filter((entry) => entry.answered).length;
   if (!answered) return { answered: 0, primary: null, secondary: null, noNos: [], tensions: [] };
   const ranked = workArchetypes.map((pattern) => {
-    const used = values.map((value, index) => value ? Math.abs(value - pattern.ideal[index]) : null).filter((value) => value !== null);
+    const used = entries.map((entry, index) => entry.answered ? Math.abs(entry.value - pattern.ideal[index]) : null).filter((value) => value !== null);
     return { ...pattern, distance: used.reduce((sum, value) => sum + value, 0) / used.length };
   }).sort((a, b) => a.distance - b.distance);
-  const answer = (id) => Number(state.workReality.answers[id] || 0);
+  const answer = (id) => Number(state.workReality.answers[id] ?? 0);
+  const hasAnswer = (id) => Object.hasOwn(state.workReality.answers, id);
   const noNos = [
-    answer('computerTolerance') && answer('computerTolerance') <= 3 ? 'Coding-heavy daily work' : '',
+    hasAnswer('computerTolerance') && answer('computerTolerance') <= 3 ? 'Coding-heavy daily work' : '',
     answer('physicalActivity') >= 8 ? 'Desk-only routine' : '',
-    answer('travelEnergy') && answer('travelEnergy') <= 3 ? 'Frequent travel or relocation' : '',
-    answer('peopleIntensity') && answer('peopleIntensity') <= 3 ? 'Constant public interaction' : '',
+    hasAnswer('travelEnergy') && answer('travelEnergy') <= 3 ? 'Frequent travel or relocation' : '',
+    hasAnswer('peopleIntensity') && answer('peopleIntensity') <= 3 ? 'Constant public interaction' : '',
     answer('peopleIntensity') >= 8 ? 'Mostly isolated work' : '',
-    answer('uncertaintyComfort') && answer('uncertaintyComfort') <= 3 ? 'Unpredictable income' : '',
-    answer('clinicalTolerance') && answer('clinicalTolerance') <= 3 ? 'Blood / clinical exposure' : '',
+    hasAnswer('uncertaintyComfort') && answer('uncertaintyComfort') <= 3 ? 'Unpredictable income' : '',
+    hasAnswer('clinicalTolerance') && answer('clinicalTolerance') <= 3 ? 'Blood / clinical exposure' : '',
   ].filter(Boolean);
   const tensions = [];
   if (answer('familyPriority') >= 8 && answer('promotionDrive') >= 8) tensions.push('Family-first time and rapid promotion may compete; compare actual schedules, not titles.');
@@ -766,7 +883,7 @@ function fitFor(career) {
   const groupCoverage = signalGroups.filter((group) => state.signals[group.key]?.some((item) => career.tags.includes(item))).length;
   const reality = workRealityResult();
   const careerProfile = careerWorkProfiles[career.id];
-  const answeredPairs = careerProfile ? workRealityQuestions.map((question, index) => [Number(state.workReality.answers[question.id] || 0), careerProfile[index]]).filter(([value]) => value) : [];
+  const answeredPairs = careerProfile ? workRealityQuestions.map((question, index) => [Number(state.workReality.answers[question.id] ?? 0), careerProfile[index], Object.hasOwn(state.workReality.answers, question.id)]).filter(([, , answered]) => answered) : [];
   const workAlignment = answeredPairs.length ? Math.round(10 - (answeredPairs.reduce((sum, [value, target]) => sum + Math.abs(value - target), 0) / answeredPairs.length)) : 0;
   const conflicts = reality.noNos.filter((noNo) => (noNoCareerExclusions[noNo] || []).includes(career.id));
   const subjectConflicts = (state.signals.subjectAvoidance || []).filter((subject) => (subjectCareerConstraints[subject] || []).includes(career.id)).map((subject) => `Avoids required ${subject}`);
@@ -783,6 +900,7 @@ function rankedCareers() {
 
 function setView(view, { updateHash = true } = {}) {
   if (!viewMeta[view]) return;
+  if (view === 'research') { openResearchShelf(); return; }
   state.view = view;
   saveState();
   if (updateHash) history.replaceState(null, '', `#${view}`);
@@ -798,9 +916,39 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+function regionOptionsMarkup() {
+  const options = [...new Map(experienceStories.map((story) => [`${story.profile.country}::${story.profile.region}`, { country: story.profile.country, region: story.profile.region }])).values()];
+  return `<option value="All">All regions</option><optgroup label="India">${options.filter((item) => item.country === 'India').map((item) => `<option value="${escapeHtml(`${item.country}::${item.region}`)}">${escapeHtml(item.region)}</option>`).join('')}</optgroup><optgroup label="Other countries">${options.filter((item) => item.country !== 'India').map((item) => `<option value="${escapeHtml(`${item.country}::${item.region}`)}">${escapeHtml(item.country)} · ${escapeHtml(item.region)}</option>`).join('')}</optgroup>`;
+}
+
+function renderResearchRail() {
+  const nav = $('#researchRailNav');
+  if (!nav) return;
+  const domainIcons = { 'Schools & subjects': 'study', 'Entrances & admissions': 'exam', 'Colleges & courses': 'overview', 'Cost & funding': 'karma', 'Careers & skills': 'calling', 'Campus placements': 'dream', Apprenticeships: 'tool', Employers: 'community', Locations: 'journey' };
+  nav.innerHTML = researchDomains.filter((domain) => domain !== 'All evidence').map((domain, index) => `<button data-research-rail="${escapeHtml(domain)}" class="${state.research.category === domain ? 'active' : ''}" style="--rail-accent:${sidebarItemColors[index % sidebarItemColors.length]}" aria-label="Open ${escapeHtml(domain)} research" title="${escapeHtml(domain)}"><span class="research-rail-icon" aria-hidden="true">${iconMarkup(domainIcons[domain] || 'research')}</span><strong>${escapeHtml(domain)}</strong><small>${researchCatalog.filter((item) => item.researchDomain === domain).length}</small></button>`).join('');
+  $('#researchRailTotal').textContent = `${researchCatalog.length} evidence records`;
+  $('#researchRailSaved').textContent = state.research.saved.length;
+}
+
 function updateShell() {
   const [eyebrow, title] = viewMeta[state.view];
   document.body.dataset.view = state.view;
+  document.body.classList.toggle('left-sidebar-expanded', Boolean(state.sidebarExpanded));
+  document.body.classList.toggle('right-sidebar-expanded', Boolean(state.researchRailExpanded));
+  const leftToggle = $('#leftSidebarToggle');
+  if (leftToggle) {
+    leftToggle.setAttribute('aria-expanded', String(Boolean(state.sidebarExpanded)));
+    leftToggle.title = state.sidebarExpanded ? 'Collapse navigation' : 'Expand navigation';
+    $('.sidebar-toggle-icon', leftToggle).textContent = state.sidebarExpanded ? '‹' : '›';
+    $('.sidebar-footer-label', leftToggle).textContent = state.sidebarExpanded ? 'Collapse navigation' : 'Expand navigation';
+  }
+  const rightToggle = $('#rightSidebarToggle');
+  if (rightToggle) {
+    rightToggle.setAttribute('aria-expanded', String(Boolean(state.researchRailExpanded)));
+    rightToggle.title = state.researchRailExpanded ? 'Collapse research navigation' : 'Expand research navigation';
+    $('span', rightToggle).textContent = state.researchRailExpanded ? '›' : '‹';
+    $('strong', rightToggle).textContent = state.researchRailExpanded ? 'Collapse' : 'Expand';
+  }
   $('#pageEyebrow').textContent = eyebrow;
   $('#pageTitle').textContent = state.view === 'journey-stage' ? yearMilestoneConfig[state.activeJourneyStage]?.title || title : title;
   $$('.nav-item').forEach((button) => {
@@ -819,8 +967,8 @@ function updateShell() {
   $('#headerProfileAvatar').textContent = headerName.slice(0, 2).toUpperCase();
   $('#headerProfileLabel').textContent = headerName;
   $('#headerProfileButton').setAttribute('aria-label', isGuest() ? 'Open guest profile and sign-in options' : `Open profile settings for ${headerName}`);
+  $('#adminSettingsButton').hidden = !isAdmin();
   $$('.header-editorial-link').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
-  $('#audienceSwitch span').textContent = state.audience === 'student' ? 'Student view' : 'Parent view';
   const appearance = effectiveAppearance();
   document.body.dataset.theme = appearance.theme;
   document.documentElement.style.setProperty('--campus-image', `url(${JSON.stringify(appearance.background.file)})`);
@@ -829,12 +977,14 @@ function updateShell() {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', String(active));
   });
-  const regionSelect = $('#globalRegionSelect');
+  const audienceSelect = $('#userAudienceSelect');
+  if (audienceSelect) audienceSelect.value = state.audience;
+  const regionSelect = $('#userRegionSelect');
   if (regionSelect) {
-    const options = [...new Map(experienceStories.map((story) => [`${story.profile.country}::${story.profile.region}`, { country: story.profile.country, region: story.profile.region }])).values()];
-    regionSelect.innerHTML = `<option value="All">All regions</option><optgroup label="India">${options.filter((item) => item.country === 'India').map((item) => `<option value="${escapeHtml(`${item.country}::${item.region}`)}">${escapeHtml(item.region)}</option>`).join('')}</optgroup><optgroup label="Other countries">${options.filter((item) => item.country !== 'India').map((item) => `<option value="${escapeHtml(`${item.country}::${item.region}`)}">${escapeHtml(item.country)} · ${escapeHtml(item.region)}</option>`).join('')}</optgroup>`;
+    regionSelect.innerHTML = regionOptionsMarkup();
     regionSelect.value = state.regionScope || 'All';
   }
+  renderResearchRail();
   updateSidebarMenus();
 }
 
@@ -890,6 +1040,7 @@ function filteredResearchRecords() {
     const haystack = `${item.title} ${item.summary} ${item.category} ${item.researchDomain} ${item.geographyLabel} ${(item.tags || []).join(' ')} ${(item.facts || []).map((fact) => `${fact.label} ${fact.value}`).join(' ')}`.toLowerCase();
     return (state.research.category === 'All evidence' || item.researchDomain === state.research.category)
       && (state.research.geography === 'All' || item.geographyLabel.includes(state.research.geography))
+      && (!state.research.savedOnly || state.research.saved.includes(item.id))
       && (!term || haystack.includes(term));
   });
 }
@@ -906,15 +1057,16 @@ function renderResearchShelf() {
     body.innerHTML = `<button class="button-quiet research-back" data-research-back>← Back to research index</button><article class="research-detail"><span>${escapeHtml(detail.researchDomain)} · ${escapeHtml(detail.category)}</span><h2>${escapeHtml(detail.title)}</h2><p>${escapeHtml(detail.summary)}</p><div class="research-fact-grid">${detail.facts.map((fact) => `<section><small>${escapeHtml(fact.label)}</small><strong>${escapeHtml(String(fact.value))}</strong></section>`).join('')}</div><h3>Decision checks</h3><ol>${detail.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ol><h3>Official evidence</h3><div class="research-source-list">${detail.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.label)}</span><small>Checked ${escapeHtml(source.checkedAt)} · open ↗</small></a>`).join('')}</div><p class="research-caution"><strong>Limitation:</strong> ${escapeHtml(detail.caveat)}</p><div class="research-detail-actions"><button class="button-secondary" data-research-save="${detail.id}">${state.research.saved.includes(detail.id) ? 'Saved ★' : 'Save evidence ☆'}</button><button class="button-secondary" data-action="research-compare" data-id="${detail.id}">${state.research.compare.includes(detail.id) ? 'Remove from compare' : 'Add to compare'}</button></div></article>`;
     return;
   }
-  const saved = researchCatalog.filter((item) => state.research.saved.includes(item.id));
-  body.innerHTML = `<section class="research-drawer-index"><p class="eyebrow">RESEARCH INDEX</p><h2>${researchCatalog.length} verified starting points</h2><p>Use the full page to search and compare. This drawer keeps selected evidence beside the rest of your work.</p><dl><div><dt>Schools + exams</dt><dd>${schoolExamResearchMetadata.recordCount || schoolExamResearch.length}</dd></div><div><dt>Colleges + funding</dt><dd>${collegeCourseResearchMetadata.recordCount || collegeCourseResearch.length}</dd></div><div><dt>Work + locations</dt><dd>${jobLocationResearchMetadata.recordCount || jobLocationResearch.length}</dd></div></dl><h3>Saved evidence</h3>${saved.length ? `<div class="research-saved-list">${saved.map((item) => `<button data-action="research-detail" data-id="${item.id}"><span>${escapeHtml(item.category)}</span><strong>${escapeHtml(item.title)}</strong></button>`).join('')}</div>` : '<p>No saved evidence yet. Save records from the Research page.</p>'}</section>`;
+  body.innerHTML = renderResearch();
 }
 
 function openResearchShelf(id = '') {
   closeJourneyInspector();
   closeSettings();
+  closeAdminSettings();
   state.research.detailId = id;
   renderResearchShelf();
+  renderResearchRail();
   document.body.classList.add('research-open');
   openRightDrawer('research');
 }
@@ -925,7 +1077,17 @@ function renderResearch() {
   const compareItems = state.research.compare.map((id) => researchCatalog.find((item) => item.id === id)).filter(Boolean);
   const officialSources = new Set(researchCatalog.flatMap((item) => item.sources.map((source) => source.url))).size;
   const compareKeys = [...new Set(compareItems.flatMap((item) => Object.keys(item.compare || {})))].slice(0, 7);
-  return `<div class="view-enter research-view"><header class="research-workspace-head"><div><p class="eyebrow">OFFICIAL-SOURCE RESEARCH · CHECKED 08 AUG 2026</p><h2>Evidence you can actually use.</h2><p>Schools, subject routes, entrances, colleges, funding, careers, apprenticeships, employers and Tamil Nadu opportunity clusters.</p></div><div class="research-head-metrics"><span><strong>${researchCatalog.length}</strong>records</span><span><strong>${officialSources}</strong>official links</span><span><strong>${state.research.saved.length}</strong>saved</span></div></header><nav class="research-view-tabs" aria-label="Research domains">${researchDomains.map((section) => `<button class="${state.research.category === section ? 'active' : ''}" data-action="research-section" data-value="${section}">${section}<small>${section === 'All evidence' ? researchCatalog.length : researchCatalog.filter((item) => item.researchDomain === section).length}</small></button>`).join('')}</nav><form class="research-command" id="researchPageFilters"><label class="research-page-search"><span>Search evidence</span><input id="researchPageSearch" type="search" value="${escapeHtml(state.research.search)}" placeholder="Try TNEA, CBSE, scholarship, apprenticeship, Chennai…"></label><label><span>Geography</span><select name="geography"><option>All</option><option ${state.research.geography === 'Tamil Nadu' ? 'selected' : ''}>Tamil Nadu</option><option ${state.research.geography === 'India' ? 'selected' : ''}>India</option></select></label><button type="button" class="button-secondary" data-action="research-open">Saved evidence · ${state.research.saved.length}</button></form>${compareItems.length ? `<section class="research-compare-workbench"><header><div><p class="eyebrow">SIDE-BY-SIDE EVIDENCE</p><h3>${compareItems.length} records selected</h3></div><button class="button-quiet" data-action="research-compare-clear">Clear comparison</button></header><div class="research-compare-table" style="--research-compare:${compareItems.length}"><div class="research-compare-label">Evidence</div>${compareItems.map((item) => `<div class="research-compare-head"><small>${escapeHtml(item.category)}</small><strong>${escapeHtml(item.title)}</strong><button data-action="research-compare" data-id="${item.id}">Remove</button></div>`).join('')}${compareKeys.map((key) => `<div class="research-compare-label">${escapeHtml(titleCase(key))}</div>${compareItems.map((item) => `<div>${escapeHtml(String(item.compare?.[key] ?? 'Not stated'))}</div>`).join('')}`).join('')}</div></section>` : ''}<section class="research-data-table" aria-label="Research evidence"><div class="research-data-head"><span>Evidence</span><span>Geography</span><span>Checked</span><span>Actions</span></div>${items.map((item) => `<article><button class="research-record-main" data-action="research-detail" data-id="${item.id}"><span>${escapeHtml(item.category)}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.summary)}</p></button><span>${escapeHtml(item.geographyLabel)}</span><time datetime="${researchCheckedAt(item)}">${escapeHtml(researchCheckedAt(item))}</time><div><button data-action="research-compare" data-id="${item.id}" aria-pressed="${state.research.compare.includes(item.id)}">${state.research.compare.includes(item.id) ? '✓ Compare' : '+ Compare'}</button><button data-action="research-quick-save" data-id="${item.id}" aria-pressed="${state.research.saved.includes(item.id)}">${state.research.saved.includes(item.id) ? '★' : '☆'}</button></div></article>`).join('') || '<div class="research-empty"><strong>No evidence matches.</strong><span>Clear one filter or try a broader search.</span></div>'}</section></div>`;
+  const researchTitle = state.research.savedOnly ? 'Saved research' : state.research.category === 'All evidence' ? 'Research library' : state.research.category;
+  const researchScope = state.research.savedOnly ? 'YOUR SAVED RECORDS' : state.research.category === 'All evidence' ? 'ALL RESEARCH AREAS' : 'RESEARCH AREA';
+  const compareColumns = compareItems.map((item) => `<div class="research-compare-head"><small>${escapeHtml(item.category)}</small><strong>${escapeHtml(item.title)}</strong><button data-action="research-compare" data-id="${item.id}">Remove</button></div>`).join('');
+  const compareRows = compareKeys.map((key) => {
+    const values = compareItems.map((item) => `<div>${escapeHtml(String(item.compare?.[key] ?? 'Not stated'))}</div>`).join('');
+    return `<div class="research-compare-label">${escapeHtml(titleCase(key))}</div>${values}`;
+  }).join('');
+  const compareWorkbench = compareItems.length ? `<section class="research-compare-workbench"><header><div><p class="eyebrow">SIDE-BY-SIDE EVIDENCE</p><h3>${compareItems.length} records selected</h3></div><button class="button-quiet" data-action="research-compare-clear">Clear comparison</button></header><div class="research-compare-table" style="--research-compare:${compareItems.length}"><div class="research-compare-label">Evidence</div>${compareColumns}${compareRows}</div></section>` : '';
+  const researchRows = items.map((item) => `<article><button class="research-record-main" data-action="research-detail" data-id="${item.id}"><span>${escapeHtml(item.category)}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.summary)}</p></button><span>${escapeHtml(item.geographyLabel)}</span><time datetime="${researchCheckedAt(item)}">${escapeHtml(researchCheckedAt(item))}</time><div><button data-action="research-compare" data-id="${item.id}" aria-pressed="${state.research.compare.includes(item.id)}">${state.research.compare.includes(item.id) ? '✓ Compare' : '+ Compare'}</button><button data-action="research-quick-save" data-id="${item.id}" aria-pressed="${state.research.saved.includes(item.id)}">${state.research.saved.includes(item.id) ? '★' : '☆'}</button></div></article>`).join('');
+  const researchEmpty = `<div class="research-empty"><strong>No evidence matches.</strong><span>${state.research.savedOnly ? 'Save evidence from another research domain first.' : 'Clear one filter or try a broader search.'}</span></div>`;
+  return `<div class="research-view"><header class="research-workspace-head compact-page-intro"><div><p class="eyebrow">${researchScope} · UPDATED 09 AUG 2026</p><h2>${escapeHtml(researchTitle)}</h2></div><div class="research-head-metrics"><span><strong>${items.length}</strong>shown</span><span><strong>${officialSources}</strong>sources</span><span><strong>${state.research.saved.length}</strong>saved</span></div></header><form class="research-command" id="researchDrawerFilters"><label class="research-page-search"><span>Search this research lane</span><input id="researchSearch" type="search" value="${escapeHtml(state.research.search)}" placeholder="Try TNEA, CBSE, scholarship, placement, Chennai…"></label><label><span>Geography</span><select name="geography"><option>All</option><option ${state.research.geography === 'Tamil Nadu' ? 'selected' : ''}>Tamil Nadu</option><option ${state.research.geography === 'India' ? 'selected' : ''}>India</option></select></label><button type="button" class="research-saved-summary ${state.research.savedOnly ? 'active' : ''}" data-research-saved-toggle aria-pressed="${state.research.savedOnly}">★ ${state.research.saved.length} saved</button></form>${compareWorkbench}<section class="research-data-table" aria-label="Research records"><div class="research-data-head"><span>Research record</span><span>Geography</span><span>Checked</span><span>Actions</span></div>${researchRows || researchEmpty}</section></div>`;
 }
 
 function closeResearchShelf() {
@@ -1268,7 +1430,7 @@ function careerFieldMatches() {
   }).filter((field) => field.contributions.length).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
-function renderAssessments() {
+function renderCareerAssessmentWorkspace() {
   const active = careerAssessments.find((item) => item.id === state.assessments.active) || careerAssessments[0];
   const progress = careerAssessmentProgress(active);
   const completed = Boolean(state.assessments.completed[active.id]);
@@ -1301,6 +1463,32 @@ function renderAssessments() {
     </section>
     <section class="panel assessment-method"><div><p class="eyebrow">METHOD & RESPONSIBLE USE</p><h3>Original, exploration-only adaptations</h3><p>These short tools are informed by established career-exploration frameworks but are not reproductions of proprietary clinical or hiring instruments. Use several lenses together, verify results through lived experience, and never use them to screen or exclude a person.</p></div><div>${careerAssessmentSources.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener">${escapeHtml(label)} <span>↗</span></a>`).join('')}</div></section>
   </div>`;
+}
+
+function renderSignalAssessment() {
+  const selected = Object.values(state.signals).flat().length;
+  return `<section class="signal-assessment">
+    <header class="assessment-head"><div><p class="eyebrow">DISCOVERY ASSESSMENT · LIVED EVIDENCE</p><h2>What pulls you in?</h2><p>Choose up to four honest signals in each group. This is separate from the Know Thyself reality scan so attraction and aversion do not blur together.</p></div><div class="assessment-completion"><strong>${selected}</strong><span>signals chosen</span></div></header>
+    <div class="signal-assessment-groups">${signalGroups.map((group, index) => `<section class="signal-card"><div class="signal-card-head"><span class="signal-number">${String(index + 1).padStart(2, '0')}</span><div><h3>${escapeHtml(group.title)}</h3><p>${escapeHtml(group.copy)}</p></div></div><div class="chip-grid">${group.choices.map((choice) => `<button class="choice-chip ${state.signals[group.key].includes(choice) ? 'selected' : ''}" data-action="signal" data-group="${group.key}" data-value="${choice}" aria-pressed="${state.signals[group.key].includes(choice)}">${escapeHtml(choice)}</button>`).join('')}</div></section>`).join('')}</div>
+  </section>`;
+}
+
+function renderAssessments() {
+  const hub = state.assessments.hub || 'signals';
+  const reflected = callingQuestions.filter((question) => state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim()).length;
+  const items = [
+    ['signals', 'Discovery signals', `${Object.values(state.signals).flat().length} selected`],
+    ['student', 'Student assessment', `${callingAssessmentCoverage()}/21 answered`],
+    ['reflections', 'Calling reflections', `${reflected}/3 reflected`],
+    ...careerAssessments.map((assessment) => { const progress = careerAssessmentProgress(assessment); return [`career:${assessment.id}`, assessment.title, state.assessments.completed[assessment.id] ? 'Complete' : `${progress.answered}/${progress.total} answered`]; }),
+    ['recommendations', '7 recommendations', 'From your student assessment'],
+  ];
+  const body = hub === 'signals' ? renderSignalAssessment()
+    : hub === 'student' ? renderStudentAssessment()
+    : hub === 'reflections' ? renderCallingQuestions()
+    : hub === 'recommendations' ? renderAssessmentRecommendations()
+    : renderCareerAssessmentWorkspace();
+  return `<div class="assessment-hub view-enter"><aside class="assessment-hub-sidebar"><div><p class="eyebrow">ASSESSMENT INDEX</p><h2>All assessments</h2><p>One place for every lens. Move between them without losing your answers.</p></div><nav aria-label="All assessments">${items.map(([id, label, meta], index) => `<button data-action="assessment-hub" data-value="${id}" class="${hub === id ? 'active' : ''}" aria-current="${hub === id ? 'page' : 'false'}"><span>${String(index + 1).padStart(2, '0')}</span><span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(meta)}</small></span></button>`).join('')}</nav></aside><main class="assessment-hub-main">${body}</main></div>`;
 }
 
 function vedicOption(value, label, selected) {
@@ -1473,17 +1661,9 @@ function legacyRenderCompass() {
 }
 
 function renderCompass() {
-  const completion = compassCompletion();
   const reality = workRealityResult();
-  const signalCount = allSignals().length;
   const top = rankedCareers()[0];
-  const answerLabel = (question) => state.workReality.answers[question.id] ? `${state.workReality.answers[question.id]}/10` : 'Not answered';
-  const streamProfiles = [
-    { id: 'science', title: 'Science', asks: 'Concept depth, cumulative practice, and comfort with maths and/or biology.', subjects: ['Physics', 'Chemistry', 'Mathematics', 'Biology'] },
-    { id: 'commerce', title: 'Commerce', asks: 'Structured practice, business curiosity, and comfort with numbers or systems.', subjects: ['Economics', 'Accountancy', 'Mathematics'] },
-    { id: 'humanities', title: 'Humanities', asks: 'Reading, writing, interpretation, and confidence with open-ended questions.', subjects: ['Psychology', 'History', 'Economics'] },
-  ].map((stream) => ({ ...stream, signals: stream.subjects.filter((subject) => state.signals.subjects.includes(subject)).length }));
-  const chosen = streamProfiles.find((stream) => stream.id === state.streamChoice);
+  const answerLabel = (question) => `${Number(state.workReality.answers[question.id] || 0)}/10`;
   return `
     <div class="view-enter">
       <header class="section-header compass-intro">
@@ -1495,45 +1675,30 @@ function renderCompass() {
         <div class="reality-scan-head"><div><p class="eyebrow">WHAT YOU DON'T LIKE · SERIES 01</p><h3 id="realityScanTitle">Work Reality Scan</h3><p>${isGuest() ? 'Answer freely in this session. Create a profile only when you want to save the result.' : 'Move every scale. A low answer is not a weakness; it is useful design information.'}</p></div><div class="scan-progress"><strong>${reality.answered}</strong><span>of ${workRealityQuestions.length}<br>answered</span></div></div>
         <div class="reality-question-grid">
           ${workRealityQuestions.map((question, index) => {
-            const answer = state.workReality.answers[question.id];
-            return `<label class="reality-question ${answer ? 'answered' : ''}">
+            const answer = Number(state.workReality.answers[question.id] || 0);
+            return `<label class="reality-question ${answer ? 'answered' : ''}" style="--rating-color:${ratingColor(answer)}">
               <span class="reality-question-number">${String(index + 1).padStart(2, '0')}</span>
               <strong>${question.question}</strong>
               <span class="range-readout" id="readout-${question.id}">${answerLabel(question)}</span>
-              <input type="range" min="1" max="10" step="1" value="${answer || 5}" data-work-reality="${question.id}" aria-describedby="ends-${question.id}">
-              <span class="range-ends" id="ends-${question.id}"><span>1 · ${question.low}</span><span>10 · ${question.high}</span></span>
+              <input type="range" min="0" max="10" step="1" value="${answer}" data-work-reality="${question.id}" aria-describedby="ends-${question.id}">
+              <span class="range-ends" id="ends-${question.id}"><span>0 · ${question.low}</span><span>10 · ${question.high}</span></span>
             </label>`;
           }).join('')}
         </div>
       </section>
 
-      <div class="compass-layout evidence-compass">
-        <div class="signal-stack">
-          <section class="signal-card preference-bridge">
-            <div class="signal-card-head"><span class="signal-number">02</span><div><h3>Now collect supporting evidence</h3><p>Only after the reality scan: activities, strengths, subjects, values, and working style you have actually experienced.</p></div></div>
-          </section>
-          ${signalGroups.map((group, index) => `
-            <section class="signal-card">
-              <div class="signal-card-head"><span class="signal-number">${String(index + 1).padStart(2, '0')}</span><div><h3>${group.title}</h3><p>${group.copy}</p></div></div>
-              <div class="chip-grid">${group.choices.map((choice) => `<button class="choice-chip ${state.signals[group.key].includes(choice) ? 'selected' : ''}" data-action="signal" data-group="${group.key}" data-value="${choice}" aria-pressed="${state.signals[group.key].includes(choice)}">${choice}</button>`).join('')}</div>
-            </section>`).join('')}
-          <section class="signal-card">
-            <div class="signal-card-head"><span class="signal-number">06</span><div><h3>Stream reality reflection</h3><p>See what each route asks of you. There is no pass or fail.</p></div></div>
-            <div class="chip-grid">${streamProfiles.map((stream) => `<button class="choice-chip ${state.streamChoice === stream.id ? 'selected' : ''}" data-action="stream" data-value="${stream.id}" aria-pressed="${state.streamChoice === stream.id}">${stream.title}${stream.signals ? ` · ${stream.signals} subject signal${stream.signals > 1 ? 's' : ''}` : ''}</button>`).join('')}</div>
-            ${chosen ? `<div class="disclosure"><strong>${chosen.title} asks for:</strong> ${chosen.asks}<br><br>Your current subject evidence supports ${chosen.signals} of ${chosen.subjects.length} common signals. This is a conversation starter, not an eligibility decision.</div>` : ''}
-          </section>
-        </div>
+      <div class="compass-layout evidence-compass know-thyself-layout">
         <aside class="compass-summary work-pattern-summary" aria-live="polite">
           <p class="eyebrow">LIVE · EXPLAINABLE PROFILE</p>
           ${reality.primary ? `<span class="pattern-kicker">CURRENT PRIMARY PATTERN</span><h3>${reality.primary.name}</h3><p>${reality.primary.line}.</p>${reality.secondary ? `<div class="secondary-pattern"><span>Also visible</span><strong>${reality.secondary.name}</strong></div>` : ''}` : `<h3>Answer the reality questions first.</h3><p>Your work-style pattern and NO-NOs will appear here. No career is recommended from an unanswered profile.</p>`}
           ${reality.noNos.length ? `<div class="summary-nonos"><span>AUTOMATIC NO-NO SIGNALS</span>${reality.noNos.map((item) => `<b>${item}</b>`).join('')}</div>` : ''}
           ${reality.tensions.map((item) => `<div class="preference-tension"><span>TRADE-OFF TO TEST</span><p>${item}</p></div>`).join('')}
-          <div class="profile-meter"><span>${reality.answered}/${workRealityQuestions.length} reality answers · ${signalCount} evidence signals</span><div><i style="width:${completion}%"></i></div></div>
+          <div class="profile-meter"><span>${reality.answered}/${workRealityQuestions.length} reality answers</span><div><i style="width:${reality.answered / workRealityQuestions.length * 100}%"></i></div></div>
           <p class="summary-explanation">${top && reality.answered ? `<strong>${top.title}</strong> currently overlaps at ${top.fit.workAlignment}/10 on answered work conditions. Validate that against its real daily work.` : 'Recommendations become available as transparent hypotheses—not permanent labels.'}<br><br>Pattern names are revisable work-style summaries—not astrology, diagnosis, destiny, or ability.</p>
           <button class="button-secondary" data-action="go" data-target="explore" ${reality.answered < 6 ? 'disabled' : ''}>Test remaining career worlds →</button>
           ${reality.answered ? '<button class="pattern-reset" data-action="work-reality-reset">Clear reality answers</button>' : ''}
         </aside>
-      </div>
+        <section class="panel know-thyself-next"><p class="eyebrow">NEXT · ASSESSMENTS</p><h3>Now explore what pulls you in.</h3><p>Attraction, strengths, values and work-style signals have their own assessment workspace.</p><button class="button-primary" data-action="go" data-target="assessments">Open all assessments →</button></section></div>
     </div>`;
 }
 
@@ -1873,17 +2038,16 @@ function renderDiscussionsLegacy() {
 }
 
 function renderDiscussions() {
-  if (state.communityMode === 'experiences') return `${renderCommunityTabs()}${state.shareExperienceOpen ? renderShareExperience() : renderExperiences()}`;
-  if (state.newDiscussionOpen) return `${renderCommunityTabs()}${renderNewDiscussion()}`;
+  if (state.communityMode === 'experiences') return state.shareExperienceOpen ? renderShareExperience() : renderExperiences();
+  if (state.newDiscussionOpen) return renderNewDiscussion();
   const detail = allDiscussionTopics().find((topic) => topic.id === state.detailDiscussion);
-  if (detail) return `${renderCommunityTabs()}${renderDiscussionDetail(detail)}`;
+  if (detail) return renderDiscussionDetail(detail);
   const filtered = filteredDiscussions();
   const categories = discussionOptions('category');
   const stages = discussionOptions('journeyStage');
   const countries = discussionOptions('country');
   const regions = discussionOptions('region');
-  const tabs = [['discussions', 'Discussions'], ['experiences', 'Experience Exchange'], ['saved', 'Saved']];
-  return `<div class="view-enter discussions-view"><section class="forum-unified"><header class="forum-header"><div><p class="eyebrow">TAMIL NADU · INITIAL ROLLOUT</p><h2>Real questions deserve room to be messy.</h2><p>Ask, confess uncertainty, compare lived context, and verify consequential claims.</p></div><button class="button-primary" data-action="discussion-new">${isGuest() ? 'Create a profile to post' : 'Start a discussion'}</button></header><form class="forum-command" id="discussionFilters"><nav class="community-tabs" aria-label="Community sections">${tabs.map(([id, label]) => `<button type="button" class="${state.communityMode === id ? 'active' : ''}" data-action="community-mode" data-value="${id}">${label}${id === 'saved' && state.savedDiscussions.length ? ` <span>${state.savedDiscussions.length}</span>` : ''}</button>`).join('')}</nav><label class="forum-search"><span>Search</span><input id="discussionSearch" value="${escapeHtml(state.discussionFilters.search)}" placeholder="Campus placement, NEET fear, hostel…"></label><label class="forum-region-filter"><span>Region</span><select name="region"><option>All</option>${regions.map((item) => `<option value="${item}" ${state.discussionFilters.region === item ? 'selected' : ''}>${item}</option>`).join('')}</select></label><details class="forum-more"><summary>More filters</summary><div><label>Category<select name="category"><option>All</option>${categories.map((item) => `<option value="${item}" ${state.discussionFilters.category === item ? 'selected' : ''}>${titleCase(item)}</option>`).join('')}</select></label><label>Journey stage<select name="stage"><option>All</option>${stages.map((item) => `<option value="${item}" ${state.discussionFilters.stage === item ? 'selected' : ''}>${titleCase(item)}</option>`).join('')}</select></label><label>Country<select name="country"><option>All</option>${countries.map((item) => `<option ${state.discussionFilters.country === item ? 'selected' : ''}>${item}</option>`).join('')}</select></label></div></details><span class="forum-result-count"><strong>${filtered.length}</strong> discussions</span></form></section><section class="discussion-list" aria-label="Discussion list"><div class="discussion-list-head"><span>Topic</span><span>Activity</span></div>${filtered.slice(0, state.discussionLimit).map(renderDiscussionCard).join('') || '<div class="forum-empty"><strong>No discussions match these filters.</strong><span>Try All regions or remove one filter.</span></div>'}</section>${filtered.length > state.discussionLimit ? `<button class="button-secondary load-more" data-action="discussion-more">Show more (${filtered.length - state.discussionLimit} remaining)</button>` : ''}</div>`;
+  return `<div class="view-enter discussions-view"><section class="forum-unified"><header class="forum-header"><div><p class="eyebrow">TAMIL NADU · INITIAL ROLLOUT</p><h2>Real questions deserve room to be messy.</h2><p>Ask, confess uncertainty, compare lived context, and verify consequential claims.</p></div><button class="button-primary" data-action="discussion-new">${isGuest() ? 'Create a profile to post' : 'Start a discussion'}</button></header><form class="forum-command forum-command-without-tabs" id="discussionFilters"><label class="forum-search"><span>Search</span><input id="discussionSearch" value="${escapeHtml(state.discussionFilters.search)}" placeholder="Campus placement, NEET fear, hostel…"></label><label class="forum-region-filter"><span>Region</span><select name="region"><option>All</option>${regions.map((item) => `<option value="${item}" ${state.discussionFilters.region === item ? 'selected' : ''}>${item}</option>`).join('')}</select></label><details class="forum-more"><summary>More filters</summary><div><label>Category<select name="category"><option>All</option>${categories.map((item) => `<option value="${item}" ${state.discussionFilters.category === item ? 'selected' : ''}>${titleCase(item)}</option>`).join('')}</select></label><label>Journey stage<select name="stage"><option>All</option>${stages.map((item) => `<option value="${item}" ${state.discussionFilters.stage === item ? 'selected' : ''}>${titleCase(item)}</option>`).join('')}</select></label><label>Country<select name="country"><option>All</option>${countries.map((item) => `<option ${state.discussionFilters.country === item ? 'selected' : ''}>${item}</option>`).join('')}</select></label></div></details><span class="forum-result-count"><strong>${filtered.length}</strong> discussions</span></form></section><section class="discussion-list" aria-label="Discussion list"><div class="discussion-list-head"><span>Topic</span><span>Activity</span></div>${filtered.slice(0, state.discussionLimit).map(renderDiscussionCard).join('') || '<div class="forum-empty"><strong>No discussions match these filters.</strong><span>Try All regions or remove one filter.</span></div>'}</section>${filtered.length > state.discussionLimit ? `<button class="button-secondary load-more" data-action="discussion-more">Show more (${filtered.length - state.discussionLimit} remaining)</button>` : ''}</div>`;
 }
 
 const aiCapabilities = [
@@ -1892,7 +2056,7 @@ const aiCapabilities = [
 
 const journeyWorkspaceTabs = [['overview', 'Overview'], ['journey-stage', 'Year path']];
 const callingWorkspaceTabs = [
-  ['calling', 'Assessment'], ['compass', 'Know yourself'], ['explore', 'Career worlds'],
+  ['compass', 'Know Thyself'], ['assessments', 'Assessments'], ['explore', 'Career worlds'],
   ['compare', 'Compare'], ['roadmap', 'Action plan'], ['evidence', 'Evidence'], ['ai-journey', 'AI lens'],
 ];
 
@@ -1940,12 +2104,16 @@ const assessmentStageFrames = {
 };
 
 function renderJourneyWorkspaceTabs() {
-  const yearTabs = journeyStops().map((stop) => `<button data-journey-stage="${stop.id}" class="${state.view === 'journey-stage' && state.activeJourneyStage === stop.id ? 'active' : ''}">${stop.step}</button>`).join('');
-  return `<div class="journey-inline-navigation"><nav class="journey-workspace-tabs" aria-label="My Journey"><button data-action="go" data-target="overview" class="${state.view === 'overview' ? 'active' : ''}">Overview</button>${yearTabs}</nav></div>`;
+  const yearTabs = journeyStops().map((stop, index) => {
+    const stageLabel = stop.step.split('·').slice(1).join('·').trim() || stop.step;
+    const current = state.view === 'journey-stage' && state.activeJourneyStage === stop.id;
+    return `<button data-journey-stage="${stop.id}" class="railway-station ${stop.status === 'active' ? 'next-stop' : stop.status} ${current ? 'active' : ''}" aria-current="${current ? 'step' : 'false'}"><span class="station-number">${String(index + 1).padStart(2, '0')}</span><i class="station-node" aria-hidden="true"><b></b></i><span class="station-copy"><strong>${escapeHtml(stageLabel)}</strong><small>${escapeHtml(stop.title)}</small></span></button>`;
+  }).join('');
+  return `<div class="journey-inline-navigation railway-journey"><nav class="journey-workspace-tabs" aria-label="My Journey railway"><button data-action="go" data-target="overview" class="railway-station route-map ${state.view === 'overview' ? 'active' : ''}" aria-current="${state.view === 'overview' ? 'page' : 'false'}"><span class="station-number">00</span><i class="station-node" aria-hidden="true"><b></b></i><span class="station-copy"><strong>Overview</strong><small>Journey map</small></span></button>${yearTabs}</nav></div>`;
 }
 
 function renderCallingWorkspaceTabs() {
-  return `<nav class="journey-workspace-tabs calling-workspace-tabs" aria-label="Find Your Calling and decision tools">${callingWorkspaceTabs.map(([view, label]) => `<button data-action="go" data-target="${view}" class="${state.view === view ? 'active' : ''}">${label}</button>`).join('')}</nav>`;
+  return `<nav class="journey-workspace-tabs calling-workspace-tabs" aria-label="Find Your Calling and decision tools">${callingWorkspaceTabs.map(([view, label]) => `<button data-action="go" data-target="${view}" class="${state.view === view || (state.view === 'calling' && view === 'assessments') ? 'active' : ''}">${label}</button>`).join('')}</nav>`;
 }
 
 const callingDirections = [
@@ -2045,7 +2213,7 @@ function renderStudentAssessment() {
   const active = callingAssessmentTypes.find((type) => type.id === activeId) || callingAssessmentTypes[0];
   const answered = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[active.id]?.[trait.id]) > 0).length;
   const activeIndex = callingAssessmentTypes.findIndex((type) => type.id === active.id);
-  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const value = Number(state.calling.assessment?.[active.id]?.[trait.id] || 0); return `<article class="assessment-trait-row ${value ? 'answered' : ''}" style="--trait:${trait.color}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><label for="assessment-${active.id}-${trait.id}"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></label><div class="trait-scale"><small>${escapeHtml(question[1])}</small><input id="assessment-${active.id}-${trait.id}" data-calling-assessment="${active.id}:${trait.id}" type="range" min="1" max="10" step="1" value="${value || 5}" aria-describedby="assessment-${active.id}-${trait.id}-readout"><small>${escapeHtml(question[2])}</small><output id="assessment-${active.id}-${trait.id}-readout">${value ? `${value}/10` : 'Not answered'}</output></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
+  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const value = Number(state.calling.assessment?.[active.id]?.[trait.id] || 0); return `<article class="assessment-trait-row ${value ? 'answered' : ''}" style="--trait:${trait.color};--rating-color:${ratingColor(value)}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><label for="assessment-${active.id}-${trait.id}"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></label><div class="trait-scale"><small>${escapeHtml(question[1])}</small><input id="assessment-${active.id}-${trait.id}" data-calling-assessment="${active.id}:${trait.id}" type="range" min="0" max="10" step="1" value="${value}" aria-describedby="assessment-${active.id}-${trait.id}-readout"><small>${escapeHtml(question[2])}</small><output id="assessment-${active.id}-${trait.id}-readout">${value}/10</output></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
 }
 
 function renderAssessmentRecommendations() {
@@ -2075,9 +2243,7 @@ function renderCallingQuestions() {
 }
 
 function renderCalling() {
-  const mode = state.calling.mode || 'assessment';
-  const body = mode === 'recommendations' ? renderAssessmentRecommendations() : mode === 'questions' ? renderCallingQuestions() : renderStudentAssessment();
-  return `<div class="view-enter calling-assessment-view">${renderCallingFlowTabs()}${body}</div>`;
+  return renderAssessments();
 }
 
 function dreamJobNorthStar() {
@@ -2121,6 +2287,7 @@ function renderDreamPathDrawer(path = selectedDreamVocation(), stageId = state.d
 }
 
 function renderDreamJob(isRefresh = false) {
+  if (!['discover', 'performing', 'reality'].includes(state.dreamJob.tab)) state.dreamJob.tab = 'discover';
   const query = state.dreamJob.search.trim().toLowerCase();
   const employers = dreamJobEmployers.filter((employer) => !query || `${employer.name} ${employer.family} ${employer.roleWorlds.join(' ')}`.toLowerCase().includes(query));
   const selected = dreamJobEmployers.find((employer) => employer.id === state.dreamJob.selectedId) || dreamJobEmployers[0];
@@ -2128,7 +2295,6 @@ function renderDreamJob(isRefresh = false) {
   const currentStage = dreamJobStageBlueprint.find((stage) => stage.stage === currentStageId) || dreamJobStageBlueprint[0];
   const northStar = dreamJobNorthStar();
   const vocation = selectedDreamVocation();
-  const tabs = [['discover','Employer atlas'],['performing','Performing arts'],['roadmap','Year-by-year path'],['evidence','Evidence gap'],['reality','Reality check']];
   const tabContent = {
     discover: `<div class="dream-atlas"><aside><label>Search role worlds<input data-dream-input="search" type="search" value="${escapeHtml(state.dreamJob.search)}" placeholder="Engineering, research, design, consulting…"></label><div class="dream-employer-list">${employers.map((employer) => `<button data-action="dream-employer" data-id="${employer.id}" class="${selected.id === employer.id ? 'active' : ''}"><span>${employer.mark}</span><div><strong>${escapeHtml(employer.name)}</strong><small>${escapeHtml(employer.family)}</small></div></button>`).join('') || '<p>No employer or role world matches.</p>'}</div></aside><article class="dream-employer-detail"><header><span>${selected.mark}</span><div><p class="eyebrow">EMPLOYER ENVIRONMENT · NOT A CALLING</p><h3>${escapeHtml(selected.name)}</h3><p>${escapeHtml(selected.family)}</p></div><button data-action="dream-save" data-id="${selected.id}" aria-pressed="${state.dreamJob.saved.includes(selected.id)}">${state.dreamJob.saved.includes(selected.id) ? 'Saved ★' : 'Save target ☆'}</button></header><section><h4>Purpose test</h4>${selected.purposeQuestions.map((question) => `<p>${escapeHtml(question)}</p>`).join('')}</section><section><h4>Role worlds inside the same logo</h4><div class="dream-role-tags">${selected.roleWorlds.map((role) => `<button data-action="dream-role" data-value="${escapeHtml(role)}" class="${state.dreamJob.targetRole === role ? 'active' : ''}">${escapeHtml(role)}</button>`).join('')}</div></section><section><h4>Proof worth building</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><p class="dream-reality-note">${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Official careers source · checked ${dreamJobMetadata.checkedAt} ↗</a></article></div>`,
     performing: `<section class="dream-vocations"><header><div><p class="eyebrow">CRAFT · LIVELIHOOD · CONTRIBUTION</p><h3>A dream can be a vocation—not an employer.</h3><p>Test whether you love the ordinary practice, then build proof, collaborators and more than one honest income route.</p></div><span>${dreamJobVocations.length} paths</span></header><div class="dream-vocation-layout"><nav aria-label="Performing arts paths">${dreamJobVocations.map((path) => `<button data-action="dream-vocation" data-id="${path.id}" aria-pressed="${path.id === vocation.id}" class="${path.id === vocation.id ? 'active' : ''}" style="--path-accent:${path.accent}"><span>${escapeHtml(path.mark)}</span><div><strong>${escapeHtml(path.name)}</strong><small>${escapeHtml(path.family)}</small></div></button>`).join('')}</nav><article class="dream-vocation-preview" style="--path-accent:${vocation.accent}"><header><span>${escapeHtml(vocation.mark)}</span><div><p class="eyebrow">${escapeHtml(vocation.family)}</p><h4>${escapeHtml(vocation.name)}</h4></div></header><blockquote>${escapeHtml(vocation.promise)}</blockquote><section><h5>Would the work fit?</h5>${vocation.noNoTests.map((item) => `<p>${escapeHtml(item)}</p>`).join('')}</section><section><h5>Proof to build</h5><ol>${vocation.proof.slice(0, 3).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><footer><button class="button-primary" data-action="dream-vocation-detail" data-id="${vocation.id}">Open ${escapeHtml(currentStage.label)} path</button><small>${isGuest() ? 'Explore fully as a guest · profile needed only to retain progress.' : 'Stage progress is saved privately on this device.'}</small></footer></article></div></section>`,
@@ -2136,7 +2302,7 @@ function renderDreamJob(isRefresh = false) {
     evidence: `<section class="dream-evidence"><header><div><p class="eyebrow">ROLE FIRST · ${escapeHtml(currentStage.label)}</p><h3>What can you prove—not merely claim?</h3></div><span>${selected.mark}</span></header><div><section><h4>Target role family</h4><p>${escapeHtml(state.dreamJob.targetRole || 'Choose a role world in the Employer atlas. A company target without a role target is too vague.')}</p><h4>Evidence standard to test</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><label>Evidence I already have<textarea data-dream-input="evidence" placeholder="Projects, outcomes, feedback, difficult work, responsibility…">${escapeHtml(state.dreamJob.evidence)}</textarea><small>${isGuest() ? 'Available in this session. Create a profile only to retain it.' : 'Saved privately with your profile.'}</small></label></div><footer><button class="button-primary" data-action="dream-go-evidence">Open Evidence Wallet</button></footer></section>`,
     reality: `<section class="dream-reality"><header><p class="eyebrow">PRESTIGE-FREE REVIEW</p><h3>Would the work still matter without the name?</h3></header><div class="dream-reality-grid">${['A company is an environment, not a calling.','The same logo contains radically different work.','A referral may improve visibility; it does not replace evidence.','A solved-problem count measures volume, not explanation or judgment.','A programme can close or change—verify before planning around it.','Your campus changes access, not the value of your ability.'].map((item, index) => `<article><span>${String(index + 1).padStart(2,'0')}</span><p>${escapeHtml(item)}</p></article>`).join('')}</div><aside><strong>${escapeHtml(selected.name)} reality</strong><p>${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Verify current roles and requirements ↗</a></aside></section>`,
   }[state.dreamJob.tab] || '';
-  return `<div class="view-enter dream-job-view${isRefresh ? ' view-refresh' : ''}"><section class="dream-north-star"><div><p class="eyebrow">THE DECISION ABOVE EVERY OTHER DECISION</p><h2>${northStar ? `“${escapeHtml(northStar)}”` : 'Who do you want to become—and what should your work make possible?'}</h2></div><label>Your north star<textarea data-dream-input="identity" placeholder="I want to become someone known for…">${escapeHtml(state.dreamJob.identity)}</textarea></label></section><nav class="dream-tabs" role="tablist" aria-label="Dream Job sections">${tabs.map(([id,label]) => `<button role="tab" aria-selected="${state.dreamJob.tab === id}" data-action="dream-tab" data-value="${id}" class="${state.dreamJob.tab === id ? 'active' : ''}">${label}</button>`).join('')}</nav>${tabContent}<p class="dream-disclosure">${escapeHtml(dreamJobMetadata.disclosure)}</p></div>`;
+  return `<div class="view-enter dream-job-view${isRefresh ? ' view-refresh' : ''}"><section class="dream-north-star"><div><p class="eyebrow">THE DECISION ABOVE EVERY OTHER DECISION</p><h2>${northStar ? `“${escapeHtml(northStar)}”` : 'Who do you want to become—and what should your work make possible?'}</h2></div><label>Your north star<textarea data-dream-input="identity" placeholder="I want to become someone known for…">${escapeHtml(state.dreamJob.identity)}</textarea></label></section>${tabContent}<p class="dream-disclosure">${escapeHtml(dreamJobMetadata.disclosure)}</p></div>`;
 }
 
 function refreshDreamJob(focusSelector = '') {
@@ -2270,7 +2436,7 @@ function renderStudyGuide() {
   if (context.selected) return `<div class="view-enter study-guide-view">${renderStudyChapter(context)}</div>`;
   const sections = [['overview','Overview'],['curriculum','Curriculum'],['planner','Planner'],['progress','Progress']];
   const content = state.studyGuide.section === 'curriculum' ? renderStudyCurriculum(context) : state.studyGuide.section === 'planner' ? renderStudyPlanner(context) : state.studyGuide.section === 'progress' ? renderStudyProgress(context) : renderStudyOverview(context);
-  return `<div class="view-enter study-guide-view"><header class="study-hero"><div><p class="eyebrow">ADAPTED FROM HOME-MANAGER LEARNING</p><h2>Learn deeply. Show the evidence.</h2><p>Grade 11, Grade 12, JEE Main, and JEE Advanced—without family monitoring, Grade 7 content, or performance theatre.</p></div><span>${escapeHtml(studyGuideMeta.rights)}</span></header><nav class="study-track-tabs" aria-label="Study track">${Object.values(studyTracks).map((track) => `<button data-action="study-track" data-value="${track.id}" class="${track.id === context.track.id ? 'active' : ''}"><strong>${escapeHtml(track.label)}</strong><small>${escapeHtml(track.short)}</small></button>`).join('')}</nav><div class="study-command"><nav aria-label="Study Guide sections">${sections.map(([id,label]) => `<button data-action="study-section" data-value="${id}" class="${state.studyGuide.section === id ? 'active' : ''}">${label}</button>`).join('')}</nav><label>Subject<select data-study-subject>${context.subjects.map((subject) => `<option ${subject === state.studyGuide.subject ? 'selected' : ''}>${escapeHtml(subject)}</option>`).join('')}</select></label></div>${content}</div>`;
+  return `<div class="view-enter study-guide-view"><header class="compact-page-intro"><div><p class="eyebrow">${escapeHtml(context.track.label)} · STUDY GUIDE</p><h2>Learn deeply. Show the evidence.</h2></div><span>${escapeHtml(studyGuideMeta.rights)}</span></header><div class="study-command"><nav aria-label="Study Guide sections">${sections.map(([id,label]) => `<button data-action="study-section" data-value="${id}" class="${state.studyGuide.section === id ? 'active' : ''}">${label}</button>`).join('')}</nav><label>Subject<select data-study-subject>${context.subjects.map((subject) => `<option ${subject === state.studyGuide.subject ? 'selected' : ''}>${escapeHtml(subject)}</option>`).join('')}</select></label></div>${content}</div>`;
 }
 
 function renderCertificationCourses() {
@@ -2278,7 +2444,7 @@ function renderCertificationCourses() {
   const filtered = certificationCourses.filter((item) => item.category === state.certifications.category && `${item.title} ${item.provider} ${item.skills}`.toLowerCase().includes(query));
   const selected = certificationCourses.find((item) => item.id === state.certifications.detailId);
   if (selected) return `<div class="view-enter course-catalogue"><button class="chapter-back" data-action="cert-close">← All certification courses</button><article class="course-detail"><span>${escapeHtml(selected.category)} · checked ${selected.checked}</span><h2>${escapeHtml(selected.title)}</h2><p class="course-provider">${escapeHtml(selected.provider)}</p><div class="course-facts"><section><small>LEVEL</small><strong>${escapeHtml(selected.level)}</strong></section><section><small>FORMAT</small><strong>${escapeHtml(selected.format)}</strong></section><section><small>LEARNING COST</small><strong>${escapeHtml(selected.learningCost)}</strong></section></div><h3>What you build</h3><p>${escapeHtml(selected.skills)}</p><h3>Credential reality</h3><p>${escapeHtml(selected.credential)}</p><p class="freshness-note">${escapeHtml(selected.note)}</p><div class="course-actions"><a class="button-primary" href="${selected.url}" target="_blank" rel="noopener noreferrer">Open official registration ↗</a><button data-action="cert-save" data-id="${selected.id}">${state.certifications.saved.includes(selected.id) ? 'Saved ✓' : 'Save course'}</button></div></article></div>`;
-  return `<div class="view-enter course-catalogue"><header class="catalogue-hero"><div><p class="eyebrow">SEVEN LEARNING ROUTES · OFFICIAL PROVIDERS</p><h2>Learn for free. Pay only with your eyes open.</h2><p>Recognised institutions, honest credential costs, and direct official registration routes.</p></div><div><strong>${certificationCourses.length}</strong><span>curated starting points</span><small>Verified 08 Aug 2026</small></div></header><nav class="catalogue-categories">${certificationCategories.map((category) => `<button data-action="cert-category" data-value="${category}" class="${state.certifications.category === category ? 'active' : ''}">${escapeHtml(category)}<small>${certificationCourses.filter((item) => item.category === category).length}</small></button>`).join('')}</nav><div class="catalogue-toolbar"><label>Search this category<input data-cert-search type="search" value="${escapeHtml(state.certifications.search)}" placeholder="Provider, skill, or course"></label><span>${filtered.length} routes</span></div><section class="catalogue-list">${filtered.map((item) => `<button data-action="cert-open" data-id="${item.id}"><span class="provider-mark">${item.provider.split(/\s+/).slice(0,2).map((part) => part[0]).join('')}</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.provider)} · ${escapeHtml(item.level)}</small><p>${escapeHtml(item.skills)}</p></span><span class="cost-tag">${escapeHtml(item.learningCost)}</span><em>Details →</em></button>`).join('')}</section><p class="catalogue-disclosure">A completion badge is not always a professional certification. Zysham keeps learning cost and assessment/credential cost separate; always confirm the current course page.</p></div>`;
+  return `<div class="view-enter course-catalogue"><header class="compact-page-intro"><div><p class="eyebrow">${escapeHtml(state.certifications.category)} · OFFICIAL PROVIDERS</p><h2>Learn for free. Pay only with your eyes open.</h2></div><span>${certificationCourses.length} curated routes · checked 08 Aug 2026</span></header><div class="catalogue-toolbar"><label>Search ${escapeHtml(state.certifications.category)}<input data-cert-search type="search" value="${escapeHtml(state.certifications.search)}" placeholder="Provider, skill, or course"></label><span>${filtered.length} routes</span></div><section class="catalogue-list">${filtered.map((item) => `<button data-action="cert-open" data-id="${item.id}"><span class="provider-mark">${item.provider.split(/\s+/).slice(0,2).map((part) => part[0]).join('')}</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.provider)} · ${escapeHtml(item.level)}</small><p>${escapeHtml(item.skills)}</p></span><span class="cost-tag">${escapeHtml(item.learningCost)}</span><em>Details →</em></button>`).join('')}</section><p class="catalogue-disclosure">A completion badge is not always a professional certification. Zysham keeps learning cost and assessment/credential cost separate; always confirm the current course page.</p></div>`;
 }
 
 function renderTraditionalCourses() {
@@ -2286,7 +2452,7 @@ function renderTraditionalCourses() {
   const filtered = traditionalCourses.filter((item) => item.category === state.traditional.category && `${item.title} ${item.provider} ${item.skills}`.toLowerCase().includes(query));
   const selected = traditionalCourses.find((item) => item.id === state.traditional.detailId);
   if (selected) return `<div class="view-enter course-catalogue traditional-catalogue"><button class="chapter-back" data-action="traditional-close">← All traditional courses</button><article class="course-detail"><span>${escapeHtml(selected.category)} · checked ${selected.checked}</span><h2>${escapeHtml(selected.title)}</h2><p class="course-provider">${escapeHtml(selected.provider)}</p><h3>Learning path</h3><p>${escapeHtml(selected.path)}</p><h3>What the practice develops</h3><p>${escapeHtml(selected.skills)}</p><h3>Reality check</h3><p>${escapeHtml(selected.reality)}</p><div class="course-actions"><a class="button-primary" href="${selected.url}" target="_blank" rel="noopener noreferrer">Visit official institution ↗</a><button data-action="traditional-save" data-id="${selected.id}">${state.traditional.saved.includes(selected.id) ? 'Saved ✓' : 'Save path'}</button></div></article></div>`;
-  return `<div class="view-enter course-catalogue traditional-catalogue"><header class="catalogue-hero traditional-hero"><div><p class="eyebrow">HERITAGE AS LIVING PRACTICE</p><h2>Continuity is a skill you can train.</h2><p>Dance, music, language, yoga, theatre, craft, and living traditions—chosen with the same seriousness as any career skill.</p></div><div><strong>${traditionalCourses.length}</strong><span>credible starting routes</span><small>Teacher, practice, lineage</small></div></header><nav class="catalogue-categories">${traditionalCategories.map((category) => `<button data-action="traditional-category" data-value="${category}" class="${state.traditional.category === category ? 'active' : ''}">${escapeHtml(category)}<small>${traditionalCourses.filter((item) => item.category === category).length}</small></button>`).join('')}</nav><div class="catalogue-toolbar"><label>Search this tradition<input data-traditional-search type="search" value="${escapeHtml(state.traditional.search)}" placeholder="Art, institution, or skill"></label><span>${filtered.length} paths</span></div><section class="catalogue-list">${filtered.map((item) => `<button data-action="traditional-open" data-id="${item.id}"><span class="provider-mark heritage">ॐ</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.provider)}</small><p>${escapeHtml(item.path)}</p></span><span class="cost-tag">Practice-led</span><em>Details →</em></button>`).join('')}</section><p class="catalogue-disclosure">Tradition is not a decorative extracurricular. Choose a credible teacher, understand the lineage and safety requirements, and make room for sustained practice.</p></div>`;
+  return `<div class="view-enter course-catalogue traditional-catalogue"><header class="compact-page-intro"><div><p class="eyebrow">${escapeHtml(state.traditional.category)} · LIVING HERITAGE</p><h2>Continuity is a skill you can train.</h2></div><span>${traditionalCourses.length} credible starting routes</span></header><div class="catalogue-toolbar"><label>Search ${escapeHtml(state.traditional.category)}<input data-traditional-search type="search" value="${escapeHtml(state.traditional.search)}" placeholder="Art, institution, or skill"></label><span>${filtered.length} paths</span></div><section class="catalogue-list">${filtered.map((item) => `<button data-action="traditional-open" data-id="${item.id}"><span class="provider-mark heritage">ॐ</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.provider)}</small><p>${escapeHtml(item.path)}</p></span><span class="cost-tag">Practice-led</span><em>Details →</em></button>`).join('')}</section><p class="catalogue-disclosure">Tradition is not a decorative extracurricular. Choose a credible teacher, understand the lineage and safety requirements, and make room for sustained practice.</p></div>`;
 }
 
 function entranceExamTabs() {
@@ -2301,9 +2467,8 @@ function renderExamCatalogue() {
   const filtered = entranceExams.filter((item) => (selectedCategory.id === 'all' || item.category === selectedCategory.id)
     && (!query || `${item.shortName} ${item.fullName} ${item.authority} ${item.route} ${item.subjects}`.toLowerCase().includes(query)));
   return `<section class="exam-catalogue" aria-labelledby="examCatalogueTitle">
-    <div class="exam-category-strip" role="list" aria-label="Filter by pathway">${entranceExamCategories.filter((item) => item.id !== 'syllabus').map((item) => `<button role="listitem" data-action="exam-category" data-value="${item.id}" class="${selectedCategory.id === item.id ? 'active' : ''}"><strong>${escapeHtml(item.label)}</strong><small>${item.id === 'all' ? entranceExams.length : entranceExams.filter((examItem) => examItem.category === item.id).length} indexed</small></button>`).join('')}</div>
+    <header class="exam-section-head compact-page-intro"><div><p class="eyebrow">${escapeHtml(selectedCategory.label)} · ${filtered.length} ROUTES</p><h3 id="examCatalogueTitle">Find the gate that serves the course.</h3><p>${escapeHtml(selectedCategory.description)}. Exam choice follows course fit, eligibility and affordability—not prestige alone.</p></div><button class="button-secondary" data-action="exam-guide-jump" data-page="${selectedCategory.page}">Handbook chapter →</button></header>
     <form class="exam-search" id="entranceExamFilters"><label><span>Search exam, authority, course or subject</span><input id="entranceExamSearch" type="search" value="${escapeHtml(state.entranceExams.search)}" placeholder="Try JEE, design, law, biology, Tamil Nadu…"></label><div><strong>${filtered.length}</strong><span>decision-ready routes</span></div></form>
-    <header class="exam-section-head"><div><p class="eyebrow">${escapeHtml(selectedCategory.label)}</p><h3 id="examCatalogueTitle">Find the gate that serves the course.</h3><p>${escapeHtml(selectedCategory.description)}. Exam choice follows course fit, eligibility and affordability—not prestige alone.</p></div><button class="button-secondary" data-action="exam-guide-jump" data-page="${selectedCategory.page}">Open this handbook chapter →</button></header>
     <div class="exam-card-grid">${filtered.map((item) => `<details class="exam-card"><summary><span class="exam-monogram">${escapeHtml(item.shortName.replace(/[^A-Z0-9]/gi, '').slice(0, 3).toUpperCase())}</span><span><small>${escapeHtml(entranceExamCategories.find((category) => category.id === item.category)?.label || item.category)} · ${escapeHtml(item.level)}</small><strong>${escapeHtml(item.shortName)}</strong><em>${escapeHtml(item.fullName)}</em></span><b aria-hidden="true">+</b></summary><div><dl><div><dt>Admission route</dt><dd>${escapeHtml(item.route)}</dd></div><div><dt>Conducting authority</dt><dd>${escapeHtml(item.authority)}</dd></div><div><dt>Subject / eligibility alert</dt><dd>${escapeHtml(item.subjects)}</dd></div><div><dt>Selection format</dt><dd>${escapeHtml(item.format)}</dd></div></dl><a href="${item.officialUrl}" target="_blank" rel="noopener noreferrer">Verify on official website ↗</a></div></details>`).join('') || '<div class="exam-empty"><strong>No indexed route matches.</strong><span>Try a broader term or open the full PDF handbook for all 400+ entries.</span><button data-action="exam-section" data-value="handbook">Open complete handbook</button></div>'}</div>
   </section>`;
 }
@@ -2340,7 +2505,7 @@ function renderExamHandbook() {
 
 function renderEntranceExams() {
   const body = state.entranceExams.section === 'planning' ? renderExamPlanning() : state.entranceExams.section === 'handbook' ? renderExamHandbook() : renderExamCatalogue();
-  return `<div class="view-enter entrance-exams-view"><header class="entrance-exams-hero"><div><p class="eyebrow">INDIA · AFTER CLASS 12 · OFFICIAL VERIFICATION BUILT IN</p><h2>One exam map. Every serious route.</h2><p>Search high-utility entrance routes, move from career fit to counselling, and read the complete supplied 400+ exam handbook without leaving Zysham.</p><div><button class="button-primary" data-action="exam-section" data-value="catalogue">Search exams</button><button class="button-secondary" data-action="exam-section" data-value="planning">Build my plan</button></div></div><aside><span><strong>${entranceExamGuide.statedExamCount}</strong><small>handbook entries</small></span><span><strong>${entranceExamCategories.length - 2}</strong><small>career verticals</small></span><span><strong>${entranceExamGuide.pages}</strong><small>PDF pages</small></span></aside></header>${entranceExamTabs()}${body}<footer class="exam-source-notes"><div><strong>Source and freshness discipline</strong><p>The catalogue is an original decision-oriented index informed by the supplied handbook and reference catalogue. Volatile dates and fees are intentionally not frozen here; official notifications control.</p></div>${entranceExamSources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.type)}</span><strong>${escapeHtml(source.label)}</strong><em>Open ↗</em></a>`).join('')}</footer></div>`;
+  return `<div class="view-enter entrance-exams-view">${body}<footer class="exam-source-notes"><div><strong>Source and freshness discipline</strong><p>Volatile dates and fees are not frozen here; official notifications control.</p></div>${entranceExamSources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.type)}</span><strong>${escapeHtml(source.label)}</strong><em>Open ↗</em></a>`).join('')}</footer></div>`;
 }
 
 const pageVisualLibrary = {
@@ -2382,7 +2547,7 @@ function placeContextVisual(host, view) {
   const visual = renderContextVisual(view);
   if (!visual) return;
   const anchors = {
-    overview: '.overview-hero', compass: '.reality-scan', explore: '.filter-row', discussions: '.forum-unified', research: '.research-view-tabs',
+    overview: '.overview-hero', compass: '.reality-scan', explore: '.filter-row', discussions: '.forum-unified',
     'ai-journey': '.ai-stage-map', 'study-guide': '.study-command', certifications: '.catalogue-categories', traditional: '.catalogue-categories',
   };
   const anchor = host.querySelector(anchors[view]);
@@ -2408,7 +2573,7 @@ function renderKarmaMeter(score, compact = false) {
 
 function jobsHubTabs() {
   const tabs = [['overview','Hub'],['atlas','Job atlas'],['framework','Karma lens'],['compare',`Compare · ${state.jobsHub.selectedIds.length}/3`],['improve','Improve the work'],['foundations','Vedic foundations']];
-  return `<nav class="jobs-tabs" aria-label="Master Jobs Hub pages">${tabs.map(([id, label]) => `<button class="${state.jobsHub.tab === id ? 'active' : ''}" data-action="jobs-tab" data-value="${id}">${label}</button>`).join('')}</nav>`;
+  return `<nav class="jobs-tabs" aria-label="Dream Job and Master Jobs Hub pages"><button data-action="go" data-target="dream-job">Dream Job</button>${tabs.map(([id, label]) => `<button class="${state.jobsHub.tab === id ? 'active' : ''}" data-action="jobs-tab" data-value="${id}">${label}</button>`).join('')}</nav>`;
 }
 
 function renderJobCard(job) {
@@ -2444,13 +2609,30 @@ function filteredKarmicJobs() {
   }).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
+function renderJobMatrixRow(job) {
+  const tone = karmaTone(job.score);
+  const selected = state.jobsHub.selectedIds.includes(job.id);
+  return `<article class="jobs-matrix-row ${tone.className}" role="row">
+    <div class="jobs-matrix-role" role="cell"><button data-action="job-detail" data-id="${job.id}"><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.category)}</span></button></div>
+    <div class="jobs-matrix-salary" role="cell"><strong>${salaryLabel(job)}</strong><span>gross / year</span></div>
+    <div class="jobs-matrix-karma" role="cell"><b>${job.score.toFixed(1)}</b><span>${escapeHtml(tone.label)}</span><i><em style="width:${job.score * 10}%"></em></i></div>
+    <div class="jobs-matrix-range" role="cell"><strong>${job.rangeMin.toFixed(1)}–${job.rangeMax.toFixed(1)}</strong><span>context range</span></div>
+    <div class="jobs-matrix-effect positive" role="cell"><span>↑ SERVICE PATH</span><p>${escapeHtml(job.uplift)}</p></div>
+    <div class="jobs-matrix-effect negative" role="cell"><span>↓ RED LINES</span><p>${escapeHtml(job.risks)}</p></div>
+    <div class="jobs-matrix-action" role="cell"><button data-action="job-compare" data-id="${job.id}" aria-pressed="${selected}">${selected ? '✓ Added' : '+ Compare'}</button><button data-action="job-detail" data-id="${job.id}" aria-label="Open ${escapeHtml(job.title)} role page">→</button></div>
+  </article>`;
+}
+
 function renderJobsAtlas() {
   const jobs = filteredKarmicJobs();
   const categories = ['All', ...new Set(karmicJobs.map((job) => job.category))];
   return `<div class="jobs-atlas"><header class="jobs-page-head"><div><p class="eyebrow">JOB ATLAS · INDIA PLANNING BANDS</p><h2>Compare livelihood and consequence.</h2><p>${escapeHtml(karmicJobsMetadata.salaryNote)}</p></div><strong>${jobs.length}<small>roles shown</small></strong></header>
     <form class="jobs-filter-bar" id="jobsFilters"><label><span>Search roles or risks</span><input id="jobsSearch" type="search" value="${escapeHtml(state.jobsHub.search)}" placeholder="Teacher, hospital, honesty, surveillance…"></label><label><span>Sector</span><select name="category">${categories.map((value) => `<option ${state.jobsHub.category === value ? 'selected' : ''}>${escapeHtml(value)}</option>`).join('')}</select></label><label><span>Karma band</span><select name="karmaBand">${['All','Good','Neutral','Bad'].map((value) => `<option ${state.jobsHub.karmaBand === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label><label><span>Salary reach</span><select name="salaryBand">${['All','Under 10L','10–25L','25L+'].map((value) => `<option ${state.jobsHub.salaryBand === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label></form>
-    <div class="karma-legend"><span><i class="bad"></i>0 · bad karma</span><span><i class="neutral"></i>5 · neutral / conditional</span><span><i class="good"></i>10 · good karma</span></div>
-    <div class="karma-card-grid">${jobs.map(renderJobCard).join('') || '<div class="jobs-empty"><strong>No roles match.</strong><span>Broaden one filter to reopen the atlas.</span></div>'}</div>
+    <div class="karma-legend"><span><i class="bad"></i>0–2 · bad karma</span><span><i class="risk"></i>2–5 · karmic risk</span><span><i class="neutral"></i>5–7 · neutral / conditional</span><span><i class="good"></i>7–9 · good karma</span><span><i class="seva"></i>9–10 · seva-rich</span></div>
+    <section class="jobs-matrix" role="table" aria-label="Livelihood and karmic consequence matrix">
+      <div class="jobs-matrix-head" role="row"><span role="columnheader">Role & sector</span><span role="columnheader">Salary band</span><span role="columnheader">Karma</span><span role="columnheader">Possible range</span><span role="columnheader">Good-karma practice</span><span role="columnheader">Karmic risks</span><span role="columnheader">Actions</span></div>
+      <div class="jobs-matrix-body" role="rowgroup">${jobs.map(renderJobMatrixRow).join('') || '<div class="jobs-empty"><strong>No roles match.</strong><span>Broaden one filter to reopen the atlas.</span></div>'}</div>
+    </section>
   </div>`;
 }
 
@@ -2493,7 +2675,7 @@ function renderJobDetail(job) {
 function renderJobsHub() {
   const detail = karmicJobs.find((job) => job.id === state.jobsHub.detailId);
   const body = detail ? renderJobDetail(detail) : ({ overview: renderJobsOverview, atlas: renderJobsAtlas, framework: renderJobsFramework, compare: renderJobsCompare, improve: renderJobsImprove, foundations: renderJobsFoundations }[state.jobsHub.tab] || renderJobsOverview)();
-  return `<div class="view-enter karmic-jobs-page">${jobsHubTabs()}${body}</div>`;
+  return `<div class="view-enter karmic-jobs-page">${body}</div>`;
 }
 
 function render() {
@@ -2531,9 +2713,15 @@ function render() {
       assessments: renderAssessments,
     })[state.view]();
   }
-  placeContextVisual(host, state.view);
   if (state.view === 'overview' || state.view === 'journey-stage') host.insertAdjacentHTML('afterbegin', renderJourneyWorkspaceTabs());
-  if (callingWorkspaceTabs.some(([view]) => view === state.view)) host.insertAdjacentHTML('afterbegin', renderCallingWorkspaceTabs());
+  if (state.view === 'journey-stage') {
+    const phaseStepper = $('.milestone-chevron-flow', host);
+    const stagePage = $('.journey-stage-page', host);
+    if (phaseStepper && stagePage) {
+      phaseStepper.classList.add('milestone-chevron-top');
+      stagePage.prepend(phaseStepper);
+    }
+  }
   updateMentor();
 }
 
@@ -2632,7 +2820,12 @@ $('#viewHost').addEventListener('click', (event) => {
   if (profileOnlyActions.has(action) && !requireProfile(action === 'discussion-new' ? 'Create a profile to post in Discussions.' : action === 'share-open' ? 'Create a profile to share an experience.' : undefined)) return;
   if (action === 'go') setView(target);
   if (action === 'vedic-reset') { state.vedicPrediction = structuredClone(defaultState.vedicPrediction); saveState(); render(); showToast('Vedic Prediction inputs cleared.'); }
-  if (action === 'assessment-open') { state.assessments.active = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'assessment-open') { state.assessments.active = id; if (state.view === 'assessments' || state.view === 'calling') state.assessments.hub = `career:${id}`; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'assessment-hub') {
+    state.assessments.hub = value;
+    if (value.startsWith('career:')) state.assessments.active = value.slice(7);
+    saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
   if (action === 'assessment-complete') {
     const assessment = careerAssessments.find((item) => item.id === id);
     if (!assessment || careerAssessmentProgress(assessment).answered < assessment.items.length) return showToast('Answer every statement before viewing results.');
@@ -2643,7 +2836,7 @@ $('#viewHost').addEventListener('click', (event) => {
     if (!assessment) return;
     assessment.items.forEach((item) => { delete state.assessments.answers[item.id]; }); delete state.assessments.completed[id]; saveState(); render(); showToast(`${assessment.title} reset.`);
   }
-  if (action === 'research-open') openResearchShelf();
+  if (action === 'research-open') { state.research.savedOnly = false; openResearchShelf(); }
   if (action === 'signal') toggleSignal(group, value);
   if (action === 'work-reality-reset') { state.workReality = structuredClone(defaultState.workReality); saveState(); render(); showToast('Work Reality Scan cleared.'); }
   if (action === 'journey-page-milestone') {
@@ -2713,9 +2906,9 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'dream-stage') { state.dreamJob.previewStage = value; saveState(); refreshDreamJob(`[data-action="dream-stage"][data-value="${CSS.escape(value)}"]`); }
   if (action === 'dream-save') { state.dreamJob.saved = state.dreamJob.saved.includes(id) ? state.dreamJob.saved.filter((item) => item !== id) : [...state.dreamJob.saved, id]; saveState(); refreshDreamJob(`[data-action="dream-save"][data-id="${CSS.escape(id)}"]`); }
   if (action === 'dream-go-evidence') setView('evidence');
-  if (action === 'calling-mode') { state.calling.mode = value; saveState(); render(); }
+  if (action === 'calling-mode') { state.calling.mode = value; state.assessments.hub = value === 'recommendations' ? 'recommendations' : value === 'questions' ? 'reflections' : 'student'; saveState(); if (state.view !== 'assessments') setView('assessments'); else render(); }
   if (action === 'assessment-type') { state.calling.activeAssessment = value; saveState(); render(); }
-  if (action === 'assessment-next') { if (value === 'recommendations') state.calling.mode = 'recommendations'; else state.calling.activeAssessment = value; saveState(); render(); }
+  if (action === 'assessment-next') { if (value === 'recommendations') { state.calling.mode = 'recommendations'; state.assessments.hub = 'recommendations'; } else state.calling.activeAssessment = value; saveState(); render(); }
   if (action === 'assessment-save') {
     if (!requireProfile('Create a profile only to save this assessment. You can complete it as a guest.')) return;
     captureWorkspace(); saveState(); showToast('Assessment saved to your profile.');
@@ -2821,7 +3014,9 @@ $('#viewHost').addEventListener('input', (event) => {
     state.workReality.updatedAt = new Date().toISOString();
     const readout = $(`#readout-${id}`);
     if (readout) readout.textContent = `${event.target.value}/10`;
-    event.target.closest('.reality-question')?.classList.add('answered');
+    const row = event.target.closest('.reality-question');
+    row?.classList.toggle('answered', Number(event.target.value) > 0);
+    row?.style.setProperty('--rating-color', ratingColor(event.target.value));
     saveState();
   }
   if (event.target.id === 'careerSearch') {
@@ -2907,7 +3102,9 @@ $('#viewHost').addEventListener('input', (event) => {
     state.calling.assessment[type][trait] = Number(event.target.value);
     const readout = $(`#assessment-${type}-${trait}-readout`);
     if (readout) readout.textContent = `${event.target.value}/10`;
-    event.target.closest('.assessment-trait-row')?.classList.add('answered');
+    const row = event.target.closest('.assessment-trait-row');
+    row?.classList.toggle('answered', Number(event.target.value) > 0);
+    row?.style.setProperty('--rating-color', ratingColor(event.target.value));
     saveState();
   }
   if (event.target.matches('[data-study-notes]')) { if (!requireProfile('Create a profile to save personal study notes.')) return; state.studyGuide.notes[event.target.dataset.studyNotes] = event.target.value; saveState(); }
@@ -2922,7 +3119,6 @@ $('#viewHost').addEventListener('input', (event) => {
     $('#entranceExamSearch')?.setSelectionRange(cursor, cursor);
   }
   if (event.target.matches('[data-traditional-search]')) { state.traditional.search = event.target.value; saveState(); const query = event.target.value.toLowerCase(); $$('.catalogue-list > button', $('#viewHost')).forEach((row) => { row.hidden = !row.textContent.toLowerCase().includes(query); }); }
-  if (event.target.id === 'researchPageSearch') { state.research.search = event.target.value; saveState(); const cursor = event.target.selectionStart; render(); $('#researchPageSearch')?.focus(); $('#researchPageSearch')?.setSelectionRange(cursor, cursor); }
   if (event.target.id === 'jobsSearch') { state.jobsHub.search = event.target.value; saveState(); const cursor = event.target.selectionStart; render(); $('#jobsSearch')?.focus(); $('#jobsSearch')?.setSelectionRange(cursor, cursor); }
   if (event.target.matches('[data-study-mastery]')) { if (!requireProfile('Create a profile to save mastery evidence.')) return; const id = event.target.dataset.studyMastery; state.studyGuide.mastery[id] = Number(event.target.value); saveState(); event.target.closest('.mastery-control')?.querySelector('output')?.replaceChildren(`${event.target.value}%`); }
 });
@@ -2954,7 +3150,6 @@ $('#viewHost').addEventListener('change', (event) => {
     state.editorial.blogCategory = event.target.value;
     saveState(); render();
   }
-  if (event.target.closest('#researchPageFilters') && event.target.name === 'geography') { state.research.geography = event.target.value; saveState(); render(); }
   if (event.target.closest('#jobsFilters') && ['category', 'karmaBand', 'salaryBand'].includes(event.target.name)) { state.jobsHub[event.target.name] = event.target.value; saveState(); render(); }
   if (event.target.matches('[data-study-subject]')) { state.studyGuide.subject = event.target.value; state.studyGuide.search = ''; state.studyGuide.selectedChapterId = ''; saveState(); render(); }
 });
@@ -3104,17 +3299,15 @@ $$('.theme-choice').forEach((button) => button.addEventListener('click', () => {
   showToast(`${button.title} selected.`);
 }));
 
-$('#audienceSwitch').addEventListener('click', () => {
-  if (!isGuest() && state.profiles.parent.name) {
-    state.session.activeRole = state.session.activeRole === 'student' ? 'parent' : 'student';
-    state.audience = state.session.activeRole;
-  } else state.audience = state.audience === 'student' ? 'parent' : 'student';
+$('#userAudienceSelect').addEventListener('change', (event) => {
+  state.audience = event.target.value;
   state.familyLens = state.audience;
   saveState();
   render();
+  showToast(`${state.audience === 'student' ? 'Student' : 'Parent'} guidance view selected.`);
 });
 
-$('#globalRegionSelect').addEventListener('change', (event) => {
+$('#userRegionSelect').addEventListener('change', (event) => {
   state.regionScope = event.target.value;
   state.experienceLimit = 12;
   state.detailExperience = '';
@@ -3133,6 +3326,43 @@ $('#menuButton').addEventListener('click', () => document.body.classList.add('na
 $('#sidebarClose').addEventListener('click', closeNavigation);
 $('#sidebarScrim').addEventListener('click', closeNavigation);
 
+function setLeftSidebarExpanded(expanded) {
+  state.sidebarExpanded = Boolean(expanded);
+  saveState();
+  updateShell();
+}
+
+function setRightSidebarExpanded(expanded) {
+  state.researchRailExpanded = Boolean(expanded);
+  saveState();
+  updateShell();
+}
+
+$('#sidebar').addEventListener('click', (event) => {
+  if (event.target.closest('#leftSidebarToggle') || matchMedia('(max-width: 900px)').matches) return;
+  if (!state.sidebarExpanded) {
+    event.preventDefault();
+    event.stopPropagation();
+    setLeftSidebarExpanded(true);
+  }
+}, true);
+$('#leftSidebarToggle').addEventListener('click', (event) => {
+  event.stopPropagation();
+  setLeftSidebarExpanded(!state.sidebarExpanded);
+});
+$('#researchRail').addEventListener('click', (event) => {
+  if (event.target.closest('#rightSidebarToggle')) return;
+  if (!state.researchRailExpanded) {
+    event.preventDefault();
+    event.stopPropagation();
+    setRightSidebarExpanded(true);
+  }
+}, true);
+$('#rightSidebarToggle').addEventListener('click', (event) => {
+  event.stopPropagation();
+  setRightSidebarExpanded(!state.researchRailExpanded);
+});
+
 function closeJourneyInspector() {
   document.body.classList.remove('journey-open');
   closeRightDrawer('journey');
@@ -3143,6 +3373,7 @@ function closeActiveRightDrawer() {
   if (kind === 'journey') closeJourneyInspector();
   else if (kind === 'research') closeResearchShelf();
   else if (kind === 'settings') closeSettings();
+  else if (kind === 'adminSettings') closeAdminSettings();
   else if (kind === 'mentor') {
     state.mentorChat.open = false;
     $('#mentorDock').classList.remove('mobile-open');
@@ -3168,21 +3399,34 @@ dreamJobPanel.addEventListener('click', (event) => {
 $('#journeyInspectorClose').addEventListener('click', closeJourneyInspector);
 $('#journeyScrim').addEventListener('click', closeJourneyInspector);
 
-$('#researchButton').addEventListener('click', openResearchShelf);
+$('#researchButton').addEventListener('click', () => { state.research.savedOnly = false; state.research.detailId = ''; saveState(); openResearchShelf(); });
+$('#researchSavedButton').addEventListener('click', () => { state.research.category = 'All evidence'; state.research.savedOnly = true; state.research.detailId = ''; state.research.search = ''; saveState(); openResearchShelf(); });
+$('#researchRailNav').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-research-rail]');
+  if (!button) return;
+  state.research.category = button.dataset.researchRail;
+  state.research.savedOnly = false;
+  state.research.detailId = '';
+  state.research.search = '';
+  saveState();
+  openResearchShelf();
+});
 $('#researchClose').addEventListener('click', closeResearchShelf);
 $('#researchScrim').addEventListener('click', closeResearchShelf);
 $('#researchPanelBody').addEventListener('click', (event) => {
+  const control = event.target.closest('button, a');
+  if (control) event.stopPropagation();
   const back = event.target.closest('[data-research-back]');
   if (back) { state.research.detailId = ''; saveState(); renderResearchShelf(); return; }
   const detailButton = event.target.closest('[data-action="research-detail"]');
   if (detailButton) { state.research.detailId = detailButton.dataset.id; saveState(); renderResearchShelf(); return; }
-  const category = event.target.closest('[data-research-category]');
-  if (category) { state.research.category = category.dataset.researchCategory; state.research.detailId = ''; saveState(); renderResearchShelf(); return; }
+  const savedToggle = event.target.closest('[data-research-saved-toggle]');
+  if (savedToggle) { state.research.savedOnly = !state.research.savedOnly; state.research.detailId = ''; saveState(); renderResearchShelf(); return; }
   const save = event.target.closest('[data-research-save]');
   if (save) {
     const id = save.dataset.researchSave;
     state.research.saved = state.research.saved.includes(id) ? state.research.saved.filter((item) => item !== id) : [...state.research.saved, id];
-    saveState(); renderResearchShelf(); showToast(state.research.saved.includes(id) ? 'Saved to research shortlist.' : 'Removed from research shortlist.');
+    saveState(); renderResearchShelf(); renderResearchRail(); showToast(state.research.saved.includes(id) ? 'Saved to research shortlist.' : 'Removed from research shortlist.');
   }
   const compare = event.target.closest('[data-action="research-compare"]');
   if (compare) {
@@ -3191,6 +3435,14 @@ $('#researchPanelBody').addEventListener('click', (event) => {
     if (!alreadyCompared && state.research.compare.length >= 3) return showToast('Compare up to three evidence records at a time.');
     state.research.compare = alreadyCompared ? state.research.compare.filter((item) => item !== id) : [...state.research.compare, id];
     saveState(); renderResearchShelf(); showToast(alreadyCompared ? 'Removed from comparison.' : 'Added to comparison.');
+  }
+  const clear = event.target.closest('[data-action="research-compare-clear"]');
+  if (clear) { state.research.compare = []; saveState(); renderResearchShelf(); renderResearchRail(); return; }
+  const quickSave = event.target.closest('[data-action="research-quick-save"]');
+  if (quickSave) {
+    const id = quickSave.dataset.id;
+    state.research.saved = state.research.saved.includes(id) ? state.research.saved.filter((item) => item !== id) : [...state.research.saved, id];
+    saveState(); renderResearchShelf(); renderResearchRail();
   }
 });
 $('#researchPanelBody').addEventListener('input', (event) => {
@@ -3201,6 +3453,11 @@ $('#researchPanelBody').addEventListener('input', (event) => {
   renderResearchShelf();
   $('#researchSearch')?.focus();
   $('#researchSearch')?.setSelectionRange(cursor, cursor);
+});
+$('#researchPanelBody').addEventListener('change', (event) => {
+  if (!event.target.closest('#researchDrawerFilters') || event.target.name !== 'geography') return;
+  state.research.geography = event.target.value;
+  saveState(); renderResearchShelf();
 });
 
 $('#journeyInspectorBody').addEventListener('click', (event) => {
@@ -3283,12 +3540,27 @@ function closeSettings() {
   closeRightDrawer('settings');
 }
 
+function closeAdminSettings() {
+  document.body.classList.remove('admin-settings-open');
+  closeRightDrawer('adminSettings');
+}
+
+function renderAdminSettings() {
+  const host = $('#adminSettingsBody');
+  if (!host) return;
+  const account = currentAccount();
+  host.innerHTML = isAdmin()
+    ? `<div class="admin-settings-identity"><span>${escapeHtml(account.displayName.slice(0, 2).toUpperCase())}</span><div><strong>${escapeHtml(account.displayName)}</strong><small>${escapeHtml(account.teamRole || 'Administrator')} · ${escapeHtml(account.email)}</small></div><em>Admin access active</em></div>`
+    : '<div class="account-guest"><strong>Admin profile required</strong><p>Sign in with a Team Admin profile to use product-level controls.</p></div>';
+}
+
 function openSettings(section = '') {
   closeNavigation();
   closeResearchShelf();
+  closeAdminSettings();
   renderAccountSettings();
   renderBackgroundOptions();
-  renderGeneratedNames();
+  updateShell();
   document.body.classList.add('settings-open');
   openRightDrawer('settings');
   requestAnimationFrame(() => {
@@ -3297,8 +3569,14 @@ function openSettings(section = '') {
   });
 }
 
-$('#settingsButton').addEventListener('click', () => openSettings());
 $('#headerProfileButton').addEventListener('click', () => openSettings('account'));
+$('#adminSettingsButton').addEventListener('click', () => {
+  if (!isAdmin()) return showToast('Admin Settings require a Team Admin profile.');
+  closeNavigation(); closeResearchShelf(); closeSettings();
+  renderAdminSettings(); renderGeneratedNames();
+  document.body.classList.add('admin-settings-open');
+  openRightDrawer('adminSettings');
+});
 $('#accountSettingsBody').addEventListener('click', (event) => {
   const action = event.target.closest('[data-account-action]')?.dataset.accountAction;
   if (action === 'signin' || action === 'signout') signOutToEntry();
@@ -3338,6 +3616,7 @@ $('#generatedNameScope').addEventListener('change', (event) => {
 });
 $('#settingsClose').addEventListener('click', closeSettings);
 $('#settingsScrim').addEventListener('click', closeSettings);
+$('#adminSettingsClose').addEventListener('click', closeAdminSettings);
 $('#backgroundOptions').addEventListener('click', (event) => {
   const option = event.target.closest('[data-background]');
   if (!option) return;
@@ -3510,12 +3789,81 @@ $('#enterAdminSample').addEventListener('click', () => {
   showToast('Team admin sample opened. Publishing stays local to this browser.');
 });
 
-$('#enterGuest').addEventListener('click', () => {
-  state.onboarded = true;
-  state.session = { mode: 'guest', activeRole: 'student', accountId: '' };
-  state.view = 'explore';
-  saveState(); render();
-  showToast('Guest mode: explore everything; personal publishing and journey edits are locked.');
+let guestEntryPending = false;
+
+function enterGuestSession({ animateZipper = false } = {}) {
+  if (guestEntryPending || state.session.mode !== 'signed_out') return;
+  const gate = $('#entryGate');
+  const pull = $('#entryZipPull');
+  const finish = () => {
+    state.onboarded = true;
+    state.session = { mode: 'guest', activeRole: 'student', accountId: '' };
+    state.view = 'explore';
+    saveState(); render();
+    pull.classList.remove('dragging');
+    pull.style.removeProperty('--zip-pull-top');
+    pull.style.removeProperty('--zip-pull-left');
+    window.setTimeout(() => gate.classList.remove('unzipping'), 380);
+    guestEntryPending = false;
+    showToast('Guest mode: explore everything; personal publishing and journey edits are locked.');
+  };
+  if (animateZipper && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    guestEntryPending = true;
+    gate.classList.add('unzipping');
+    window.setTimeout(finish, 720);
+  } else finish();
+}
+
+$('#enterGuest').addEventListener('click', () => enterGuestSession());
+
+const entryZipPull = $('#entryZipPull');
+let zipDrag = null;
+let suppressZipClick = false;
+
+entryZipPull.addEventListener('pointerdown', (event) => {
+  if (guestEntryPending || state.session.mode !== 'signed_out') return;
+  const gateRect = $('#entryGate').getBoundingClientRect();
+  const horizontal = matchMedia('(max-width: 720px)').matches;
+  zipDrag = {
+    pointerId: event.pointerId,
+    horizontal,
+    start: horizontal ? event.clientX : event.clientY,
+    origin: horizontal ? gateRect.width * .5 : gateRect.height * .14,
+    limit: horizontal ? gateRect.width * .9 : gateRect.height * .88,
+    distance: 0,
+  };
+  entryZipPull.setPointerCapture(event.pointerId);
+  entryZipPull.classList.add('dragging');
+  event.preventDefault();
+});
+
+entryZipPull.addEventListener('pointermove', (event) => {
+  if (!zipDrag || event.pointerId !== zipDrag.pointerId) return;
+  const delta = (zipDrag.horizontal ? event.clientX : event.clientY) - zipDrag.start;
+  zipDrag.distance = Math.max(0, Math.min(zipDrag.limit - zipDrag.origin, delta));
+  const position = zipDrag.origin + zipDrag.distance;
+  entryZipPull.style.setProperty(zipDrag.horizontal ? '--zip-pull-left' : '--zip-pull-top', `${position}px`);
+});
+
+function finishZipDrag(event, cancelled = false) {
+  if (!zipDrag || event.pointerId !== zipDrag.pointerId) return;
+  const progress = zipDrag.distance / Math.max(1, zipDrag.limit - zipDrag.origin);
+  const tapped = zipDrag.distance <= 5;
+  suppressZipClick = true;
+  if (entryZipPull.hasPointerCapture(event.pointerId)) entryZipPull.releasePointerCapture(event.pointerId);
+  entryZipPull.classList.remove('dragging');
+  entryZipPull.style.removeProperty('--zip-pull-top');
+  entryZipPull.style.removeProperty('--zip-pull-left');
+  zipDrag = null;
+  if (!cancelled && (progress >= .55 || tapped)) enterGuestSession({ animateZipper: true });
+  window.setTimeout(() => { suppressZipClick = false; }, 0);
+}
+
+entryZipPull.addEventListener('pointerup', (event) => finishZipDrag(event));
+entryZipPull.addEventListener('pointercancel', (event) => finishZipDrag(event, true));
+entryZipPull.addEventListener('click', (event) => {
+  if (suppressZipClick) { event.preventDefault(); return; }
+  enterGuestSession({ animateZipper: true });
 });
 
 $('#profileForm').addEventListener('change', (event) => {
@@ -3572,7 +3920,7 @@ $('#profileForm').addEventListener('submit', async (event) => {
 });
 
 function signOutToEntry() {
-  closeSettings(); closeResearchShelf(); closeJourneyInspector();
+  closeSettings(); closeAdminSettings(); closeResearchShelf(); closeJourneyInspector();
   captureWorkspace();
   state.session = { ...state.session, mode: 'signed_out', accountId: '' };
   state.onboarded = false;
@@ -3986,6 +4334,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 const initialView = location.hash.slice(1);
-if (viewMeta[initialView]) state.view = initialView;
+const openInitialResearch = initialView === 'research';
+if (viewMeta[initialView] && !openInitialResearch) state.view = initialView;
 updateMentor();
 render();
+if (openInitialResearch) requestAnimationFrame(() => openResearchShelf());
