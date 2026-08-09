@@ -599,7 +599,7 @@ initialiseRightDrawer();
 
 const sidebarMenuViews = {
   journey: ['overview', 'journey-stage', 'vedic-prediction'],
-  discussions: ['discussions'], study: ['study-guide'], certifications: ['certifications'],
+  discussions: ['discussions'], certifications: ['certifications'],
   traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job', 'jobs'], calling: ['calling', 'assessments', 'compass', 'explore', 'compare', 'roadmap', 'ai-journey', 'evidence'], blog: ['blog'], newsletters: ['newsletters'],
 };
 let expandedSidebarGroup = Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
@@ -612,7 +612,6 @@ function sidebarMenuDefinitions() {
       { kind: 'view', value: 'vedic-prediction', label: 'Vedic Prediction', meta: 'Reflective career lens', group: 'Workspace' },
     ],
     discussions: [['discussions','Discussions'],['experiences','Experience Exchange'],['saved','Saved topics']].map(([value,label]) => ({ kind: 'community', value, label })),
-    study: Object.values(studyTracks).map((track) => ({ kind: 'study', value: track.id, label: track.label, meta: track.short })),
     certifications: certificationCategories.map((value) => ({ kind: 'certification', value, label: value })),
     traditional: traditionalCategories.map((value) => ({ kind: 'traditional', value, label: value })),
     exams: [
@@ -901,6 +900,11 @@ function rankedCareers() {
 function setView(view, { updateHash = true } = {}) {
   if (!viewMeta[view]) return;
   if (view === 'research') { openResearchShelf(); return; }
+  if (view === 'study-guide') {
+    state.activeJourneyStage = state.studyGuide.track === 'grade11' ? 'grade11' : 'grade12';
+    state.journeyStageTab = 'study';
+    view = 'journey-stage';
+  }
   state.view = view;
   saveState();
   if (updateHash) history.replaceState(null, '', `#${view}`);
@@ -2165,8 +2169,9 @@ function callingSynthesis() {
 
 function callingAssessmentResults() {
   return callingAssessmentTraits.map((trait) => {
-    const values = callingAssessmentTypes.map((type) => Number(state.calling.assessment?.[type.id]?.[trait.id] || 0));
-    const answered = values.filter((value) => value > 0);
+    const entries = callingAssessmentTypes.map((type) => ({ value: Number(state.calling.assessment?.[type.id]?.[trait.id] ?? 0), answered: Object.hasOwn(state.calling.assessment?.[type.id] || {}, trait.id) }));
+    const values = entries.map((entry) => entry.value);
+    const answered = entries.filter((entry) => entry.answered).map((entry) => entry.value);
     const score = answered.length ? answered.reduce((sum, value) => sum + value, 0) / answered.length : 0;
     const [personality, desire, capability] = values;
     let insight = 'More evidence is needed before interpreting this trait.';
@@ -2180,7 +2185,7 @@ function callingAssessmentResults() {
 }
 
 function callingAssessmentCoverage() {
-  return callingAssessmentTypes.reduce((total, type) => total + callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length, 0);
+  return callingAssessmentTypes.reduce((total, type) => total + callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[type.id] || {}, trait.id)).length, 0);
 }
 
 function assessmentStageContext() {
@@ -2211,9 +2216,9 @@ function renderCallingFlowTabs() {
 function renderStudentAssessment() {
   const activeId = state.calling.activeAssessment || 'personality';
   const active = callingAssessmentTypes.find((type) => type.id === activeId) || callingAssessmentTypes[0];
-  const answered = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[active.id]?.[trait.id]) > 0).length;
+  const answered = callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[active.id] || {}, trait.id)).length;
   const activeIndex = callingAssessmentTypes.findIndex((type) => type.id === active.id);
-  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const value = Number(state.calling.assessment?.[active.id]?.[trait.id] || 0); return `<article class="assessment-trait-row ${value ? 'answered' : ''}" style="--trait:${trait.color};--rating-color:${ratingColor(value)}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><label for="assessment-${active.id}-${trait.id}"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></label><div class="trait-scale"><small>${escapeHtml(question[1])}</small><input id="assessment-${active.id}-${trait.id}" data-calling-assessment="${active.id}:${trait.id}" type="range" min="0" max="10" step="1" value="${value}" aria-describedby="assessment-${active.id}-${trait.id}-readout"><small>${escapeHtml(question[2])}</small><output id="assessment-${active.id}-${trait.id}-readout">${value}/10</output></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
+  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Object.hasOwn(state.calling.assessment?.[type.id] || {}, trait.id)).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const hasValue = Object.hasOwn(state.calling.assessment?.[active.id] || {}, trait.id); const value = Number(state.calling.assessment?.[active.id]?.[trait.id] ?? 0); return `<article class="assessment-trait-row ${hasValue ? 'answered' : ''}" style="--trait:${trait.color};--rating-color:${ratingColor(value)}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><div class="trait-prompt"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></div><div class="trait-scale nps-scale" role="radiogroup" aria-label="${escapeHtml(trait.label)}: ${escapeHtml(question[0])}"><div class="nps-options">${Array.from({ length: 11 }, (_, score) => `<label class="nps-score" title="${score === 0 ? escapeHtml(question[1]) : score === 10 ? escapeHtml(question[2]) : `${score} out of 10`}"><input type="radio" name="assessment-${active.id}-${trait.id}" value="${score}" data-calling-assessment="${active.id}:${trait.id}" ${hasValue && value === score ? 'checked' : ''}><span>${score}</span></label>`).join('')}</div><div class="nps-anchors"><small>${escapeHtml(question[1])}</small><output id="assessment-${active.id}-${trait.id}-readout">${hasValue ? `${value}/10` : 'Not answered'}</output><small>${escapeHtml(question[2])}</small></div></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
 }
 
 function renderAssessmentRecommendations() {
@@ -2725,6 +2730,16 @@ function render() {
   updateMentor();
 }
 
+function refreshView(focusSelector = '') {
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  document.body.classList.add('view-refreshing');
+  render();
+  window.scrollTo({ left: scrollX, top: scrollY, behavior: 'instant' });
+  if (focusSelector) $(focusSelector, $('#viewHost'))?.focus({ preventScroll: true });
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove('view-refreshing')));
+}
+
 function toggleSignal(group, value) {
   const items = state.signals[group];
   const index = items.indexOf(value);
@@ -2732,7 +2747,7 @@ function toggleSignal(group, value) {
   else if (items.length < 4) items.push(value);
   else return showToast('Choose up to four signals in each section.');
   saveState();
-  render();
+  refreshView(`[data-action="signal"][data-group="${CSS.escape(group)}"][data-value="${CSS.escape(value)}"]`);
 }
 
 function toggleCompare(id) {
@@ -2856,8 +2871,8 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'stage-tab') { state.journeyStageTab = value; saveState(); render(); }
   if (action === 'stage-phase') { state.journey.stagePhase ||= {}; state.journey.stagePhase[control.dataset.stage] = value; saveState(); render(); }
   if (action === 'stage-community') { state.communityMode = 'discussions'; state.discussionFilters.stage = discussionStageMap[id] || 'All'; setView('discussions'); }
-  if (action === 'stream') { state.streamChoice = state.streamChoice === value ? '' : value; saveState(); render(); }
-  if (action === 'filter') { state.careerFilter = value; saveState(); render(); }
+  if (action === 'stream') { state.streamChoice = state.streamChoice === value ? '' : value; saveState(); refreshView(`[data-action="stream"][data-value="${CSS.escape(value)}"]`); }
+  if (action === 'filter') { state.careerFilter = value; saveState(); refreshView(`[data-action="filter"][data-value="${CSS.escape(value)}"]`); }
   if (action === 'save-career') {
     state.saved = state.saved.includes(id) ? state.saved.filter((item) => item !== id) : [...state.saved, id];
     saveState(); render();
@@ -2920,7 +2935,7 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'calling-option') {
     const list = state.calling.selections[state.calling.activeQuestion] || [];
     state.calling.selections[state.calling.activeQuestion] = list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
-    saveState(); render();
+    saveState(); refreshView(`[data-action="calling-option"][data-id="${CSS.escape(id)}"]`);
   }
   if (action === 'calling-more') { state.calling.limit += 18; saveState(); render(); }
   if (action === 'calling-save') {
@@ -2942,7 +2957,7 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'related-discussions') { state.discussionFilters.stage = discussionStageMap[id] || 'All'; closeJourneyInspector(); setView('discussions'); }
   if (action === 'milestone') {
     state.roadmapDone = state.roadmapDone.includes(id) ? state.roadmapDone.filter((item) => item !== id) : [...state.roadmapDone, id];
-    saveState(); render();
+    saveState(); refreshView(`[data-action="milestone"][data-id="${CSS.escape(id)}"]`);
   }
   if (action === 'roadmap-open') {
     const targets = { profile: 'compass', stream: 'compass', experiment: 'evidence', syllabus: 'roadmap', applications: 'roadmap' };
@@ -2951,9 +2966,9 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'task-toggle') {
     const task = state.tasks.find((item) => item.id === id);
     if (task) task.done = !task.done;
-    saveState(); render();
+    saveState(); refreshView(`[data-action="task-toggle"][data-id="${CSS.escape(id)}"]`);
   }
-  if (action === 'family-lens') { state.familyLens = value; saveState(); render(); }
+  if (action === 'family-lens') { state.familyLens = value; saveState(); refreshView(`[data-action="family-lens"][data-value="${CSS.escape(value)}"]`); }
   if (action === 'evidence-remove') { state.evidence = state.evidence.filter((item) => item.id !== id); saveState(); render(); }
   if (action === 'add-experiment') addExperiment(id);
   if (action === 'study-track') { state.studyGuide.track = value; state.studyGuide.subject = Object.keys(studyTracks[value].subjects)[0]; state.studyGuide.selectedChapterId = ''; state.studyGuide.search = ''; saveState(); render(); }
@@ -3015,9 +3030,12 @@ $('#viewHost').addEventListener('input', (event) => {
     const readout = $(`#readout-${id}`);
     if (readout) readout.textContent = `${event.target.value}/10`;
     const row = event.target.closest('.reality-question');
-    row?.classList.toggle('answered', Number(event.target.value) > 0);
+    row?.classList.add('answered');
     row?.style.setProperty('--rating-color', ratingColor(event.target.value));
     saveState();
+    const reality = workRealityResult();
+    const progress = $('.scan-progress');
+    if (progress) { progress.querySelector('strong').textContent = reality.answered; progress.querySelector('span').innerHTML = `of ${workRealityQuestions.length}<br>answered`; }
   }
   if (event.target.id === 'careerSearch') {
     state.careerSearch = event.target.value;
@@ -3103,9 +3121,19 @@ $('#viewHost').addEventListener('input', (event) => {
     const readout = $(`#assessment-${type}-${trait}-readout`);
     if (readout) readout.textContent = `${event.target.value}/10`;
     const row = event.target.closest('.assessment-trait-row');
-    row?.classList.toggle('answered', Number(event.target.value) > 0);
+    row?.classList.add('answered');
     row?.style.setProperty('--rating-color', ratingColor(event.target.value));
     saveState();
+    const activeAnswered = callingAssessmentTraits.filter((item) => Object.hasOwn(state.calling.assessment?.[type] || {}, item.id)).length;
+    const frameCount = $('.assessment-frame > header > strong');
+    if (frameCount) frameCount.textContent = `${activeAnswered}/7 answered`;
+    const totalCount = callingAssessmentCoverage();
+    const completion = $('.student-assessment > .assessment-head .assessment-completion strong');
+    if (completion) completion.textContent = totalCount;
+    const typeCount = $(`.assessment-type-tabs [data-value="${CSS.escape(type)}"] small`);
+    if (typeCount) typeCount.textContent = `${activeAnswered}/7`;
+    const flowCount = $('.calling-flow-tabs button:first-child small');
+    if (flowCount) flowCount.textContent = `${totalCount}/21 signals`;
   }
   if (event.target.matches('[data-study-notes]')) { if (!requireProfile('Create a profile to save personal study notes.')) return; state.studyGuide.notes[event.target.dataset.studyNotes] = event.target.value; saveState(); }
   if (event.target.matches('[data-study-search]')) { state.studyGuide.search = event.target.value; saveState(); const query = event.target.value.toLowerCase(); $$('.study-chapter-list > button', $('#viewHost')).forEach((row) => { row.hidden = !row.textContent.toLowerCase().includes(query); }); }
@@ -3124,8 +3152,7 @@ $('#viewHost').addEventListener('input', (event) => {
 });
 
 $('#viewHost').addEventListener('change', (event) => {
-  if (event.target.matches('[data-work-reality]')) { render(); return; }
-  if (event.target.matches('[data-calling-assessment]')) { render(); return; }
+  if (event.target.matches('[data-work-reality], [data-calling-assessment]')) return;
   if (event.target.closest('#experienceFilters') && event.target.name) {
     state.experienceFilters[event.target.name] = event.target.value;
     state.experienceLimit = 12;
