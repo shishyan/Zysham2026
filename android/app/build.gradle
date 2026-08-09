@@ -1,0 +1,48 @@
+plugins {
+    id "com.android.application"
+}
+
+def buildNumber = (System.getenv("BUILD_NUMBER") ?: "1") as Integer
+def appVersion = System.getenv("APP_VERSION") ?: "0.1.${buildNumber}"
+
+android {
+    namespace "com.zysham.app"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.zysham.app"
+        minSdk 24
+        targetSdk 35
+        versionCode buildNumber
+        versionName appVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.12.1"
+}
+
+def generatedWebAssets = layout.buildDirectory.dir("generated/assets/www")
+
+tasks.register("syncWebAssets", Sync) {
+    into generatedWebAssets
+    from(rootProject.projectDir.parentFile) {
+        include "index.html", "app.js", "style.css", "theme.css", "prompts.html", "prompts.js", "prompts.css"
+        include "assets/**", "components/**", "data/**", "inputs/**"
+        exclude "**/.DS_Store"
+    }
+}
+
+android.sourceSets.main.assets.srcDir(generatedWebAssets)
+tasks.named("preBuild").configure { dependsOn("syncWebAssets") }

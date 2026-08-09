@@ -9,10 +9,43 @@ import { traditionalCategories, traditionalCourses } from './data/traditional-co
 import { schoolExamResearch, schoolExamResearchMetadata } from './data/research-schools-exams.js';
 import { collegeCourseResearch, collegeCourseResearchMetadata } from './data/research-colleges-courses.js';
 import { jobLocationResearch, jobLocationResearchMetadata } from './data/research-jobs-locations.js';
+import { dreamJobEmployers, dreamJobVocations, dreamJobArtsFramework, dreamJobStageBlueprint, dreamJobMetadata } from './data/dream-job-paths.js';
+import { karmicJobs, karmicFramework, karmicJobsMetadata } from './data/karmic-jobs.js';
+import { entranceExamGuide, entranceExamCategories, entranceExams, entranceExamSources } from './data/entrance-exams.js';
+import { careerAssessments, careerAssessmentSources, careerFieldProfiles } from './data/career-assessments.js';
 
 const demoStudentMetadata = generatedNameMetadata;
 
 const STORAGE_KEY = 'zysham2026-state-v2';
+
+const vedicCareerThemes = {
+  leadership: { title: 'Leadership & public responsibility', summary: 'Roles that reward initiative, visibility, judgement, and responsibility for outcomes.', roles: ['Public administration', 'Operations leadership', 'Entrepreneurship', 'Defence services'], experiment: 'Lead a four-week school or community project and ask the team for structured feedback.' },
+  technology: { title: 'Technology & systems', summary: 'Work involving logic, technical systems, invention, and solving complex operational problems.', roles: ['Software engineering', 'Data analytics', 'Electronics', 'Product engineering'], experiment: 'Build a small technical project and document the problem, tests, and improvements.' },
+  research: { title: 'Research & investigation', summary: 'Paths centred on depth, evidence, diagnosis, and finding what is hidden or not yet understood.', roles: ['Scientific research', 'Cybersecurity', 'Policy research', 'Forensic analysis'], experiment: 'Choose one question, compare three credible sources, and publish a one-page evidence brief.' },
+  communication: { title: 'Communication & knowledge', summary: 'Careers using language, explanation, teaching, media, or the translation of complex ideas.', roles: ['Teaching', 'Writing and publishing', 'Marketing', 'Journalism'], experiment: 'Teach a difficult idea in a five-minute video, then improve it from audience feedback.' },
+  care: { title: 'Care & human development', summary: 'People-facing work requiring patience, trust, listening, and sustained contribution to wellbeing.', roles: ['Psychology', 'Healthcare', 'Counselling', 'Social impact'], experiment: 'Interview a practitioner about training, emotional load, ethics, and an ordinary working day.' },
+  creative: { title: 'Design & creative expression', summary: 'Work combining aesthetics, imagination, craft, storytelling, and sensitivity to experience.', roles: ['Product design', 'Architecture', 'Film and media', 'Visual communication'], experiment: 'Create one portfolio piece for a real user and revise it after two critique rounds.' },
+  finance: { title: 'Finance & commercial judgement', summary: 'Paths built around value, resources, negotiation, disciplined decisions, and long-term stewardship.', roles: ['Accounting', 'Banking', 'Investment research', 'Business strategy'], experiment: 'Build and review a budget or unit-economics model for a small real-world project.' },
+  law: { title: 'Law, policy & diplomacy', summary: 'Work that calls for balance, argument, negotiation, ethics, and institutional understanding.', roles: ['Law', 'Public policy', 'Diplomacy', 'Compliance'], experiment: 'Analyse both sides of a live policy question and write a neutral recommendation.' },
+  practical: { title: 'Practical craft & built environments', summary: 'Tangible work with tools, materials, land, infrastructure, or reliable physical processes.', roles: ['Civil engineering', 'Manufacturing', 'Agriculture', 'Construction management'], experiment: 'Shadow a practitioner or complete a hands-on build with measurable quality criteria.' },
+  service: { title: 'Service & dependable operations', summary: 'Structured work where consistency, precision, process, and helping a larger system matter.', roles: ['Quality assurance', 'Healthcare operations', 'Government services', 'Supply chain'], experiment: 'Map a recurring process, measure its delays, and test one practical improvement.' },
+};
+
+const vedicRashiThemes = {
+  Mesha: ['leadership','technology','practical'], Vrishabha: ['finance','creative','practical'], Mithuna: ['communication','technology','finance'], Karka: ['care','service','creative'], Simha: ['leadership','communication','creative'], Kanya: ['research','service','finance'], Tula: ['law','creative','finance'], Vrishchika: ['research','technology','care'], Dhanu: ['communication','law','research'], Makara: ['practical','service','leadership'], Kumbha: ['technology','research','service'], Meena: ['care','creative','communication'],
+};
+
+const vedicNakshatraThemes = {
+  Ashwini: ['care','practical','leadership'], Bharani: ['law','creative','care'], Krittika: ['leadership','law','practical'], Rohini: ['finance','creative','practical'], Mrigashira: ['research','communication','creative'], Ardra: ['technology','research','communication'], Punarvasu: ['communication','care','practical'], Pushya: ['care','service','leadership'], Ashlesha: ['research','care','finance'], Magha: ['leadership','law','research'], 'Purva Phalguni': ['creative','leadership','care'], 'Uttara Phalguni': ['leadership','service','law'], Hasta: ['practical','finance','creative'], Chitra: ['creative','technology','practical'], Swati: ['technology','finance','communication'], Vishakha: ['leadership','law','communication'], Anuradha: ['research','service','communication'], Jyeshtha: ['leadership','research','law'], Mula: ['research','care','practical'], 'Purva Ashadha': ['creative','communication','leadership'], 'Uttara Ashadha': ['leadership','law','service'], Shravana: ['communication','service','care'], Dhanishtha: ['technology','finance','creative'], Shatabhisha: ['research','technology','care'], 'Purva Bhadrapada': ['research','law','care'], 'Uttara Bhadrapada': ['care','research','communication'], Revati: ['creative','communication','service'],
+};
+
+const vedicPlanetThemes = {
+  Sun: ['leadership','service'], Moon: ['care','creative'], Mars: ['technology','practical'], Mercury: ['communication','finance'], Jupiter: ['communication','law'], Venus: ['creative','finance'], Saturn: ['service','practical'], Rahu: ['technology','research'], Ketu: ['research','care'],
+};
+
+const vedicInterestThemes = {
+  'Building and technology': ['technology','practical'], 'People and wellbeing': ['care','service'], 'Business and money': ['finance','leadership'], 'Ideas and communication': ['communication','law'], 'Art and design': ['creative','communication'], 'Science and discovery': ['research','technology'], 'Public service and justice': ['law','service'],
+};
 
 const signalGroups = [
   {
@@ -237,6 +270,7 @@ const defaultState = {
     noNos: { grade10: [], grade11: [], grade12: [], college1: [], college2: [], college3: [], collegeFinal: [], firstJob: [], dreamJob: [] },
     stageNotes: { grade10: '', grade11: '', grade12: '', college1: '', college2: '', college3: '', collegeFinal: '', firstJob: '', dreamJob: '' },
     ranks: { grade10: '', grade11: '', grade12: '', college1: '', college2: '', college3: '', collegeFinal: '' },
+    stagePhase: { grade10: 'north-star', grade11: 'purpose', grade12: 'targets', college1: 'adapt', college2: 'interest', college3: 'target-work', collegeFinal: 'flagship', firstJob: 'learn', dreamJob: 'reality' },
   },
   careerFilter: 'All',
   careerSearch: '',
@@ -268,9 +302,14 @@ const defaultState = {
   studentDirectoryLimit: 24,
   research: { category: 'All evidence', search: '', geography: 'All', saved: [], compare: [], detailId: '' },
   calling: {
-    activeQuestion: 'freedom', search: '', limit: 18,
+    mode: 'assessment', activeAssessment: 'personality', activeQuestion: 'freedom', search: '', limit: 18,
     selections: { freedom: [], boundary: [], legacy: [] },
     custom: { freedom: '', boundary: '', legacy: '' },
+    assessment: {
+      personality: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
+      desire: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
+      capability: { agency: 0, people: 0, mastery: 0, creation: 0, structure: 0, adaptability: 0, stewardship: 0 },
+    },
   },
   generatedNames: { scope: 'Tamil Nadu' },
   communications: { newsletterSubscribed: false, productUpdates: false, familyDigest: false, consentAt: '', subscriberEmail: '', campaigns: [], outbox: [] },
@@ -278,6 +317,11 @@ const defaultState = {
   studyGuide: { section: 'overview', track: 'grade11', subject: 'Physics', search: '', selectedChapterId: '', chapterTab: 'summary', statuses: {}, mastery: {}, notes: {}, studyBlocks: [], assessments: [], assignments: [] },
   certifications: { category: 'Digital & AI', search: '', saved: [], detailId: '' },
   traditional: { category: 'Dance', search: '', saved: [], detailId: '' },
+  entranceExams: { section: 'catalogue', category: 'all', search: '', guidePage: 5 },
+  dreamJob: { tab: 'discover', selectedId: 'google', selectedVocationId: 'performing-artist', previewStage: '', search: '', saved: [], identity: '', targetRole: '', evidence: '', vocationEvidence: '', vocationProgress: {} },
+  jobsHub: { tab: 'overview', search: '', category: 'All', karmaBand: 'All', salaryBand: 'All', selectedIds: [], detailId: '' },
+  vedicPrediction: { name: '', birthDate: '', birthTime: '', birthPlace: '', rashi: '', nakshatra: '', ascendant: '', tenthHouse: '', dominantPlanet: '', interest: '', workPreference: '', goal: '', generatedAt: '' },
+  assessments: { active: 'interests', answers: {}, completed: {}, updatedAt: '' },
 };
 
 const viewMeta = {
@@ -292,13 +336,18 @@ const viewMeta = {
   family: ['ONE PLAN, TWO PERSPECTIVES', 'Family room'],
   evidence: ['PROOF OVER PRESSURE', 'Evidence wallet'],
   'journey-stage': ['YEAR-BY-YEAR JOURNEY', 'Journey stage'],
+  'vedic-prediction': ['TRADITION AS A REFLECTIVE LENS', 'Vedic Prediction'],
+  assessments: ['SEVEN LENSES · ONE EXPLORATION PROFILE', 'Assessments'],
   research: ['VERIFY BEFORE YOU RANK', 'Research'],
-  calling: ['THREE QUESTIONS · 324 POSSIBILITIES', 'Find Your Calling'],
+  calling: ['3 ASSESSMENTS · 7 TRAITS · 7 NEXT MOVES', 'Find Your Calling'],
   blog: ['FROM THE ZYSHAM TEAM', 'Team Blog'],
   newsletters: ['FIELD NOTES FOR THE JOURNEY', 'Newsletter'],
   'study-guide': ['LEARN · PRACTISE · MASTER', 'Study Guide'],
   certifications: ['RECOGNISED SELF-LEARNING', 'Certification Courses'],
   traditional: ['HERITAGE · DISCIPLINE · EXPRESSION', 'Traditional Courses'],
+  'entrance-exams': ['SEARCH · VERIFY · PREPARE', 'Entrance Exams'],
+  'dream-job': ['PURPOSE · PROOF · MOBILITY', 'The Dream Job'],
+  jobs: ['EARNINGS · ETHICS · CONSEQUENCE', 'Master Jobs Hub'],
 };
 
 const campusBackgrounds = [
@@ -353,6 +402,7 @@ if (state.session.mode === 'profile' && !state.accounts.some((account) => accoun
 }
 if (state.communityMode === 'students') state.communityMode = 'discussions';
 let toastTimer;
+let rightDrawerReturnFocus = null;
 
 const isGuest = () => state.session?.mode === 'guest';
 const currentAccount = () => state.accounts.find((account) => account.id === state.session?.accountId) || null;
@@ -368,11 +418,18 @@ function requireProfile(message = 'Create a student or parent profile to add to 
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
+const dreamJobPanel = document.createElement('section');
+dreamJobPanel.id = 'dreamJobPanel';
+dreamJobPanel.className = 'dream-path-drawer';
+dreamJobPanel.setAttribute('aria-label', 'Dream Job vocation details');
+document.body.append(dreamJobPanel);
+
 const drawerDefinitions = {
   journey: { source: '#journeyInspector', kicker: 'YEAR-BY-YEAR JOURNEY', title: 'Journey stage', width: 470 },
   research: { source: '#researchPanel', kicker: 'EVIDENCE BEFORE DECISIONS', title: 'Research', width: 500 },
   settings: { source: '#settingsPanel', kicker: 'PERSONALISE ZYSHAM', title: 'Settings', width: 540 },
   mentor: { source: '#mentorPanel', kicker: 'AI-ASSISTED COUNSELLING', title: 'Miso · Career counsellor', width: 390 },
+  dream: { source: '#dreamJobPanel', kicker: 'VOCATION BEFORE PRESTIGE', title: 'Performing arts path', width: 560 },
 };
 
 function initialiseRightDrawer() {
@@ -400,9 +457,16 @@ function openRightDrawer(kind, overrides = {}) {
   drawer.style.setProperty('--drawer-width', `${definition.width}px`);
   document.body.style.setProperty('--drawer-width', `${definition.width}px`);
   drawer.dataset.kind = kind;
+  rightDrawerReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  drawer.setAttribute('role', 'dialog');
+  drawer.setAttribute('aria-modal', 'true');
   drawer.setAttribute('aria-hidden', 'false');
   document.body.classList.add('right-drawer-open');
+  $('#toast')?.classList.remove('show');
+  clearTimeout(toastTimer);
+  $('#headerProfileButton')?.setAttribute('aria-expanded', String(kind === 'settings'));
   if (kind !== 'mentor') { $('#mentorDock').classList.remove('open'); document.body.classList.remove('mentor-open'); }
+  $('#rightDrawerClose')?.focus({ preventScroll: true });
 }
 
 function closeRightDrawer(kind = '') {
@@ -411,27 +475,60 @@ function closeRightDrawer(kind = '') {
   drawer.setAttribute('aria-hidden', 'true');
   drawer.dataset.kind = '';
   document.body.classList.remove('right-drawer-open', 'journey-open', 'research-open', 'settings-open', 'mentor-open');
+  $('#headerProfileButton')?.setAttribute('aria-expanded', 'false');
   $('#mentorDock').classList.remove('open');
   $$('.right-drawer-view', drawer).forEach((view) => { view.hidden = true; view.classList.remove('active'); view.setAttribute('aria-hidden', 'true'); });
+  if (rightDrawerReturnFocus?.isConnected) rightDrawerReturnFocus.focus();
+  rightDrawerReturnFocus = null;
 }
 
 initialiseRightDrawer();
 
 const sidebarMenuViews = {
-  journey: ['overview', 'journey-stage'],
+  journey: ['overview', 'journey-stage', 'vedic-prediction'],
   discussions: ['discussions'], research: ['research'], study: ['study-guide'], certifications: ['certifications'],
-  traditional: ['traditional'], calling: ['calling', 'compass', 'explore', 'compare', 'roadmap', 'ai-journey', 'evidence'], blog: ['blog'], newsletters: ['newsletters'],
+  traditional: ['traditional'], exams: ['entrance-exams'], dreamJob: ['dream-job'], jobs: ['jobs'], calling: ['calling', 'assessments', 'compass', 'explore', 'compare', 'roadmap', 'ai-journey', 'evidence'], blog: ['blog'], newsletters: ['newsletters'],
 };
+let expandedSidebarGroup = Object.entries(sidebarMenuViews).find(([, views]) => views.includes(state.view))?.[0] || '';
+const sidebarItemColors = ['#d6a8ff', '#78ddd4', '#ff9fbe', '#f4c66f', '#91c8ff', '#9ce0aa', '#ffb67f'];
 
 function sidebarMenuDefinitions() {
   return {
-    journey: [{ kind: 'view', value: 'overview', label: 'Journey overview', group: 'Workspace' }],
+    journey: [
+      { kind: 'view', value: 'overview', label: 'Journey overview', group: 'Workspace' },
+      { kind: 'view', value: 'vedic-prediction', label: 'Vedic Prediction', meta: 'Reflective career lens', group: 'Workspace' },
+    ],
     discussions: [['discussions','Discussions'],['experiences','Experience Exchange'],['saved','Saved topics']].map(([value,label]) => ({ kind: 'community', value, label })),
     research: researchDomains.map((value) => ({ kind: 'research', value, label: value })),
     study: Object.values(studyTracks).map((track) => ({ kind: 'study', value: track.id, label: track.label, meta: track.short })),
     certifications: certificationCategories.map((value) => ({ kind: 'certification', value, label: value })),
     traditional: traditionalCategories.map((value) => ({ kind: 'traditional', value, label: value })),
+    exams: [
+      { kind: 'exam-section', value: 'catalogue', label: 'Exam catalogue', meta: `${entranceExams.length} decision-ready routes`, group: 'Workspace' },
+      { kind: 'exam-section', value: 'planning', label: 'Decision & counselling plan', meta: 'Fit before form-filling', group: 'Workspace' },
+      { kind: 'exam-section', value: 'handbook', label: 'Complete PDF handbook', meta: `${entranceExamGuide.pages} pages · ${entranceExamGuide.statedExamCount} exams`, group: 'Workspace' },
+      ...entranceExamCategories.filter((item) => !['all', 'syllabus'].includes(item.id)).map((item) => ({ kind: 'exam-category', value: item.id, label: item.label, meta: `Guide page ${item.page}`, group: 'Pathways' })),
+      { kind: 'exam-category', value: 'syllabus', label: 'Syllabus library', meta: 'Guide page 101', group: 'Preparation' },
+    ],
+    dreamJob: [
+      { kind: 'dream-job', value: 'discover', label: 'Discover employers' },
+      { kind: 'dream-job', value: 'performing', label: 'Performing arts' },
+      { kind: 'dream-job', value: 'roadmap', label: 'Year-by-year path' },
+      { kind: 'dream-job', value: 'evidence', label: 'Evidence gap' },
+      { kind: 'dream-job', value: 'reality', label: 'Reality check' },
+    ],
+    jobs: [
+      { kind: 'jobs', value: 'overview', label: 'Jobs hub' },
+      { kind: 'jobs', value: 'atlas', label: 'Job atlas' },
+      { kind: 'jobs', value: 'framework', label: 'Karma lens' },
+      { kind: 'jobs', value: 'compare', label: 'Compare roles' },
+      { kind: 'jobs', value: 'improve', label: 'Improve the work' },
+      { kind: 'jobs', value: 'foundations', label: 'Vedic foundations' },
+    ],
     calling: [
+      { kind: 'view', value: 'assessments', label: 'Assessments', meta: '7 career lenses', group: 'Assessment workflow' },
+      { kind: 'calling-mode', value: 'assessment', label: 'Student assessment', meta: 'Personality · desire · capability', group: 'Assessment workflow' },
+      { kind: 'calling-mode', value: 'recommendations', label: '7 recommendations', meta: 'Current stage · next bridge', group: 'Assessment workflow' },
       ...callingQuestions.map((question) => ({ kind: 'calling', value: question.id, label: question.short, meta: `Question ${question.number}`, group: 'Calling questions' })),
       ...[['compass','Know yourself'],['explore','Explore careers'],['compare','Compare paths'],['roadmap','Action plan'],['ai-journey','AI Journey'],['evidence','Evidence wallet']].map(([value,label]) => ({ kind: 'view', value, label, group: 'Decision tools' })),
     ],
@@ -448,6 +545,9 @@ const uiIconPaths = {
   study: '<path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H11v17H7.5A3.5 3.5 0 0 0 4 22Z"/><path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H13v17h3.5A3.5 3.5 0 0 1 20 22Z"/>',
   certificate: '<path d="M6 3h12v13H6z"/><path d="m9 21 3-2 3 2v-5H9zM9 7h6M9 11h4"/>',
   traditional: '<path d="M12 3c3 3 5 5 5 8a5 5 0 0 1-10 0c0-3 2-5 5-8Z"/><path d="M5 21h14M8 17l-2 4m10-4 2 4M12 8v6"/>',
+  exam: '<path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="m15 16 1.5 1.5L20 14"/>',
+  dream: '<path d="m12 2 2.3 5.2L20 8l-4 3.8 1 5.5-5-2.7-5 2.7 1-5.5L4 8l5.7-.8Z"/><path d="M9 21h6M12 15v6"/>',
+  karma: '<path d="M12 3v18M5 6h14M7 6l-4 7h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/>',
   journal: '<path d="M5 3h14v18H5zM9 3v18M12 8h4M12 12h4"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/>',
   signout: '<path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/>',
@@ -473,26 +573,22 @@ function initialiseSidebarMenus() {
     group.dataset.navGroup = key;
     parent.before(group);
     group.append(parent);
-    parent.setAttribute('aria-expanded', key === 'journey' ? 'true' : 'false');
+    parent.setAttribute('aria-expanded', String(key === expandedSidebarGroup));
     const chevron = document.createElement('span');
     chevron.className = 'nav-menu-chevron'; chevron.textContent = '⌄'; chevron.setAttribute('aria-hidden', 'true');
     parent.append(chevron);
     const submenu = document.createElement('div');
     submenu.className = 'nav-submenu'; submenu.setAttribute('aria-label', `${parent.textContent.trim()} sections`);
-    let lastGroup = '';
     (definitions[key] || []).forEach((item, index) => {
-      if (item.group && item.group !== lastGroup) {
-        const label = document.createElement('span'); label.className = 'nav-submenu-label'; label.textContent = item.group; submenu.append(label); lastGroup = item.group;
-      }
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'nav-subitem'; button.dataset.submenuKind = item.kind; button.dataset.value = item.value;
-      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.innerHTML = iconMarkup(item.kind === 'community' ? 'community' : item.kind === 'research' ? 'research' : item.kind === 'study' ? 'study' : item.kind === 'certification' ? 'certificate' : item.kind === 'traditional' ? 'traditional' : item.kind === 'calling' ? 'calling' : item.value === 'overview' ? 'overview' : 'tool'); marker.setAttribute('aria-hidden', 'true');
+      button.style.setProperty('--item-accent', sidebarItemColors[index % sidebarItemColors.length]);
+      const marker = document.createElement('span'); marker.className = 'nav-subitem-marker'; marker.innerHTML = iconMarkup(item.kind === 'community' ? 'community' : item.kind === 'research' ? 'research' : item.kind === 'study' ? 'study' : item.kind === 'certification' ? 'certificate' : item.kind === 'traditional' ? 'traditional' : item.kind.startsWith('exam-') ? 'exam' : item.kind === 'dream-job' ? 'dream' : item.kind === 'jobs' ? 'karma' : item.kind === 'calling' ? 'calling' : item.value === 'overview' ? 'overview' : 'tool'); marker.setAttribute('aria-hidden', 'true');
       const copy = document.createElement('span'); const strong = document.createElement('strong'); strong.textContent = item.label; copy.append(strong);
-      if (item.meta) { const small = document.createElement('small'); small.textContent = item.meta; copy.append(small); }
       button.append(marker, copy); submenu.append(button);
     });
     group.append(submenu);
-    group.classList.toggle('expanded', key === 'journey');
+    group.classList.toggle('expanded', key === expandedSidebarGroup);
   });
 }
 
@@ -501,7 +597,7 @@ function updateSidebarMenus() {
   $$('[data-nav-group]').forEach((group) => {
     const key = group.dataset.navGroup;
     const belongs = key === activeGroup;
-    group.classList.toggle('expanded', belongs);
+    group.classList.toggle('expanded', key === expandedSidebarGroup);
     const parent = $('[data-menu]', group);
     parent?.classList.toggle('active', belongs);
     parent?.setAttribute('aria-expanded', String(group.classList.contains('expanded')));
@@ -515,6 +611,11 @@ function updateSidebarMenus() {
       : kind === 'study' ? state.view === 'study-guide' && state.studyGuide.track === value
       : kind === 'certification' ? state.view === 'certifications' && state.certifications.category === value
       : kind === 'traditional' ? state.view === 'traditional' && state.traditional.category === value
+      : kind === 'exam-section' ? state.view === 'entrance-exams' && state.entranceExams.section === value
+      : kind === 'exam-category' ? state.view === 'entrance-exams' && state.entranceExams.category === value
+      : kind === 'dream-job' ? state.view === 'dream-job' && state.dreamJob.tab === value
+      : kind === 'jobs' ? state.view === 'jobs' && state.jobsHub.tab === value
+      : kind === 'calling-mode' ? state.view === 'calling' && state.calling.mode === value
       : kind === 'calling' ? state.view === 'calling' && state.calling.activeQuestion === value
       : kind === 'blog' ? state.view === 'blog' && state.editorial.blogCategory === value
       : kind === 'newsletter' ? state.view === 'newsletters' && (value === 'latest' ? Boolean(state.editorial.selectedNewsletterId) : value === 'archive' ? !state.editorial.selectedNewsletterId : false)
@@ -541,13 +642,15 @@ function loadState() {
       accounts: Array.isArray(stored.accounts) ? stored.accounts : [],
       workspaces: stored.workspaces && typeof stored.workspaces === 'object' ? stored.workspaces : {},
       appearance: { ...structuredClone(defaultState.appearance), ...(stored.appearance || { mode: 'override' }), customBackgrounds: Array.isArray(stored.appearance?.customBackgrounds) ? stored.appearance.customBackgrounds : [] },
-      mentorChat: { ...structuredClone(defaultState.mentorChat), ...(stored.mentorChat || {}), messages: Array.isArray(stored.mentorChat?.messages) ? stored.mentorChat.messages.slice(-50) : [] },
+      mentorChat: { ...structuredClone(defaultState.mentorChat), ...(stored.mentorChat || {}), messages: Array.isArray(stored.mentorChat?.messages) ? stored.mentorChat.messages.slice(-50).map((item) => ({ ...item, text: String(item.text || '').replace(/^The local model could not run \([\s\S]*\)\.\s*/, '') })) : [] },
       profiles: {
         student: { ...structuredClone(defaultState.profiles.student), ...(stored.profiles?.student || stored.profile || {}) },
         parent: { ...structuredClone(defaultState.profiles.parent), ...(stored.profiles?.parent || {}) },
       },
       signals: { ...structuredClone(defaultState.signals), ...(stored.signals || {}) },
       workReality: { ...structuredClone(defaultState.workReality), ...(stored.workReality || {}), answers: { ...(stored.workReality?.answers || {}) } },
+      vedicPrediction: { ...structuredClone(defaultState.vedicPrediction), ...(stored.vedicPrediction || {}) },
+      assessments: { ...structuredClone(defaultState.assessments), ...(stored.assessments || {}), answers: { ...(stored.assessments?.answers || {}) }, completed: { ...(stored.assessments?.completed || {}) } },
       journey: {
         ...structuredClone(defaultState.journey),
         ...(stored.journey || {}),
@@ -556,6 +659,7 @@ function loadState() {
         noNos: { ...structuredClone(defaultState.journey.noNos), ...(stored.journey?.noNos || {}) },
         stageNotes: { ...structuredClone(defaultState.journey.stageNotes), ...(stored.journey?.stageNotes || {}) },
         ranks: { ...structuredClone(defaultState.journey.ranks), ...(stored.journey?.ranks || {}) },
+        stagePhase: { ...structuredClone(defaultState.journey.stagePhase), ...(stored.journey?.stagePhase || {}) },
       },
       experienceFilters: { ...structuredClone(defaultState.experienceFilters), ...(stored.experienceFilters || {}) },
       aiJourney: {
@@ -567,14 +671,26 @@ function loadState() {
       research: { ...structuredClone(defaultState.research), ...(stored.research || {}) },
       calling: {
         ...structuredClone(defaultState.calling), ...(stored.calling || {}),
-        selections: { ...structuredClone(defaultState.calling.selections), ...(stored.calling?.selections || {}) },
+        selections: Object.fromEntries(callingQuestions.map((question) => {
+          const validIds = new Set(question.options.map((option) => option.id));
+          const selected = Array.isArray(stored.calling?.selections?.[question.id]) ? stored.calling.selections[question.id] : [];
+          return [question.id, selected.filter((id) => validIds.has(id))];
+        })),
         custom: { ...structuredClone(defaultState.calling.custom), ...(stored.calling?.custom || {}) },
+        assessment: {
+          personality: { ...structuredClone(defaultState.calling.assessment.personality), ...(stored.calling?.assessment?.personality || {}) },
+          desire: { ...structuredClone(defaultState.calling.assessment.desire), ...(stored.calling?.assessment?.desire || {}) },
+          capability: { ...structuredClone(defaultState.calling.assessment.capability), ...(stored.calling?.assessment?.capability || {}) },
+        },
       },
       communications: { ...structuredClone(defaultState.communications), ...(stored.communications || {}), campaigns: Array.isArray(stored.communications?.campaigns) ? stored.communications.campaigns : [], outbox: Array.isArray(stored.communications?.outbox) ? stored.communications.outbox : [] },
       editorial: { ...structuredClone(defaultState.editorial), ...(stored.editorial || {}), localPosts: Array.isArray(stored.editorial?.localPosts) ? stored.editorial.localPosts : [], localNewsletters: Array.isArray(stored.editorial?.localNewsletters) ? stored.editorial.localNewsletters : [] },
       studyGuide: { ...structuredClone(defaultState.studyGuide), ...(stored.studyGuide || {}), statuses: { ...(stored.studyGuide?.statuses || {}) }, mastery: { ...(stored.studyGuide?.mastery || {}) }, notes: { ...(stored.studyGuide?.notes || {}) }, studyBlocks: Array.isArray(stored.studyGuide?.studyBlocks) ? stored.studyGuide.studyBlocks : [], assessments: Array.isArray(stored.studyGuide?.assessments) ? stored.studyGuide.assessments : [], assignments: Array.isArray(stored.studyGuide?.assignments) ? stored.studyGuide.assignments : [] },
       certifications: { ...structuredClone(defaultState.certifications), ...(stored.certifications || {}), saved: Array.isArray(stored.certifications?.saved) ? stored.certifications.saved : [] },
       traditional: { ...structuredClone(defaultState.traditional), ...(stored.traditional || {}), saved: Array.isArray(stored.traditional?.saved) ? stored.traditional.saved : [] },
+      entranceExams: { ...structuredClone(defaultState.entranceExams), ...(stored.entranceExams || {}) },
+      dreamJob: { ...structuredClone(defaultState.dreamJob), ...(stored.dreamJob || {}), saved: Array.isArray(stored.dreamJob?.saved) ? stored.dreamJob.saved : [] },
+      jobsHub: { ...structuredClone(defaultState.jobsHub), ...(stored.jobsHub || {}), selectedIds: Array.isArray(stored.jobsHub?.selectedIds) ? stored.jobsHub.selectedIds : [] },
       version: 5,
     };
   } catch {
@@ -583,10 +699,20 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const snapshot = isGuest()
+    ? {
+        ...state,
+        calling: structuredClone(defaultState.calling),
+        assessments: structuredClone(defaultState.assessments),
+        workReality: structuredClone(defaultState.workReality),
+        signals: structuredClone(defaultState.signals),
+        dreamJob: structuredClone(defaultState.dreamJob),
+      }
+    : state;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
 }
 
-const workspaceKeys = ['profile', 'profiles', 'signals', 'workReality', 'saved', 'compare', 'streamChoice', 'streamReflections', 'journey', 'roadmapDone', 'tasks', 'familyNote', 'familyLens', 'evidence', 'aiJourney', 'calling', 'mentor', 'mentorChat', 'studyGuide', 'certifications', 'traditional'];
+const workspaceKeys = ['profile', 'profiles', 'signals', 'workReality', 'saved', 'compare', 'streamChoice', 'streamReflections', 'journey', 'roadmapDone', 'tasks', 'familyNote', 'familyLens', 'evidence', 'aiJourney', 'calling', 'assessments', 'mentor', 'mentorChat', 'studyGuide', 'certifications', 'traditional', 'entranceExams', 'dreamJob', 'vedicPrediction', 'jobsHub'];
 
 function captureWorkspace(accountId = state.session.accountId) {
   if (!accountId) return;
@@ -682,13 +808,18 @@ function updateShell() {
     button.classList.toggle('active', active);
     button.setAttribute('aria-current', active ? 'page' : 'false');
   });
-  $('#compassBadge').textContent = `${compassCompletion()}%`;
+  if ($('#compassBadge')) $('#compassBadge').textContent = `${compassCompletion()}%`;
   if ($('#compareBadge')) $('#compareBadge').textContent = state.compare.length;
   const actor = activeProfile();
   const profileName = isGuest() ? 'Guest' : actor?.name || actor?.displayName || (state.session.activeRole === 'parent' ? 'Parent' : state.session.activeRole === 'admin' ? 'Team member' : 'Anya');
-  $('#studentAvatar').textContent = profileName.slice(0, 2).toUpperCase();
-  $('#studentPathName').textContent = isGuest() ? 'Guest explorer' : state.session.activeRole === 'admin' ? profileName : state.session.activeRole === 'parent' ? `${profileName}'s parent lens` : `${profileName}'s path`;
-  $('#studentPathMeta').textContent = isGuest() ? 'Read-only · full exploration' : state.session.activeRole === 'admin' ? `${actor?.teamRole || 'Team'} · publishing access` : state.session.activeRole === 'parent' ? `${actor?.relationship || 'Parent'} · supporting ${actor?.linkedStudentName || state.profile.name}` : `Grade ${state.profile?.grade || '10'} · ${state.profile?.board || 'CBSE'}`;
+  if ($('#studentAvatar')) $('#studentAvatar').textContent = profileName.slice(0, 2).toUpperCase();
+  if ($('#studentPathName')) $('#studentPathName').textContent = isGuest() ? 'Guest explorer' : state.session.activeRole === 'admin' ? profileName : state.session.activeRole === 'parent' ? `${profileName}'s parent lens` : `${profileName}'s path`;
+  if ($('#studentPathMeta')) $('#studentPathMeta').textContent = isGuest() ? 'Read-only · full exploration' : state.session.activeRole === 'admin' ? `${actor?.teamRole || 'Team'} · publishing access` : state.session.activeRole === 'parent' ? `${actor?.relationship || 'Parent'} · supporting ${actor?.linkedStudentName || state.profile.name}` : `Grade ${state.profile?.grade || '10'} · ${state.profile?.board || 'CBSE'}`;
+  const headerName = isGuest() ? 'Guest' : currentAccount()?.displayName || profileName;
+  $('#headerProfileAvatar').textContent = headerName.slice(0, 2).toUpperCase();
+  $('#headerProfileLabel').textContent = headerName;
+  $('#headerProfileButton').setAttribute('aria-label', isGuest() ? 'Open guest profile and sign-in options' : `Open profile settings for ${headerName}`);
+  $$('.header-editorial-link').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
   $('#audienceSwitch span').textContent = state.audience === 'student' ? 'Student view' : 'Parent view';
   const appearance = effectiveAppearance();
   document.body.dataset.theme = appearance.theme;
@@ -931,7 +1062,7 @@ const yearMilestoneConfig = {
     purpose: 'Leave Grade 10 with fewer false choices, a truthful view of your effort, and two directions worth testing—not a borrowed dream.',
     copy: 'Most students cannot name a career yet. Start with the work, environments, constraints, and trade-offs they already know they do not want.',
     noteLabel: 'After removing the NO-NOs, what activities or problems are still worth testing?',
-    milestones: ['Write the first NO-NO list', 'Sample six subject activities', 'Compare available boards and schools', 'Talk to three working adults', 'Run two career mini-experiments', 'Record subject effort—not marks alone'],
+    milestones: ['Write a provisional identity and legacy statement', 'Write the first NO-NO list', 'Complete the three student assessments', 'Compare all seven recognised route families', 'Map subject gates for surviving choices', 'Sample six subject and work activities', 'Talk to three students or working adults', 'Run two career mini-experiments', 'Compare real schools, boards, cost and commute', 'Choose a primary route and credible alternate', 'Write the first 30-day Grade 11 bridge'],
   },
   grade11: {
     step: '02 · GRADE 11', title: 'Build the foundation that later projects depend on',
@@ -989,6 +1120,50 @@ const yearMilestoneConfig = {
     noteLabel: 'Describe the daily work, problems, people, environment, and impact you truly desire—without using a job title.',
     milestones: ['Define dream work by daily reality', 'Map capability and credibility gaps', 'Produce high-signal outcomes', 'Build trusted practitioner relationships', 'Make evidence-led role moves', 'Run repeated interview cycles', 'Review progress at years 1, 3, 6, 9 and 12', 'Sustain growth, health, values and impact once there', 'Redefine dream work when priorities change', 'Keep meaningful alternatives alive'],
   },
+};
+
+const stagePhaseLabels = {
+  grade10: [['north-star','North star'],['eliminate','Eliminate'],['assess','Assess'],['routes','Map routes'],['test','Reality tests'],['compare','Compare'],['decide','Decide & bridge']],
+  grade11: [['purpose','Reconfirm'],['foundation','Foundations'],['system','Study system'],['proof','First proof'],['review','Review route']],
+  grade12: [['targets','Target matrix'],['exams','Boards & entrances'],['verify','Verify institutions'],['apply','Applications'],['choose','Choose & hand over']],
+  college1: [['adapt','Understand'],['foundation','Foundations'],['sample','Sample worlds'],['people','Relationships'],['review','Review fit']],
+  college2: [['interest','Name the question'],['stack','Capability stack'],['project','Build project'],['field','Enter the field'],['plan','Plan year 3']],
+  college3: [['target-work','Target work'],['problem','Flagship problem'],['experience','Real experience'],['proof','Build evidence'],['placement','Placement map']],
+  collegeFinal: [['flagship','Finish flagship'],['opportunities','Map opportunities'],['interviews','Interview ready'],['execute','Placement season'],['alternate','Alternate route']],
+  firstJob: [['learn','Learn system'],['deliver','Trusted work'],['compound','Compound skill'],['mobility','Build mobility'],['purpose','Return to purpose']],
+  dreamJob: [['reality','Daily reality'],['gaps','Map gaps'],['signal','High-signal proof'],['moves','Repeated moves'],['sustain','Sustain & redefine']],
+};
+
+function stageProcess(stageId) {
+  const labels = stagePhaseLabels[stageId] || stagePhaseLabels.grade10;
+  const milestones = yearMilestoneConfig[stageId].milestones;
+  return labels.map(([id, label], index) => {
+    const start = Math.floor(index * milestones.length / labels.length);
+    const end = Math.floor((index + 1) * milestones.length / labels.length);
+    return { id, label, milestones: milestones.slice(start, Math.max(start + 1, end)) };
+  });
+}
+
+const grade10RouteAtlas = [
+  ['Science · PCM', 'Mathematics, physics and chemistry; school combinations vary.', 'Engineering, computing, architecture, physical sciences and many cross-disciplinary degrees.', 'Test sustained mathematics and abstract problem-solving; verify course-specific subject rules.'],
+  ['Science · PCB / PCMB', 'Biology, physics and chemistry, with mathematics where offered.', 'Medicine, allied health, life sciences, agriculture and research routes.', 'Test clinical/lab reality, long training, competitive gates and any blood or care-work boundary.'],
+  ['Commerce', 'Accountancy, business studies and economics, with mathematics or applied mathematics where available.', 'Finance, accounting, law, management, economics, analytics and enterprise.', 'Compare numerical, regulatory, client and commercial work—not a salary stereotype.'],
+  ['Humanities / Arts', 'Languages and combinations such as history, politics, geography, sociology, psychology, economics or arts.', 'Law, policy, design, media, social sciences, education, research and public service.', 'Check writing, reading, fieldwork and target-course requirements; this is not a lower-rank stream.'],
+  ['Polytechnic diploma', 'A branch-specific technical diploma, commonly entered after Grade 10 under state rules.', 'Technical work, apprenticeship, employment and possible lateral progression subject to current rules.', 'Verify approval, laboratories, branch fit, cost, placements and Tamil Nadu admission rules.'],
+  ['ITI / skill-first', 'Trade-based practical training under recognised schemes; duration and eligibility vary by trade.', 'Skilled trades, apprenticeship, employment, enterprise and further learning.', 'Verify NCVT/SCVT recognition, real workshop exposure, safety, apprenticeship links and progression.'],
+  ['NIOS / flexible senior secondary', 'Recognised open-school route with flexible subject and pace choices.', 'Senior-secondary certification and later study where the chosen subjects satisfy eligibility.', 'Verify practical requirements, subject combinations, learner support and target-institution acceptance.'],
+];
+
+const stageGuideContent = {
+  grade10: { title: 'Every recognised route deserves an honest comparison.', checks: ['Start with who you want to become and the contribution you want to make.', 'Map target courses to required subjects before selecting a school combination.', 'Compare total cost, commute, language, safety, support, laboratories and reversibility.', 'Keep a primary route and an alternate that does not fail for the same reason.'] },
+  grade11: { title: 'Build foundations before optimising for an entrance rank.', checks: ['Audit subject gaps and practical obligations.', 'Create a sustainable study, sleep and recovery rhythm.', 'Complete one real problem or mini-project.', 'Distinguish adjustment difficulty from genuine route mismatch.'] },
+  grade12: { title: 'Turn options into an executable decision.', checks: ['Use one board, entrance and application calendar.', 'Verify eligibility, recognition and deadlines officially.', 'Compare curriculum, student work, total cost and alternate exits.', 'Prepare documents, scholarships and a first-semester handover plan.'] },
+  college1: { title: 'Validate the course through lived experience.', checks: ['Understand curriculum, grading, integrity rules and support.', 'Protect foundations and prevent backlogs.', 'Sample clubs, labs, studios and service worlds.', 'Find trusted peers, seniors and faculty.'] },
+  college2: { title: 'Turn broad study into a special-interest hypothesis.', checks: ['Choose an important problem, not a fashionable tool.', 'Align electives and a capability stack.', 'Build a reviewable project for a real user.', 'Seek mentor critique and field exposure.'] },
+  college3: { title: 'Create credible external proof.', checks: ['Define target work by daily tasks.', 'Choose a feasible, purpose-linked flagship problem.', 'Secure internship, research, apprenticeship or field experience.', 'Map current role descriptions to evidence gaps.'] },
+  collegeFinal: { title: 'Convert proof into opportunity.', checks: ['Defend every project claim unaided.', 'Map campus companies to actual roles.', 'Practise aptitude, technical, case and behavioural rounds.', 'Protect a credible off-campus or further-study alternative.'] },
+  firstJob: { title: 'Use employment to compound capability and choice.', checks: ['Learn real standards and stakeholders.', 'Deliver measurable, ethical outcomes.', 'Keep portfolio-safe evidence and mentors.', 'Review fit and mobility every 6–12 months.'] },
+  dreamJob: { title: 'A company is an environment; meaningful work is the destination.', checks: ['Define problems, people, autonomy, pace and contribution.', 'Separate capability gaps from access gaps.', 'Make evidence-led moves without an artificial expiry date.', 'Reassess health, relationships, values and impact after arrival.'] },
 };
 
 const noNoCareerExclusions = {
@@ -1061,6 +1236,135 @@ function matchRow(career) {
       <span><strong>${career.title}</strong><small>${career.cluster}</small></span>
       <span class="fit-label">${career.fit.label}</span>
     </div>`;
+}
+
+function careerAssessmentResult(assessment) {
+  const totals = Object.fromEntries(Object.keys(assessment.dimensions).map((key) => [key, []]));
+  assessment.items.forEach((item) => {
+    const raw = Number(state.assessments.answers[item.id] || 0);
+    if (raw) totals[item.dimension].push(item.reverse ? 6 - raw : raw);
+  });
+  return Object.entries(totals).map(([key, values]) => ({
+    key, score: values.length ? Math.round((values.reduce((sum, value) => sum + value, 0) / values.length - 1) * 25) : 0,
+    label: assessment.dimensions[key][0], description: assessment.dimensions[key][1], recommendation: assessment.dimensions[key][2],
+  })).sort((a, b) => b.score - a.score || a.label.localeCompare(b.label));
+}
+
+function careerAssessmentProgress(assessment) {
+  const answered = assessment.items.filter((item) => Number(state.assessments.answers[item.id])).length;
+  return { answered, total: assessment.items.length, percent: Math.round(answered / assessment.items.length * 100) };
+}
+
+function careerFieldMatches() {
+  const available = {};
+  careerAssessments.filter((assessment) => state.assessments.completed[assessment.id]).forEach((assessment) => {
+    careerAssessmentResult(assessment).forEach((result) => { available[`${assessment.id}:${result.key}`] = { ...result, assessment: assessment.title }; });
+  });
+  return careerFieldProfiles.map((field) => {
+    const contributions = Object.entries(field.signals).filter(([key]) => available[key]).map(([key, weight]) => ({ ...available[key], key, weight, contribution: available[key].score * weight }));
+    const weight = contributions.reduce((sum, item) => sum + item.weight, 0);
+    const score = weight ? Math.round(contributions.reduce((sum, item) => sum + item.contribution, 0) / weight) : 0;
+    return { ...field, score, contributions: contributions.sort((a, b) => b.contribution - a.contribution).slice(0, 3) };
+  }).filter((field) => field.contributions.length).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+}
+
+function renderAssessments() {
+  const active = careerAssessments.find((item) => item.id === state.assessments.active) || careerAssessments[0];
+  const progress = careerAssessmentProgress(active);
+  const completed = Boolean(state.assessments.completed[active.id]);
+  const results = completed ? careerAssessmentResult(active) : [];
+  const completedAssessments = careerAssessments.filter((item) => state.assessments.completed[item.id]);
+  const profileSignals = completedAssessments.map((assessment) => ({ assessment, result: careerAssessmentResult(assessment)[0] })).filter((item) => item.result);
+  const fieldMatches = completedAssessments.length >= 3 ? careerFieldMatches().slice(0, 3) : [];
+  const activeIndex = careerAssessments.findIndex((item) => item.id === active.id);
+  const next = careerAssessments[activeIndex + 1];
+  return `<div class="assessments-page view-enter">
+    <section class="assessment-hero panel"><div><p class="eyebrow">FIND YOUR CALLING · SEVEN DISTINCT LENSES</p><h2>Career Assessments</h2><p>Build a wider picture of what you enjoy, value, can develop, and need from work. Each result explains its evidence and ends with something practical to verify.</p></div><div class="assessment-completion"><strong>${completedAssessments.length}/7</strong><span>lenses complete</span><i><b style="width:${completedAssessments.length / 7 * 100}%"></b></i></div></section>
+    <nav class="assessment-picker" aria-label="Career assessments">${careerAssessments.map((assessment) => { const itemProgress = careerAssessmentProgress(assessment); const done = Boolean(state.assessments.completed[assessment.id]); return `<button type="button" class="panel ${assessment.id === active.id ? 'active' : ''} ${done ? 'complete' : ''}" data-action="assessment-open" data-id="${assessment.id}" aria-current="${assessment.id === active.id ? 'step' : 'false'}"><span>0${assessment.number}</span><div><strong>${escapeHtml(assessment.title)}</strong><small>${done ? 'Complete' : itemProgress.answered ? `${itemProgress.answered}/${itemProgress.total} answered` : assessment.short}</small></div><em>${done ? '✓' : '→'}</em></button>`; }).join('')}</nav>
+    <div class="assessment-workspace">
+      <main class="panel assessment-questionnaire">
+        <header class="assessment-head"><div><span>ASSESSMENT 0${active.number} · ${escapeHtml(active.framework)} · ${escapeHtml(active.time)}</span><h3>${escapeHtml(active.title)}</h3><p>${escapeHtml(active.intro)}</p></div><div class="assessment-progress-ring" style="--progress:${progress.percent * 3.6}deg"><strong>${progress.percent}%</strong></div></header>
+        <div class="assessment-scale-key"><span>Rate each statement</span>${active.scale.map((label,index) => `<small><b>${index + 1}</b>${escapeHtml(label)}</small>`).join('')}</div>
+        <div class="assessment-questions">${active.items.map((item,index) => `<fieldset class="assessment-question ${state.assessments.answers[item.id] ? 'answered' : ''}"><legend><span>${String(index + 1).padStart(2,'0')}</span>${escapeHtml(item.text)}</legend><div role="radiogroup" aria-label="${escapeHtml(item.text)}">${active.scale.map((label,scaleIndex) => { const value = scaleIndex + 1; return `<label title="${escapeHtml(label)}"><input type="radio" name="assessment-${item.id}" value="${value}" data-assessment-answer="${item.id}" ${Number(state.assessments.answers[item.id]) === value ? 'checked' : ''}><span>${value}</span><small>${escapeHtml(label)}</small></label>`; }).join('')}</div></fieldset>`).join('')}</div>
+        <footer class="assessment-actions"><button type="button" class="button-quiet" data-action="assessment-reset" data-id="${active.id}">Reset this assessment</button><div><span>${progress.answered} of ${progress.total} answered</span><button type="button" class="button-primary" data-action="assessment-complete" data-id="${active.id}" ${progress.answered < progress.total ? 'disabled' : ''}>${completed ? 'Refresh results' : 'See my results'} →</button></div></footer>
+      </main>
+      <aside class="assessment-insights" aria-live="polite">
+        ${completed ? `<section class="panel assessment-result"><div class="assessment-result-title"><div><p class="eyebrow">YOUR ${escapeHtml(active.title).toUpperCase()} PROFILE</p><h3>${escapeHtml(results[0].label)} leads this lens</h3><p>Scores show relative emphasis within this assessment, not ability, worth, or probability of success.</p></div><strong>${results[0].score}</strong></div><div class="assessment-bars">${results.map((result) => `<div><span><b>${escapeHtml(result.label)}</b><em>${result.score}</em></span><i><b style="width:${result.score}%"></b></i><p>${escapeHtml(result.description)}</p></div>`).join('')}</div><div class="assessment-recommendation"><span>VERIFY THIS NEXT</span><strong>${escapeHtml(results[0].label)}</strong><p>${escapeHtml(results[0].recommendation)}</p></div>${next ? `<button type="button" class="button-secondary" data-action="assessment-open" data-id="${next.id}">Continue to ${escapeHtml(next.title)} →</button>` : '<button type="button" class="button-secondary" data-action="go" data-target="explore">Use results to explore careers →</button>'}</section>`
+        : `<section class="panel assessment-waiting"><span>0${active.number}</span><p class="eyebrow">RESULTS WAITING</p><h3>Complete every statement.</h3><p>Your answers save as you go. Results appear only after the full lens is complete, so a partial pattern is not mistaken for a conclusion.</p><div><strong>${progress.answered}</strong><small>answered</small><strong>${progress.total - progress.answered}</strong><small>remaining</small></div></section>`}
+        ${profileSignals.length >= 2 ? `<section class="panel assessment-profile"><p class="eyebrow">CROSS-ASSESSMENT PROFILE</p><h3>What repeats across lenses</h3><p>These are your leading signals from completed assessments. Look for combinations and tensions rather than one winning label.</p><div>${profileSignals.map(({assessment,result}) => `<span><small>${escapeHtml(assessment.title)}</small><strong>${escapeHtml(result.label)}</strong></span>`).join('')}</div></section>` : ''}
+      </aside>
+    </div>
+    <section class="panel career-fit-report">
+      <header><div><p class="eyebrow">COMPOSITE CAREER FIT REPORT</p><h3>Several fields, never one perfect job</h3><p>Inspired by Insightful Traits' career-field approach, this combines only your completed lenses across interests, strengths, work style, values, motivators, and environment. It is a shortlist for exploration—not a success forecast.</p></div><span>${fieldMatches.length ? `${completedAssessments.length} lenses combined` : `${Math.max(0, 3 - completedAssessments.length)} more ${Math.max(0, 3 - completedAssessments.length) === 1 ? 'lens' : 'lenses'} to unlock`}</span></header>
+      ${fieldMatches.length ? `<div class="career-field-matches">${fieldMatches.map((field,index) => `<article><div class="career-field-glyph">${escapeHtml(field.glyph)}</div><div class="career-field-copy"><span>MATCH 0${index + 1} · RELATIVE ALIGNMENT ${field.score}</span><h4>${escapeHtml(field.title)}</h4><p>${escapeHtml(field.summary)}</p><div class="career-field-evidence"><strong>Strongest evidence</strong>${field.contributions.map((item) => `<span>${escapeHtml(item.assessment)} · ${escapeHtml(item.label)}</span>`).join('')}</div><div class="career-field-test"><strong>Run a micro-experiment</strong><p>${escapeHtml(field.experiment)}</p></div></div></article>`).join('')}</div><footer><p><strong>Use fit factors, not titles.</strong> Compare daily tasks, pace, structure, autonomy, teamwork, change, and the manager or institution around the role.</p><button class="button-secondary" data-action="go" data-target="explore">Explore career details →</button></footer>`
+      : `<div class="career-fit-locked"><span>3+</span><div><h4>Complete any three lenses to build field matches.</h4><p>Using several completed assessments reduces the chance that one mood, label, or preference dominates the recommendation.</p></div></div>`}
+    </section>
+    <section class="panel assessment-method"><div><p class="eyebrow">METHOD & RESPONSIBLE USE</p><h3>Original, exploration-only adaptations</h3><p>These short tools are informed by established career-exploration frameworks but are not reproductions of proprietary clinical or hiring instruments. Use several lenses together, verify results through lived experience, and never use them to screen or exclude a person.</p></div><div>${careerAssessmentSources.map(([label,url]) => `<a href="${url}" target="_blank" rel="noopener">${escapeHtml(label)} <span>↗</span></a>`).join('')}</div></section>
+  </div>`;
+}
+
+function vedicOption(value, label, selected) {
+  return `<option value="${escapeHtml(value)}" ${selected === value ? 'selected' : ''}>${escapeHtml(label || value)}</option>`;
+}
+
+function vedicPredictionResults() {
+  const profile = state.vedicPrediction;
+  const scores = Object.fromEntries(Object.keys(vedicCareerThemes).map((key) => [key, 0]));
+  const reasons = Object.fromEntries(Object.keys(vedicCareerThemes).map((key) => [key, []]));
+  const add = (keys, weight, reason) => (keys || []).forEach((key) => { scores[key] += weight; reasons[key].push(reason); });
+  if (profile.rashi) add(vedicRashiThemes[profile.rashi], 3, `${profile.rashi} Rashi`);
+  if (profile.nakshatra) add(vedicNakshatraThemes[profile.nakshatra], 4, `${profile.nakshatra} Nakshatra`);
+  if (profile.ascendant) add(vedicRashiThemes[profile.ascendant], 2, `${profile.ascendant} Lagna`);
+  if (profile.tenthHouse) add(vedicPlanetThemes[profile.tenthHouse], 3, `${profile.tenthHouse} as a stated 10th-house influence`);
+  if (profile.dominantPlanet) add(vedicPlanetThemes[profile.dominantPlanet], 2, `${profile.dominantPlanet} as a stated dominant planet`);
+  if (profile.interest) add(vedicInterestThemes[profile.interest], 4, `your practical interest in ${profile.interest.toLowerCase()}`);
+  return Object.entries(scores).map(([key, score]) => ({ key, score, ...vedicCareerThemes[key], reasons: [...new Set(reasons[key])] })).filter((item) => item.score).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title)).slice(0, 4);
+}
+
+function renderVedicPrediction() {
+  const profile = state.vedicPrediction;
+  const results = profile.generatedAt ? vedicPredictionResults() : [];
+  const rashis = [['Mesha','Mesha (Aries)'],['Vrishabha','Vrishabha (Taurus)'],['Mithuna','Mithuna (Gemini)'],['Karka','Karka (Cancer)'],['Simha','Simha (Leo)'],['Kanya','Kanya (Virgo)'],['Tula','Tula (Libra)'],['Vrishchika','Vrishchika (Scorpio)'],['Dhanu','Dhanu (Sagittarius)'],['Makara','Makara (Capricorn)'],['Kumbha','Kumbha (Aquarius)'],['Meena','Meena (Pisces)']];
+  const nakshatras = Object.keys(vedicNakshatraThemes);
+  const planets = Object.keys(vedicPlanetThemes);
+  const interests = Object.keys(vedicInterestThemes);
+  const inputCount = [profile.rashi, profile.nakshatra, profile.ascendant, profile.tenthHouse, profile.dominantPlanet, profile.interest].filter(Boolean).length;
+  return `<div class="vedic-page view-enter">
+    <section class="vedic-hero panel">
+      <div><p class="eyebrow">MY JOURNEY · REFLECTIVE CAREER LENS</p><h2>Vedic Prediction</h2><p>Bring chart factors you already know together with a real-world interest. Zysham turns the overlap into career themes and small experiments—not fate, certainty, or a substitute for aptitude, education, and lived evidence.</p></div>
+      <div class="vedic-hero-mark" aria-hidden="true"><span>ॐ</span><small>Reflect · test · decide</small></div>
+    </section>
+    <div class="vedic-layout">
+      <form class="panel vedic-form" id="vedicPredictionForm">
+        <div class="panel-head"><div><p class="eyebrow">YOUR INPUTS</p><h3>Build a reflective profile</h3><p>Birth details stay only in this browser. This tool does not calculate a Kundli.</p></div>${profile.generatedAt ? '<button class="button-quiet" type="button" data-action="vedic-reset">Clear</button>' : ''}</div>
+        <fieldset><legend>Birth context <small>Optional; for your record</small></legend><div class="vedic-field-grid">
+          <label class="full">Name<input name="name" maxlength="60" value="${escapeHtml(profile.name)}" placeholder="Name or nickname"></label>
+          <label>Date of birth<input name="birthDate" type="date" value="${escapeHtml(profile.birthDate)}"></label>
+          <label>Time of birth<input name="birthTime" type="time" value="${escapeHtml(profile.birthTime)}"></label>
+          <label class="full">Place of birth<input name="birthPlace" maxlength="100" value="${escapeHtml(profile.birthPlace)}" placeholder="Town / city, state, country"></label>
+        </div></fieldset>
+        <fieldset><legend>Chart factors <small>Enter from a chart you trust</small></legend><div class="vedic-field-grid">
+          <label>Chandra Rashi<select name="rashi" required><option value="">Choose Moon sign</option>${rashis.map(([value,label]) => vedicOption(value,label,profile.rashi)).join('')}</select></label>
+          <label>Janma Nakshatra<select name="nakshatra" required><option value="">Choose birth star</option>${nakshatras.map((value) => vedicOption(value,value,profile.nakshatra)).join('')}</select></label>
+          <label>Lagna / Ascendant<select name="ascendant"><option value="">Not known</option>${rashis.map(([value,label]) => vedicOption(value,label,profile.ascendant)).join('')}</select></label>
+          <label>10th-house influence<select name="tenthHouse"><option value="">Not known</option>${planets.map((value) => vedicOption(value,value,profile.tenthHouse)).join('')}</select><small>Use the planet your astrologer or chart identifies as most relevant.</small></label>
+          <label>Dominant planet<select name="dominantPlanet"><option value="">Not known</option>${planets.map((value) => vedicOption(value,value,profile.dominantPlanet)).join('')}</select></label>
+          <label>Strongest current interest<select name="interest" required><option value="">Choose a lived interest</option>${interests.map((value) => vedicOption(value,value,profile.interest)).join('')}</select></label>
+          <label>Preferred work setting<select name="workPreference"><option value="">Still exploring</option>${['Structured organisation','Independent practice','Small collaborative team','Public-facing environment','Research or deep-focus setting','Field or hands-on setting'].map((value) => vedicOption(value,value,profile.workPreference)).join('')}</select></label>
+          <label>Current decision<select name="goal"><option value="">Choose a decision</option>${['Subjects or stream','College course','First career direction','Career change','Entrepreneurship'].map((value) => vedicOption(value,value,profile.goal)).join('')}</select></label>
+        </div></fieldset>
+        <div class="vedic-consent"><strong>How this works</strong><p>Traditional associations create hypotheses. Your stated interest is weighted alongside them, and every result is paired with a practical test. Do not use this output alone for education, money, health, or employment decisions.</p></div>
+        <button class="button-primary vedic-submit" type="submit">${profile.generatedAt ? 'Refresh recommendations' : 'Make recommendations'} →</button>
+      </form>
+      <aside class="vedic-results" aria-live="polite">
+        ${results.length ? `<div class="vedic-result-head"><div><p class="eyebrow">YOUR REFLECTIVE SHORTLIST</p><h3>${escapeHtml(profile.name || 'Your')} career themes</h3><p>Built from ${inputCount} chart and lived-interest signals. Ordered by repeated overlap, not probability.</p></div><span>${new Date(profile.generatedAt).toLocaleDateString('en-IN')}</span></div>
+          <div class="vedic-result-list">${results.map((item,index) => `<article class="panel vedic-result-card"><div class="vedic-result-rank">0${index + 1}</div><div><h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.summary)}</p><div class="vedic-reason"><strong>Why it appeared</strong><span>${item.reasons.map(escapeHtml).join(' · ')}</span></div><div class="vedic-role-list">${item.roles.map((role) => `<span>${escapeHtml(role)}</span>`).join('')}</div><div class="vedic-experiment"><strong>Test before deciding</strong><p>${escapeHtml(item.experiment)}</p></div></div></article>`).join('')}</div>
+          <div class="panel vedic-next"><p class="eyebrow">GROUND THE READING</p><h3>Compare the top themes with your Career Compass.</h3><p>Keep a theme only when your subjects, constraints, work preferences, and first-hand experiments support it.</p><button class="button-secondary" data-action="go" data-target="compass">Open Career Compass →</button></div>`
+        : `<div class="panel vedic-empty"><span aria-hidden="true">✦</span><p class="eyebrow">RECOMMENDATIONS WAITING</p><h3>Start with three honest inputs.</h3><p>Add your Rashi, Nakshatra, and a lived interest. Lagna and 10th-house factors can add nuance when you already know them.</p><ol><li>Enter known chart factors.</li><li>Add what genuinely interests you now.</li><li>Generate themes, then test them in real life.</li></ol></div>`}
+      </aside>
+    </div>
+    <section class="panel vedic-method"><div><p class="eyebrow">METHOD & SOURCES</p><h3>What informs this lens</h3><p>The reference material associates professions with Nakshatras and Rashis, and describes career readings as multi-factor work involving the 10th, 6th, 2nd, 7th, and 11th houses, planetary influences, Lagna, and the D-10 chart. Zysham uses only the factors you explicitly enter and does not claim a complete chart reading.</p></div><div class="vedic-source-list"><a href="https://www.ambikaastro.com/nakshatras-related-profession/" target="_blank" rel="noopener">Nakshatras & professions <span>↗</span></a><a href="https://www.grahai.com/blog/best-career-by-rashi" target="_blank" rel="noopener">Career themes by Rashi <span>↗</span></a><a href="https://www.kptripathi.co.in/houses-career-astrology/" target="_blank" rel="noopener">Career and astrological houses <span>↗</span></a><a href="https://astrovishwajeet.com/how-to-choose-career-as-per-vedic-astrology/" target="_blank" rel="noopener">Multi-factor career analysis <span>↗</span></a></div></section>
+  </div>`;
 }
 
 function renderOverview() {
@@ -1188,7 +1492,7 @@ function renderCompass() {
       </header>
 
       <section class="reality-scan panel" aria-labelledby="realityScanTitle">
-        <div class="reality-scan-head"><div><p class="eyebrow">WHAT YOU DON'T LIKE · SERIES 01</p><h3 id="realityScanTitle">Work Reality Scan</h3><p>${isGuest() ? 'Guest preview · create a profile to record your personal answers.' : 'Move every scale. A low answer is not a weakness; it is useful design information.'}</p></div><div class="scan-progress"><strong>${reality.answered}</strong><span>of ${workRealityQuestions.length}<br>answered</span></div></div>
+        <div class="reality-scan-head"><div><p class="eyebrow">WHAT YOU DON'T LIKE · SERIES 01</p><h3 id="realityScanTitle">Work Reality Scan</h3><p>${isGuest() ? 'Answer freely in this session. Create a profile only when you want to save the result.' : 'Move every scale. A low answer is not a weakness; it is useful design information.'}</p></div><div class="scan-progress"><strong>${reality.answered}</strong><span>of ${workRealityQuestions.length}<br>answered</span></div></div>
         <div class="reality-question-grid">
           ${workRealityQuestions.map((question, index) => {
             const answer = state.workReality.answers[question.id];
@@ -1196,7 +1500,7 @@ function renderCompass() {
               <span class="reality-question-number">${String(index + 1).padStart(2, '0')}</span>
               <strong>${question.question}</strong>
               <span class="range-readout" id="readout-${question.id}">${answerLabel(question)}</span>
-              <input type="range" min="1" max="10" step="1" value="${answer || 5}" data-work-reality="${question.id}" aria-describedby="ends-${question.id}" ${isGuest() ? 'disabled' : ''}>
+              <input type="range" min="1" max="10" step="1" value="${answer || 5}" data-work-reality="${question.id}" aria-describedby="ends-${question.id}">
               <span class="range-ends" id="ends-${question.id}"><span>1 · ${question.low}</span><span>10 · ${question.high}</span></span>
             </label>`;
           }).join('')}
@@ -1315,10 +1619,17 @@ function renderJourneyStagePage() {
   const progressPoints = statusCounts.complete + (statusCounts.doing * .5);
   const completion = Math.round((progressPoints / config.milestones.length) * 100);
   const nextMilestones = config.milestones.filter((milestone) => milestoneStatus(milestone) !== 'complete').slice(0, 2);
-  const stageTab = ['focus', 'choices', 'evidence', 'community', 'ai'].includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
-  const tabs = [['focus', 'Focus'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
+  const stageTab = ['focus', 'guide', 'choices', 'evidence', 'community', 'ai'].includes(state.journeyStageTab) ? state.journeyStageTab : 'focus';
+  const tabs = [['focus', 'Milestone process'], ['guide', 'Route guide'], ['choices', 'Choices & NO-NOs'], ['evidence', 'Evidence'], ['community', 'Community'], ['ai', 'AI lens']];
+  const phases = stageProcess(stageId);
+  const activePhaseId = phases.some((phase) => phase.id === state.journey.stagePhase?.[stageId]) ? state.journey.stagePhase[stageId] : phases[0].id;
+  const activePhase = phases.find((phase) => phase.id === activePhaseId) || phases[0];
+  const phaseCompletion = (phase) => phase.milestones.every((milestone) => milestoneStatus(milestone) === 'complete');
+  const guide = stageGuideContent[stageId];
+  const routeGuide = stageId === 'grade10' ? `<div class="route-atlas-table"><div><strong>Route</strong><strong>Learning foundation</strong><strong>What it can open</strong><strong>Reality check</strong></div>${grade10RouteAtlas.map(([route, foundation, opens, reality]) => `<article><h4>${escapeHtml(route)}</h4><p>${escapeHtml(foundation)}</p><p>${escapeHtml(opens)}</p><p>${escapeHtml(reality)}</p></article>`).join('')}</div><div class="route-source-actions"><a href="https://cbseacademic.nic.in/curriculum_2026.html" target="_blank" rel="noopener">CBSE curriculum ↗</a><a href="https://www.dge.tn.gov.in/docs/examina/HSE_E.pdf" target="_blank" rel="noopener">Tamil Nadu HSE groups ↗</a><a href="https://www.tnpoly.in/public/" target="_blank" rel="noopener">TN Polytechnic ↗</a><a href="https://dgt.gov.in/en/CTS" target="_blank" rel="noopener">DGT / ITI routes ↗</a><a href="https://www.nios.ac.in/" target="_blank" rel="noopener">NIOS ↗</a></div>` : '';
   const tabContent = {
-    focus: `<section class="stage-progress-summary panel"><div><p class="eyebrow">PURPOSE FOR THIS STAGE</p><h3>${escapeHtml(config.purpose)}</h3><div class="stage-progress-track" role="progressbar" aria-label="Stage progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${completion}"><span style="width:${completion}%"></span></div></div><dl><div><dt>Completed</dt><dd>${statusCounts.complete}</dd></div><div><dt>In progress</dt><dd>${statusCounts.doing}</dd></div><div><dt>Not started</dt><dd>${statusCounts.todo}</dd></div></dl>${nextMilestones.length ? `<aside><span>NEXT HIGH-ROAD TARGET</span><strong>${escapeHtml(nextMilestones[0])}</strong><small>Choose evidence and learning over comparison with peers.</small></aside>` : '<aside><span>STAGE COMPLETE</span><strong>Reflect, document the evidence, then move forward.</strong></aside>'}</section><section class="panel stage-milestone-board"><div class="panel-head"><div><h3>Milestones that matter</h3><p>Click each milestone to move it from Not started → In progress → Complete.</p></div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Add reflection</button></div><div class="stage-milestone-grid">${config.milestones.map((milestone, milestoneIndex) => { const status = milestoneStatus(milestone); return `<button class="stage-milestone ${status}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${escapeHtml(milestone)}" data-status="${status}" aria-label="${escapeHtml(milestone)}. ${status === 'complete' ? 'Complete' : status === 'doing' ? 'In progress' : 'Not started'}. Click to advance status."><span>${String(milestoneIndex + 1).padStart(2, '0')}</span><strong>${escapeHtml(milestone)}</strong><em>${status === 'complete' ? '✓ Complete' : status === 'doing' ? '◐ In progress' : '○ Not started'}</em></button>`; }).join('')}</div></section>`,
+    focus: `<section class="stage-progress-summary panel"><div><p class="eyebrow">WHO THIS STAGE SERVES</p><h3>${escapeHtml(config.purpose)}</h3><div class="stage-progress-track" role="progressbar" aria-label="Stage progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${completion}"><span style="width:${completion}%"></span></div></div><dl><div><dt>Completed</dt><dd>${statusCounts.complete}</dd></div><div><dt>In progress</dt><dd>${statusCounts.doing}</dd></div><div><dt>Not started</dt><dd>${statusCounts.todo}</dd></div></dl>${nextMilestones.length ? `<aside><span>NEXT HIGH-ROAD TARGET</span><strong>${escapeHtml(nextMilestones[0])}</strong><small>Does this move you toward the person you want to become?</small></aside>` : '<aside><span>STAGE COMPLETE</span><strong>Reflect, document the evidence, then move forward.</strong></aside>'}</section><section class="stage-process-workspace"><ol class="milestone-chevron-flow" aria-label="${escapeHtml(config.step)} milestone process">${phases.map((phase, phaseIndex) => `<li><button data-action="stage-phase" data-stage="${stageId}" data-value="${phase.id}" class="${phase.id === activePhaseId ? 'active' : ''} ${phaseCompletion(phase) ? 'complete' : ''}" aria-current="${phase.id === activePhaseId ? 'step' : 'false'}"><span>${String(phaseIndex + 1).padStart(2, '0')}</span><strong>${escapeHtml(phase.label)}</strong><small>${phaseCompletion(phase) ? 'Complete' : `${phase.milestones.filter((milestone) => milestoneStatus(milestone) === 'complete').length}/${phase.milestones.length}`}</small></button></li>`).join('')}</ol><section class="panel stage-milestone-board"><div class="panel-head"><div><p class="eyebrow">STEP ${String(phases.findIndex((phase) => phase.id === activePhaseId) + 1).padStart(2, '0')}</p><h3>${escapeHtml(activePhase.label)}</h3></div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Add reflection</button></div><div class="stage-phase-milestones">${activePhase.milestones.map((milestone) => { const status = milestoneStatus(milestone); const number = config.milestones.indexOf(milestone) + 1; return `<button class="stage-milestone ${status}" data-action="journey-page-milestone" data-stage="${stageId}" data-value="${escapeHtml(milestone)}" data-status="${status}" aria-label="${escapeHtml(milestone)}. ${status === 'complete' ? 'Complete' : status === 'doing' ? 'In progress' : 'Not started'}. Click to advance status."><span>${String(number).padStart(2, '0')}</span><strong>${escapeHtml(milestone)}</strong><em>${status === 'complete' ? '✓ Complete' : status === 'doing' ? '◐ In progress' : '○ Not started'}</em></button>`; }).join('')}</div></section></section>`,
+    guide: `<section class="panel stage-route-guide"><header><div><p class="eyebrow">DECISION KNOWLEDGE</p><h3>${escapeHtml(guide.title)}</h3></div><button class="button-secondary" data-action="research-open">Open verified research</button></header><ol>${guide.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join('')}</ol>${routeGuide}<p class="source-caution">Rules, programmes and admissions change. Verify current eligibility on the linked official source before acting.</p></section>`,
     choices: `<div class="journey-stage-layout"><section class="panel stage-nono-card"><p class="eyebrow">WHAT IS RULED OUT</p><h3>${combinedNoNos.length ? `${combinedNoNos.length} NO-NO signals` : 'Start with what you know you do not want'}</h3><div class="stage-nono-tags">${combinedNoNos.length ? combinedNoNos.map((item) => `<span>${escapeHtml(item)}</span>`).join('') : '<p>Record working conditions, subjects and trade-offs that feel clearly wrong.</p>'}</div><button class="button-secondary" data-action="journey-edit" data-id="${stageId}">Review NO-NOs</button></section><section class="panel stage-shortlist"><p class="eyebrow">REMAINING WORLDS TO TEST</p>${survivors.map((career) => `<button data-action="career-detail" data-id="${career.id}"><span>${career.glyph}</span><strong>${career.title}</strong><small>${career.fit.label}</small></button>`).join('')}</section></div>`,
     evidence: `<section class="panel stage-proof-card stage-tab-panel"><p class="eyebrow">CURRENT EVIDENCE</p><dl><div><dt>Performance</dt><dd>${escapeHtml(rank || 'Not recorded')}</dd></div><div><dt>Reflection</dt><dd>${escapeHtml(note || 'No reflection recorded')}</dd></div><div><dt>Completed milestones</dt><dd>${selected.length} of ${config.milestones.length}</dd></div></dl><button class="button-primary" data-action="journey-edit" data-id="${stageId}">Add evidence and reflection</button></section>`,
     community: `<section class="panel stage-tab-panel"><p class="eyebrow">LEARN FROM CONTEXT, NOT CONSENSUS</p><h3>See how other learners approached ${escapeHtml(config.title)}.</h3><p>Compare constraints, doubts, reversals and evidence. A popular answer is not automatically the right answer for you.</p><button class="button-primary" data-action="stage-community" data-id="${stageId}">Open related discussions</button></section>`,
@@ -1581,9 +1892,52 @@ const aiCapabilities = [
 
 const journeyWorkspaceTabs = [['overview', 'Overview'], ['journey-stage', 'Year path']];
 const callingWorkspaceTabs = [
-  ['calling', 'Calling questions'], ['compass', 'Know yourself'], ['explore', 'Career worlds'],
+  ['calling', 'Assessment'], ['compass', 'Know yourself'], ['explore', 'Career worlds'],
   ['compare', 'Compare'], ['roadmap', 'Action plan'], ['evidence', 'Evidence'], ['ai-journey', 'AI lens'],
 ];
+
+const callingAssessmentTypes = [
+  { id: 'personality', number: '01', label: 'Personality', copy: 'How you naturally prefer to work, relate and decide.' },
+  { id: 'desire', number: '02', label: 'Burning desire', copy: 'What you would willingly sustain when nobody is praising you.' },
+  { id: 'capability', number: '03', label: 'Capability', copy: 'What you can demonstrate today through action and evidence.' },
+];
+
+const callingAssessmentTraits = [
+  { id: 'agency', label: 'Agency & ownership', short: 'Agency', color: '#8b5cf6', description: 'Taking responsibility for choices and carrying work to completion.', experiment: 'own one bounded decision and finish it', evidence: 'a decision log showing trade-offs and follow-through', questions: {
+    personality: ['How naturally do you step forward when a decision has no obvious owner?', 'Prefer clear direction', 'Prefer ownership'], desire: ['How strongly do you want your work to carry your signature and responsibility?', 'Happy to contribute', 'Want to own outcomes'], capability: ['How reliably can you plan and finish self-directed work today?', 'Need close support', 'Finish independently'],
+  } },
+  { id: 'people', label: 'Human connection', short: 'People', color: '#ec4899', description: 'Listening, collaborating and making another person’s situation better.', experiment: 'help one real person solve a problem and ask what changed', evidence: 'specific feedback from a learner, teammate, customer or community member', questions: {
+    personality: ['How much energy do you gain from understanding and working with people?', 'Prefer solo focus', 'Energised by people'], desire: ['How strongly must your future work improve a person’s life directly?', 'Impact can be indirect', 'Need visible human impact'], capability: ['How well can you listen, explain and resolve disagreement today?', 'Still practising', 'Others trust me'],
+  } },
+  { id: 'mastery', label: 'Inquiry & mastery', short: 'Mastery', color: '#0ea5e9', description: 'Staying with difficult questions long enough to develop real depth.', experiment: 'investigate one difficult question beyond the first easy answer', evidence: 'a sourced explanation, solved problem set or expert critique', questions: {
+    personality: ['How naturally do you keep investigating after the quick answer is available?', 'Prefer quick closure', 'Keep going for depth'], desire: ['How much do you want to become exceptionally good at a difficult craft?', 'Breadth is enough', 'Deep mastery matters'], capability: ['How well can you learn, verify and explain a hard idea without hiding gaps?', 'Need a method', 'Can show depth'],
+  } },
+  { id: 'creation', label: 'Creation & expression', short: 'Creation', color: '#f97316', description: 'Turning an idea into something original, useful or expressive.', experiment: 'make a small original artifact for a defined audience', evidence: 'a prototype, performance, essay, design or revision trail', questions: {
+    personality: ['How often do you respond to a problem by wanting to make something?', 'Prefer using proven work', 'Want to create'], desire: ['How important is original expression or invention in the life you want?', 'Optional', 'Central to my life'], capability: ['How well can you turn an idea into a finished, revisable artifact today?', 'Mostly ideas', 'Repeated finished work'],
+  } },
+  { id: 'structure', label: 'Structure & security', short: 'Structure', color: '#14b8a6', description: 'Creating reliability, routines and a life that protects important commitments.', experiment: 'design and follow a realistic one-week plan', evidence: 'completed commitments, deadlines and a routine that survived disruption', questions: {
+    personality: ['How much does a predictable rhythm help you do your best work?', 'Thrive in fluidity', 'Thrive with structure'], desire: ['How important are stability, location and dependable time for family?', 'Can trade stability', 'Must protect stability'], capability: ['How reliably do you organise time, commitments and details today?', 'Often reactive', 'Dependably organised'],
+  } },
+  { id: 'adaptability', label: 'Adaptability & courage', short: 'Adaptability', color: '#eab308', description: 'Learning through uncertainty, recovery and unfamiliar situations.', experiment: 'attempt one unfamiliar, low-risk challenge where failure is possible', evidence: 'a reflection showing what failed, what changed and what you tried next', questions: {
+    personality: ['How comfortable are you acting when the path and outcome are uncertain?', 'Need assurance', 'Can navigate uncertainty'], desire: ['How strongly do you want novelty, travel, change or difficult new territory?', 'Prefer rooted continuity', 'Seek new frontiers'], capability: ['How well do you recover, revise and continue after a setback today?', 'Setbacks derail me', 'Adapt and continue'],
+  } },
+  { id: 'stewardship', label: 'Stewardship & responsibility', short: 'Stewardship', color: '#22c55e', description: 'Protecting people, ethics, resources, family or institutions beyond yourself.', experiment: 'take responsibility for something that affects other people', evidence: 'trusted delivery plus a record of an ethical or resource trade-off', questions: {
+    personality: ['How naturally do you notice what must be protected or cared for?', 'Focus on my task', 'Notice wider responsibility'], desire: ['How important are duty, family legacy, service and long-term consequence?', 'Personal freedom first', 'Duty gives meaning'], capability: ['How consistently can others trust your judgment and follow-through today?', 'Building trust', 'Trusted with consequences'],
+  } },
+];
+
+const assessmentStageOrder = ['grade10', 'grade11', 'grade12', 'college1', 'college2', 'college3', 'collegeFinal', 'firstJob', 'dreamJob'];
+const assessmentStageFrames = {
+  grade10: { next: 'Grade 11', current: (t) => `Run a 7-day test: ${t.experiment}. Record what felt energising, draining and worth repeating.`, bridge: (t) => `Carry ${t.evidence} into one subject routine or mini-project before choosing a route.` },
+  grade11: { next: 'Grade 12', current: (t) => `Use one school month to ${t.experiment}; protect subject fundamentals while you test fit.`, bridge: (t) => `Turn ${t.evidence} into a stronger project, exam habit or course-choice criterion.` },
+  grade12: { next: 'College year 1', current: (t) => `Test this trait inside entrance preparation, applications or a real project—not only through reflection.`, bridge: (t) => `Choose one course or campus opportunity where ${t.short.toLowerCase()} can be practised and evidenced from the first term.` },
+  college1: { next: 'College year 2', current: (t) => `Build foundations through ${t.experiment} in a club, lab, studio or community setting.`, bridge: (t) => `Use ${t.evidence} to select an elective and one deeper special-interest project.` },
+  college2: { next: 'College year 3', current: (t) => `Choose a course and project that make you practise ${t.short.toLowerCase()}, not merely collect a certificate.`, bridge: (t) => `Convert ${t.evidence} into internship, research or field-work proof.` },
+  college3: { next: 'Final college year', current: (t) => `Use an internship, research role or serious project to test ${t.short.toLowerCase()} under real constraints.`, bridge: (t) => `Present ${t.evidence} in your final project and campus-interview story.` },
+  collegeFinal: { next: 'First job', current: (t) => `Make ${t.short.toLowerCase()} visible in your capstone, portfolio and campus interview evidence.`, bridge: (t) => `Select a first role where you can keep building this trait during the first 90 days.` },
+  firstJob: { next: 'Dream-role runway', current: (t) => `Deliver one measurable work outcome that proves ${t.short.toLowerCase()} without neglecting health or ethics.`, bridge: (t) => `Review the evidence after 6 months and choose the next role, mentor or skill gap deliberately.` },
+  dreamJob: { next: 'Next 12-month review', current: (t) => `Practise ${t.short.toLowerCase()} at a higher level through meaningful work, mastery or mentoring.`, bridge: (t) => `Reassess whether the role still serves the life and contribution you intend—not just its title.` },
+};
 
 function renderJourneyWorkspaceTabs() {
   const yearTabs = journeyStops().map((stop) => `<button data-journey-stage="${stop.id}" class="${state.view === 'journey-stage' && state.activeJourneyStage === stop.id ? 'active' : ''}">${stop.step}</button>`).join('');
@@ -1641,7 +1995,67 @@ function callingSynthesis() {
   return { ranked: ranked.slice(0, 3), boundaries: boundaries.slice(0, 4), evidenceCount: evidence.length, complete: callingQuestions.every((question) => state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim()) };
 }
 
-function renderCalling() {
+function callingAssessmentResults() {
+  return callingAssessmentTraits.map((trait) => {
+    const values = callingAssessmentTypes.map((type) => Number(state.calling.assessment?.[type.id]?.[trait.id] || 0));
+    const answered = values.filter((value) => value > 0);
+    const score = answered.length ? answered.reduce((sum, value) => sum + value, 0) / answered.length : 0;
+    const [personality, desire, capability] = values;
+    let insight = 'More evidence is needed before interpreting this trait.';
+    if (answered.length === 3 && desire >= 7 && capability <= 4) insight = 'Desire is ahead of demonstrated capability. Treat that as a reason to build proof, not to abandon the direction.';
+    else if (answered.length === 3 && capability >= 7 && desire <= 4) insight = 'You can do this well, but capability alone does not mean you should build a life around it.';
+    else if (answered.length === 3 && Math.min(...values) >= 7) insight = 'Preference, desire and demonstrated capability currently reinforce one another.';
+    else if (answered.length === 3 && Math.max(...values) - Math.min(...values) >= 4) insight = 'The three lenses disagree. A small real-world test is more useful than averaging the tension away.';
+    else if (answered.length === 3) insight = 'The three lenses are reasonably consistent; the next step is to test this pattern in real work.';
+    return { ...trait, values, coverage: answered.length, score, insight };
+  });
+}
+
+function callingAssessmentCoverage() {
+  return callingAssessmentTypes.reduce((total, type) => total + callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length, 0);
+}
+
+function assessmentStageContext() {
+  const id = mentorStageId();
+  const index = Math.max(0, assessmentStageOrder.indexOf(id));
+  return { id, config: yearMilestoneConfig[id] || yearMilestoneConfig.grade10, frame: assessmentStageFrames[id] || assessmentStageFrames.grade10, index };
+}
+
+function assessmentRadar(results) {
+  const center = 150;
+  const radius = 104;
+  const point = (index, scale = 1) => {
+    const angle = (-Math.PI / 2) + (index * Math.PI * 2 / results.length);
+    return [center + Math.cos(angle) * radius * scale, center + Math.sin(angle) * radius * scale];
+  };
+  const polygon = (scale) => results.map((_, index) => point(index, scale).map((value) => value.toFixed(1)).join(',')).join(' ');
+  const scorePolygon = results.map((result, index) => point(index, result.score / 10).map((value) => value.toFixed(1)).join(',')).join(' ');
+  return `<svg class="assessment-radar" viewBox="0 0 300 300" role="img" aria-labelledby="assessmentRadarTitle"><title id="assessmentRadarTitle">Seven-trait assessment profile. Unanswered traits remain at the centre.</title>${[.25,.5,.75,1].map((ring) => `<polygon class="radar-ring" points="${polygon(ring)}"/>`).join('')}${results.map((result, index) => { const [x, y] = point(index); return `<line class="radar-axis" x1="${center}" y1="${center}" x2="${x}" y2="${y}"/><circle cx="${x}" cy="${y}" r="4" fill="${result.color}"/>`; }).join('')}<polygon class="radar-result" points="${scorePolygon}"/>${results.map((result, index) => { const [x, y] = point(index, 1.22); return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${escapeHtml(result.short)}</text>`; }).join('')}</svg>`;
+}
+
+function renderCallingFlowTabs() {
+  const mode = state.calling.mode || 'assessment';
+  const assessed = callingAssessmentCoverage();
+  const reflected = callingQuestions.filter((question) => state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim()).length;
+  return `<nav class="calling-flow-tabs" aria-label="Student assessment workflow"><button data-action="calling-mode" data-value="assessment" class="${mode === 'assessment' ? 'active' : ''}"><span>01</span><strong>Assess</strong><small>${assessed}/21 signals</small></button><button data-action="calling-mode" data-value="questions" class="${mode === 'questions' ? 'active' : ''}"><span>02</span><strong>Reflect</strong><small>${reflected}/3 questions</small></button><button data-action="calling-mode" data-value="recommendations" class="${mode === 'recommendations' ? 'active' : ''}"><span>03</span><strong>Act</strong><small>7 next moves</small></button></nav>`;
+}
+
+function renderStudentAssessment() {
+  const activeId = state.calling.activeAssessment || 'personality';
+  const active = callingAssessmentTypes.find((type) => type.id === activeId) || callingAssessmentTypes[0];
+  const answered = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[active.id]?.[trait.id]) > 0).length;
+  const activeIndex = callingAssessmentTypes.findIndex((type) => type.id === active.id);
+  return `<section class="student-assessment"><header class="assessment-head"><div><p class="eyebrow">THREE LENSES · ONE PERSON</p><h2>Separate preference, purpose and present proof.</h2></div><div class="assessment-completion"><strong>${callingAssessmentCoverage()}</strong><span>of 21 signals</span></div></header><nav class="assessment-type-tabs" aria-label="Assessment type">${callingAssessmentTypes.map((type) => { const count = callingAssessmentTraits.filter((trait) => Number(state.calling.assessment?.[type.id]?.[trait.id]) > 0).length; return `<button data-action="assessment-type" data-value="${type.id}" class="${type.id === active.id ? 'active' : ''}" aria-pressed="${type.id === active.id}"><span>${type.number}</span><strong>${type.label}</strong><small>${count}/7</small></button>`; }).join('')}</nav><div class="assessment-frame"><header><div><span>${active.number} · ${escapeHtml(active.label)}</span><h3>${escapeHtml(active.copy)}</h3></div><strong>${answered}/7 answered</strong></header><div class="assessment-trait-list">${callingAssessmentTraits.map((trait, index) => { const question = trait.questions[active.id]; const value = Number(state.calling.assessment?.[active.id]?.[trait.id] || 0); return `<article class="assessment-trait-row ${value ? 'answered' : ''}" style="--trait:${trait.color}"><div class="trait-number">${String(index + 1).padStart(2, '0')}</div><div class="trait-question"><label for="assessment-${active.id}-${trait.id}"><strong>${escapeHtml(trait.label)}</strong><span>${escapeHtml(question[0])}</span></label><div class="trait-scale"><small>${escapeHtml(question[1])}</small><input id="assessment-${active.id}-${trait.id}" data-calling-assessment="${active.id}:${trait.id}" type="range" min="1" max="10" step="1" value="${value || 5}" aria-describedby="assessment-${active.id}-${trait.id}-readout"><small>${escapeHtml(question[2])}</small><output id="assessment-${active.id}-${trait.id}-readout">${value ? `${value}/10` : 'Not answered'}</output></div></div></article>`; }).join('')}</div><footer><p>Capability means evidence available now—not fixed potential. A low answer may simply mean you have not had the opportunity yet.</p><button class="button-primary" data-action="assessment-next" data-value="${activeIndex < 2 ? callingAssessmentTypes[activeIndex + 1].id : 'recommendations'}">${activeIndex < 2 ? `Continue to ${callingAssessmentTypes[activeIndex + 1].label}` : 'See 7 recommendations'} →</button></footer></div></section>`;
+}
+
+function renderAssessmentRecommendations() {
+  const results = callingAssessmentResults();
+  const stage = assessmentStageContext();
+  const coverage = callingAssessmentCoverage();
+  return `<section class="assessment-results"><header class="assessment-results-head"><div><p class="eyebrow">CURRENT STAGE · ${escapeHtml(stage.config.step)}</p><h2>Seven signals. Seven moves you can test now.</h2><p>Each recommendation connects today’s evidence to ${escapeHtml(stage.frame.next)}. Scores organise reflection; they do not rank your worth or predict success.</p></div><div class="assessment-result-score"><strong>${coverage}</strong><span>/21 answered</span><button data-action="calling-mode" data-value="assessment">Review answers</button></div></header><div class="assessment-profile"><div>${assessmentRadar(results)}</div><section aria-label="Trait summary">${results.map((result) => `<div style="--trait:${result.color}"><span>${escapeHtml(result.short)}</span><i><b style="width:${result.score * 10}%"></b></i><strong>${result.coverage ? result.score.toFixed(1) : '—'}</strong></div>`).join('')}</section></div><div class="assessment-recommendation-list">${results.map((result, index) => `<article style="--trait:${result.color}"><header><span>${String(index + 1).padStart(2, '0')}</span><div><h3>${escapeHtml(result.label)}</h3><p>${result.coverage}/3 lenses · ${result.coverage ? `${result.score.toFixed(1)}/10` : 'evidence missing'}</p></div></header><p class="assessment-insight">${escapeHtml(result.insight)}</p><div class="assessment-stage-action"><small>NOW · ${escapeHtml(stage.config.step)}</small><p>${escapeHtml(stage.frame.current(result))}</p></div><div class="assessment-stage-action next"><small>NEXT · ${escapeHtml(stage.frame.next)}</small><p>${escapeHtml(stage.frame.bridge(result))}</p></div></article>`).join('')}</div><footer class="assessment-results-footer"><p>${isGuest() ? 'Your answers work fully in this session. Create a profile only when you want to keep this assessment.' : 'This assessment is saved privately with your profile and can change as evidence changes.'}</p>${isGuest() ? '<button class="button-primary" data-action="assessment-save">Save assessment to a profile</button>' : ''}<button class="button-quiet" data-action="assessment-clear">Clear assessment answers</button></footer></section>`;
+}
+
+function renderCallingQuestions() {
   const active = callingQuestions.find((question) => question.id === state.calling.activeQuestion) || callingQuestions[0];
   const selected = state.calling.selections[active.id] || [];
   const query = state.calling.search.trim().toLowerCase();
@@ -1654,10 +2068,80 @@ function renderCalling() {
   return `<div class="view-enter calling-view">
     <header class="calling-intro"><p class="eyebrow">FIND YOUR CALLING</p><strong>${answered}<span>/ 3 reflected</span></strong></header>
     <nav class="calling-question-tabs" aria-label="Three calling questions">${callingQuestions.map((question) => { const done = state.calling.selections[question.id]?.length || state.calling.custom[question.id]?.trim(); return `<button data-action="calling-question" data-value="${question.id}" class="${active.id === question.id ? 'active' : ''}" aria-current="${active.id === question.id ? 'step' : 'false'}"><span>${question.number}</span><strong>“${escapeHtml(question.question)}”</strong><em>${done ? '✓ Reflection added' : 'Answer this question'} →</em></button>`; }).join('')}</nav>
-    <div class="calling-layout"><main class="calling-question panel"><header><span>QUESTION ${active.number}</span><h2>“${active.question}”</h2><p>${active.guidance}</p></header><div class="calling-tools"><label>Search ${callingMetadata.optionsPerQuestion} possibilities<input id="callingSearch" type="search" value="${escapeHtml(state.calling.search)}" placeholder="Family, creating, service, health, integrity…"></label><span>${selected.length} selected · choose any that feel true</span></div><section class="calling-option-list" aria-label="Possible answers">${visible.map((option) => { const on = selected.includes(option.id); return `<button data-action="calling-option" data-id="${option.id}" class="${on ? 'selected' : ''}" aria-pressed="${on}"><span>${on ? '✓' : '+'}</span><div><small>${escapeHtml(option.category)}</small><strong>${escapeHtml(option.text)}</strong></div></button>`; }).join('') || '<div class="calling-empty">No possibilities match that search. Try a broader word—or write your own answer below.</div>'}</section>${filtered.length > state.calling.limit ? `<button class="button-secondary calling-more" data-action="calling-more">Show ${Math.min(18, filtered.length - state.calling.limit)} more · ${filtered.length - state.calling.limit} remaining</button>` : ''}<label class="calling-custom">Your own answer<textarea data-calling-custom="${active.id}" maxlength="800" ${isGuest() ? 'disabled' : ''} placeholder="Write in your own words. It can be uncertain, unfinished or different from every option above.">${escapeHtml(state.calling.custom[active.id])}</textarea><small>${isGuest() ? 'Create a profile to save a private answer.' : 'Saved privately on this device.'}</small></label></main>
-      <aside class="calling-reflection panel"><p class="eyebrow">YOUR CALLING COMPASS</p><h3>${themes.length ? (synthesis.complete ? 'Your strongest directions' : 'A provisional pattern is emerging') : 'Select what feels true—not what sounds admirable.'}</h3>${themes.length ? `<div class="calling-themes">${themes.map((theme) => `<span>${escapeHtml(theme)}</span>`).join('')}</div><div class="calling-recommendations">${synthesis.ranked.map((direction, index) => `<article class="calling-recommendation ${index === 0 ? 'primary' : ''}"><span>${index === 0 ? 'STRONGEST DIRECTION' : `ALTERNATIVE ${index + 1}`}</span><h4>${escapeHtml(direction.title)}</h4><p><strong>Why:</strong> ${escapeHtml(direction.reasons.length ? direction.reasons.join(', ') : 'your own written reflection')} recur in your answers.</p><p><strong>Possible arenas:</strong> ${escapeHtml(direction.arenas)}.</p><p><strong>Test it:</strong> ${escapeHtml(direction.experiment)}</p><small>${escapeHtml(direction.caution)}</small></article>`).join('')}</div>${synthesis.boundaries.length ? `<div class="calling-guardrails"><strong>Your work must protect</strong>${synthesis.boundaries.map((item) => `<span>${escapeHtml(item.guidance)}</span>`).join('')}</div>` : ''}` : '<p>Look for three kinds of signal: what gives relief, what creates a firm boundary, and whose life becomes better because of your work.</p>'}<div class="calling-summary">${callingQuestions.map((question) => { const count = state.calling.selections[question.id]?.length || 0; const custom = state.calling.custom[question.id]?.trim(); return `<section><span>${question.number}</span><div><strong>${question.short}</strong><p>${count ? `${count} possibilities selected` : 'No possibilities selected'}${custom ? ' · own answer added' : ''}</p></div></section>`; }).join('')}</div><p class="calling-caution">These are hypotheses, not a psychological diagnosis. Test the strongest direction in real life, discuss it with people who know you, and revise it when evidence changes.</p>${answered ? '<button class="button-quiet" data-action="calling-clear">Clear my calling reflections</button>' : ''}</aside>
+    <div class="calling-layout"><main class="calling-question panel"><header><span>QUESTION ${active.number}</span><h2>“${active.question}”</h2><p>${active.guidance}</p></header><div class="calling-tools"><label>Search ${callingMetadata.optionsPerQuestion} possibilities<input id="callingSearch" type="search" value="${escapeHtml(state.calling.search)}" placeholder="Family, creating, service, health, integrity…"></label><span>${selected.length} selected · choose any that feel true</span></div><section class="calling-option-list" aria-label="Possible answers">${visible.map((option) => { const on = selected.includes(option.id); return `<button data-action="calling-option" data-id="${option.id}" class="${on ? 'selected' : ''}" aria-pressed="${on}"><span>${on ? '✓' : '+'}</span><div><small>${escapeHtml(option.category)}</small><strong>${escapeHtml(option.text)}</strong></div></button>`; }).join('') || '<div class="calling-empty">No possibilities match that search. Try a broader word—or write your own answer below.</div>'}</section>${filtered.length > state.calling.limit ? `<button class="button-secondary calling-more" data-action="calling-more">Show ${Math.min(18, filtered.length - state.calling.limit)} more · ${filtered.length - state.calling.limit} remaining</button>` : ''}<label class="calling-custom">Your own answer<textarea data-calling-custom="${active.id}" maxlength="800" placeholder="Write in your own words. It can be uncertain, unfinished or different from every option above.">${escapeHtml(state.calling.custom[active.id])}</textarea><small>${isGuest() ? 'Temporary in this session · create a profile only when you want to save.' : 'Saved privately on this device.'}</small></label></main>
+      <aside class="calling-reflection panel"><p class="eyebrow">YOUR CALLING COMPASS</p><h3>${themes.length ? (synthesis.complete ? 'Your strongest directions' : 'A provisional pattern is emerging') : 'Select what feels true—not what sounds admirable.'}</h3>${themes.length ? `<div class="calling-themes">${themes.map((theme) => `<span>${escapeHtml(theme)}</span>`).join('')}</div><div class="calling-recommendations">${synthesis.ranked.map((direction, index) => `<article class="calling-recommendation ${index === 0 ? 'primary' : ''}"><span>${index === 0 ? 'STRONGEST DIRECTION' : `ALTERNATIVE ${index + 1}`}</span><h4>${escapeHtml(direction.title)}</h4><p><strong>Why:</strong> ${escapeHtml(direction.reasons.length ? direction.reasons.join(', ') : 'your own written reflection')} recur in your answers.</p><p><strong>Possible arenas:</strong> ${escapeHtml(direction.arenas)}.</p><p><strong>Test it:</strong> ${escapeHtml(direction.experiment)}</p><small>${escapeHtml(direction.caution)}</small></article>`).join('')}</div>${synthesis.boundaries.length ? `<div class="calling-guardrails"><strong>Your work must protect</strong>${synthesis.boundaries.map((item) => `<span>${escapeHtml(item.guidance)}</span>`).join('')}</div>` : ''}` : '<p>Look for three kinds of signal: what gives relief, what creates a firm boundary, and whose life becomes better because of your work.</p>'}<div class="calling-summary">${callingQuestions.map((question) => { const count = state.calling.selections[question.id]?.length || 0; const custom = state.calling.custom[question.id]?.trim(); return `<section><span>${question.number}</span><div><strong>${question.short}</strong><p>${count ? `${count} possibilities selected` : 'No possibilities selected'}${custom ? ' · own answer added' : ''}</p></div></section>`; }).join('')}</div><p class="calling-caution">These are hypotheses, not a psychological diagnosis. Test the strongest direction in real life, discuss it with people who know you, and revise it when evidence changes.</p>${answered ? `${isGuest() ? '<button class="button-primary" data-action="calling-save">Save these reflections</button>' : ''}<button class="button-quiet" data-action="calling-clear">Clear my calling reflections</button>` : ''}</aside>
     </div>
   </div>`;
+}
+
+function renderCalling() {
+  const mode = state.calling.mode || 'assessment';
+  const body = mode === 'recommendations' ? renderAssessmentRecommendations() : mode === 'questions' ? renderCallingQuestions() : renderStudentAssessment();
+  return `<div class="view-enter calling-assessment-view">${renderCallingFlowTabs()}${body}</div>`;
+}
+
+function dreamJobNorthStar() {
+  const legacyQuestion = callingQuestions.find((question) => question.id === 'legacy');
+  const selected = (state.calling.selections.legacy || []).map((id) => legacyQuestion?.options.find((option) => option.id === id)?.text).filter(Boolean);
+  return state.dreamJob.identity.trim() || state.calling.custom.legacy.trim() || selected.slice(0, 2).join(' · ');
+}
+
+function selectedDreamVocation() {
+  return dreamJobVocations.find((path) => path.id === state.dreamJob.selectedVocationId) || dreamJobVocations[0];
+}
+
+function renderDreamPathDrawer(path = selectedDreamVocation(), stageId = state.dreamJob.previewStage || mentorStageId()) {
+  const stage = dreamJobStageBlueprint.find((item) => item.stage === stageId) || dreamJobStageBlueprint[0];
+  const milestones = path.stageMilestones[stage.stage] || [];
+  const completed = state.dreamJob.vocationProgress?.[path.id]?.[stage.stage] || [];
+  const completion = milestones.length ? Math.round((completed.length / milestones.length) * 100) : 0;
+  dreamJobPanel.innerHTML = `<div class="dream-path-drawer-content" style="--path-accent:${path.accent}">
+    <header><span>${escapeHtml(path.mark)}</span><div><p class="eyebrow">${escapeHtml(path.family)}</p><h2>${escapeHtml(path.name)}</h2><p>${escapeHtml(path.promise)}</p></div></header>
+    <section><h3>What an ordinary week contains</h3><ul>${path.dailyWork.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
+    <section class="dream-path-no-nos"><h3>Pause if these are true</h3>${path.noNoTests.map((item) => `<p>${escapeHtml(item)}</p>`).join('')}</section>
+    <section><div class="dream-path-progress"><h3>${escapeHtml(stage.label)} milestones</h3><strong>${completion}%</strong></div><progress max="100" value="${completion}" aria-label="${escapeHtml(stage.label)} milestone progress">${completion}%</progress><p class="dream-path-stage-note">Use these as experiments, not gates. ${isGuest() ? 'You can test every control now; create a profile only when you want to retain progress.' : 'Progress is kept with your profile on this device.'}</p><div class="dream-path-milestones">${milestones.map((item) => { const done = completed.includes(item); return `<button data-dream-path-milestone="${escapeHtml(item)}" data-path="${path.id}" data-stage="${stage.stage}" class="${done ? 'complete' : ''}" aria-pressed="${done}"><span>${done ? '✓' : '○'}</span>${escapeHtml(item)}</button>`; }).join('')}</div></section>
+    <section><h3>Role worlds inside this vocation</h3><div class="dream-path-role-worlds">${path.roleWorlds.map((item) => `<span>${escapeHtml(item)}</span>`).join('')}</div></section>
+    <section><h3>Proof that matters</h3><ol>${path.proof.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section>
+    <section><h3>Routes worth comparing</h3><ol>${path.routeOptions.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section>
+    <section><h3>Career mobility—not a fallback failure</h3><div class="dream-path-role-worlds">${path.mobilityRoutes.map((item) => `<span>${escapeHtml(item)}</span>`).join('')}</div></section>
+    <section><h3>A more resilient income design</h3><p>${escapeHtml(path.incomeModel)}</p></section>
+    <section class="dream-path-toolkit"><h3>Professional toolkit</h3>
+      ${[
+        ['Audition lab', dreamJobArtsFramework.auditionLab],
+        ['Course decision matrix', dreamJobArtsFramework.courseDecisionChecks],
+        ['Income & runway planner', dreamJobArtsFramework.incomeAndRunway],
+        ['Rights, safety & health', dreamJobArtsFramework.rightsAndSafety],
+        ['Family agreement', dreamJobArtsFramework.familyConversation],
+      ].map(([label, items], index) => `<details ${index === 0 ? 'open' : ''}><summary>${escapeHtml(label)}<span>${items.length}</span></summary><ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></details>`).join('')}
+    </section>
+    <section><h3>Years 1–12 after entry</h3><div class="dream-career-phases">${dreamJobArtsFramework.careerPhases.map((phase) => `<article><span>${escapeHtml(phase.label)}</span><strong>${escapeHtml(phase.focus)}</strong><p>${escapeHtml(phase.action)}</p></article>`).join('')}</div></section>
+    <section class="dream-path-sources"><h3>Research trail</h3><p>Zysham’s roadmap is independently written from the themes below; it does not reproduce their prose. Verify changing course and opportunity details directly.</p>${path.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener"><span>${escapeHtml(source.publisher)}</span><strong>${escapeHtml(source.title)}</strong><em>Open source ↗</em></a>`).join('')}</section>
+  </div>`;
+  openRightDrawer('dream', { kicker: `${stage.label.toUpperCase()} · PURPOSE-LED PATH`, title: path.name });
+}
+
+function renderDreamJob(isRefresh = false) {
+  const query = state.dreamJob.search.trim().toLowerCase();
+  const employers = dreamJobEmployers.filter((employer) => !query || `${employer.name} ${employer.family} ${employer.roleWorlds.join(' ')}`.toLowerCase().includes(query));
+  const selected = dreamJobEmployers.find((employer) => employer.id === state.dreamJob.selectedId) || dreamJobEmployers[0];
+  const currentStageId = state.dreamJob.previewStage || mentorStageId();
+  const currentStage = dreamJobStageBlueprint.find((stage) => stage.stage === currentStageId) || dreamJobStageBlueprint[0];
+  const northStar = dreamJobNorthStar();
+  const vocation = selectedDreamVocation();
+  const tabs = [['discover','Employer atlas'],['performing','Performing arts'],['roadmap','Year-by-year path'],['evidence','Evidence gap'],['reality','Reality check']];
+  const tabContent = {
+    discover: `<div class="dream-atlas"><aside><label>Search role worlds<input data-dream-input="search" type="search" value="${escapeHtml(state.dreamJob.search)}" placeholder="Engineering, research, design, consulting…"></label><div class="dream-employer-list">${employers.map((employer) => `<button data-action="dream-employer" data-id="${employer.id}" class="${selected.id === employer.id ? 'active' : ''}"><span>${employer.mark}</span><div><strong>${escapeHtml(employer.name)}</strong><small>${escapeHtml(employer.family)}</small></div></button>`).join('') || '<p>No employer or role world matches.</p>'}</div></aside><article class="dream-employer-detail"><header><span>${selected.mark}</span><div><p class="eyebrow">EMPLOYER ENVIRONMENT · NOT A CALLING</p><h3>${escapeHtml(selected.name)}</h3><p>${escapeHtml(selected.family)}</p></div><button data-action="dream-save" data-id="${selected.id}" aria-pressed="${state.dreamJob.saved.includes(selected.id)}">${state.dreamJob.saved.includes(selected.id) ? 'Saved ★' : 'Save target ☆'}</button></header><section><h4>Purpose test</h4>${selected.purposeQuestions.map((question) => `<p>${escapeHtml(question)}</p>`).join('')}</section><section><h4>Role worlds inside the same logo</h4><div class="dream-role-tags">${selected.roleWorlds.map((role) => `<button data-action="dream-role" data-value="${escapeHtml(role)}" class="${state.dreamJob.targetRole === role ? 'active' : ''}">${escapeHtml(role)}</button>`).join('')}</div></section><section><h4>Proof worth building</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><p class="dream-reality-note">${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Official careers source · checked ${dreamJobMetadata.checkedAt} ↗</a></article></div>`,
+    performing: `<section class="dream-vocations"><header><div><p class="eyebrow">CRAFT · LIVELIHOOD · CONTRIBUTION</p><h3>A dream can be a vocation—not an employer.</h3><p>Test whether you love the ordinary practice, then build proof, collaborators and more than one honest income route.</p></div><span>${dreamJobVocations.length} paths</span></header><div class="dream-vocation-layout"><nav aria-label="Performing arts paths">${dreamJobVocations.map((path) => `<button data-action="dream-vocation" data-id="${path.id}" aria-pressed="${path.id === vocation.id}" class="${path.id === vocation.id ? 'active' : ''}" style="--path-accent:${path.accent}"><span>${escapeHtml(path.mark)}</span><div><strong>${escapeHtml(path.name)}</strong><small>${escapeHtml(path.family)}</small></div></button>`).join('')}</nav><article class="dream-vocation-preview" style="--path-accent:${vocation.accent}"><header><span>${escapeHtml(vocation.mark)}</span><div><p class="eyebrow">${escapeHtml(vocation.family)}</p><h4>${escapeHtml(vocation.name)}</h4></div></header><blockquote>${escapeHtml(vocation.promise)}</blockquote><section><h5>Would the work fit?</h5>${vocation.noNoTests.map((item) => `<p>${escapeHtml(item)}</p>`).join('')}</section><section><h5>Proof to build</h5><ol>${vocation.proof.slice(0, 3).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><footer><button class="button-primary" data-action="dream-vocation-detail" data-id="${vocation.id}">Open ${escapeHtml(currentStage.label)} path</button><small>${isGuest() ? 'Explore fully as a guest · profile needed only to retain progress.' : 'Stage progress is saved privately on this device.'}</small></footer></article></div></section>`,
+    roadmap: `<section class="dream-roadmap"><header><p class="eyebrow">FROM SCHOOL TO MEANINGFUL WORK</p><h3>The destination may be a company, a vocation—or a portfolio of both.</h3></header><ol class="dream-stage-chevrons" aria-label="Dream Job stages">${dreamJobStageBlueprint.map((stage, index) => `<li class="${stage.stage === currentStageId ? 'current' : ''}"><button data-action="dream-stage" data-value="${stage.stage}" ${stage.stage === currentStageId ? 'aria-current="step"' : ''}><span>${String(index + 1).padStart(2,'0')}</span><strong>${escapeHtml(stage.label)}</strong></button></li>`).join('')}</ol><article class="dream-stage-focus"><div><p class="eyebrow">CURRENT FOCUS · ${escapeHtml(currentStage.label)}</p><h4>${escapeHtml(currentStage.focus)}</h4><p>${escapeHtml(currentStage.action)}</p></div><aside><span>${state.dreamJob.selectedVocationId ? vocation.mark : selected.mark}</span><strong>${escapeHtml(state.dreamJob.selectedVocationId ? vocation.name : selected.name)}</strong><p>${escapeHtml(state.dreamJob.selectedVocationId ? vocation.stageMilestones[currentStage.stage].slice(0, 2).join(' · ') : selected.evidence.slice(0, 2).join(' · '))}</p>${state.dreamJob.selectedVocationId ? `<button class="button-quiet" data-action="dream-vocation-detail" data-id="${vocation.id}">View milestones</button>` : ''}</aside></article></section>`,
+    evidence: `<section class="dream-evidence"><header><div><p class="eyebrow">ROLE FIRST · ${escapeHtml(currentStage.label)}</p><h3>What can you prove—not merely claim?</h3></div><span>${selected.mark}</span></header><div><section><h4>Target role family</h4><p>${escapeHtml(state.dreamJob.targetRole || 'Choose a role world in the Employer atlas. A company target without a role target is too vague.')}</p><h4>Evidence standard to test</h4><ol>${selected.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol></section><label>Evidence I already have<textarea data-dream-input="evidence" placeholder="Projects, outcomes, feedback, difficult work, responsibility…">${escapeHtml(state.dreamJob.evidence)}</textarea><small>${isGuest() ? 'Available in this session. Create a profile only to retain it.' : 'Saved privately with your profile.'}</small></label></div><footer><button class="button-primary" data-action="dream-go-evidence">Open Evidence Wallet</button></footer></section>`,
+    reality: `<section class="dream-reality"><header><p class="eyebrow">PRESTIGE-FREE REVIEW</p><h3>Would the work still matter without the name?</h3></header><div class="dream-reality-grid">${['A company is an environment, not a calling.','The same logo contains radically different work.','A referral may improve visibility; it does not replace evidence.','A solved-problem count measures volume, not explanation or judgment.','A programme can close or change—verify before planning around it.','Your campus changes access, not the value of your ability.'].map((item, index) => `<article><span>${String(index + 1).padStart(2,'0')}</span><p>${escapeHtml(item)}</p></article>`).join('')}</div><aside><strong>${escapeHtml(selected.name)} reality</strong><p>${escapeHtml(selected.reality)}</p><a href="${selected.source}" target="_blank" rel="noopener">Verify current roles and requirements ↗</a></aside></section>`,
+  }[state.dreamJob.tab] || '';
+  return `<div class="view-enter dream-job-view${isRefresh ? ' view-refresh' : ''}"><section class="dream-north-star"><div><p class="eyebrow">THE DECISION ABOVE EVERY OTHER DECISION</p><h2>${northStar ? `“${escapeHtml(northStar)}”` : 'Who do you want to become—and what should your work make possible?'}</h2></div><label>Your north star<textarea data-dream-input="identity" placeholder="I want to become someone known for…">${escapeHtml(state.dreamJob.identity)}</textarea></label></section><nav class="dream-tabs" role="tablist" aria-label="Dream Job sections">${tabs.map(([id,label]) => `<button role="tab" aria-selected="${state.dreamJob.tab === id}" data-action="dream-tab" data-value="${id}" class="${state.dreamJob.tab === id ? 'active' : ''}">${label}</button>`).join('')}</nav>${tabContent}<p class="dream-disclosure">${escapeHtml(dreamJobMetadata.disclosure)}</p></div>`;
+}
+
+function refreshDreamJob(focusSelector = '') {
+  $('#viewHost').innerHTML = renderDreamJob(true);
+  if (focusSelector) requestAnimationFrame(() => $(focusSelector, $('#viewHost'))?.focus());
 }
 
 function editorialDate(value) {
@@ -1680,7 +2164,7 @@ function renderAdminBlogComposer() {
 function renderBlog() {
   const posts = allBlogPosts();
   const selected = posts.find((post) => post.id === state.editorial.selectedBlogId);
-  if (selected) return `<div class="view-enter editorial-detail"><button class="button-quiet" data-action="blog-close">← All Team Blog entries</button><article class="panel"><header><span>${escapeHtml(selected.category)} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.deck)}</p><div><strong>${escapeHtml(selected.author)}</strong><small>${escapeHtml(selected.authorRole)} · ${editorialDate(selected.publishedAt)} · ${selected.readMinutes || 5} min read</small></div></header><div class="editorial-body">${String(selected.body).split(/\n\n+/).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div><footer><p>Team viewpoint · challenge assumptions, verify changing claims, and keep the final decision with the student.</p><button class="button-secondary" data-action="newsletter-view">Get the monthly field notes →</button></footer></article></div>`;
+  if (selected) return `<div class="view-enter editorial-detail"><button class="button-quiet" data-action="blog-close">← All Team Blog entries</button><article class="panel"><header><span>${escapeHtml(selected.category)} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.deck)}</p><div><strong>${escapeHtml(selected.author)}</strong><small>${escapeHtml(selected.authorRole)} · ${editorialDate(selected.publishedAt)} · ${selected.readMinutes || 5} min read</small></div></header><div class="editorial-body">${String(selected.body).split(/\n\n+/).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${selected.source ? `<aside class="editorial-source-note"><span>RESEARCH SOURCE</span><p>This Zysham article is independently written. It was informed by <a href="${selected.source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(selected.source.title)} · ${escapeHtml(selected.source.publisher)} ↗</a></p><small>${escapeHtml(selected.source.relationship)}</small></aside>` : ''}<footer><p>Team viewpoint · challenge assumptions, verify changing claims, and keep the final decision with the student.</p><button class="button-secondary" data-action="newsletter-view">Get the monthly field notes →</button></footer></article></div>`;
   const categories = ['All', ...new Set(posts.map((post) => post.category))];
   const query = state.editorial.blogSearch.trim().toLowerCase();
   const filtered = posts.filter((post) => (state.editorial.blogCategory === 'All' || post.category === state.editorial.blogCategory) && (!query || `${post.title} ${post.deck} ${post.category} ${post.author}`.toLowerCase().includes(query)));
@@ -1696,7 +2180,7 @@ function renderAdminNewsletterComposer() {
 function renderNewsletters() {
   const issues = allNewsletterIssues();
   const selected = issues.find((issue) => issue.id === state.editorial.selectedNewsletterId);
-  if (selected) return `<div class="view-enter editorial-detail newsletter-detail"><button class="button-quiet" data-action="newsletter-close">← All newsletters</button><article class="panel"><header><span>ISSUE ${String(selected.issue || 'NEW').padStart(2, '0')} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.summary)}</p><div><strong>${escapeHtml(selected.editor)}</strong><small>${editorialDate(selected.publishedAt)} · ${escapeHtml(selected.status)}</small></div></header><ol class="newsletter-sections">${selected.sections.map((section) => `<li>${escapeHtml(section)}</li>`).join('')}</ol><footer><p>You received this preview because you opened it inside Zysham. Email delivery is not connected in this prototype.</p></footer></article></div>`;
+  if (selected) return `<div class="view-enter editorial-detail newsletter-detail"><button class="button-quiet" data-action="newsletter-close">← All newsletters</button><article class="panel"><header><span>ISSUE ${String(selected.issue || 'NEW').padStart(2, '0')} · ${escapeHtml(selected.audience)}</span><h2>${escapeHtml(selected.title)}</h2><p>${escapeHtml(selected.summary)}</p><div><strong>${escapeHtml(selected.editor)}</strong><small>${editorialDate(selected.publishedAt)} · ${escapeHtml(selected.status)}</small></div></header><ol class="newsletter-sections">${selected.sections.map((section) => `<li>${escapeHtml(section)}</li>`).join('')}</ol>${selected.sourceLinks?.length ? `<aside class="editorial-source-note"><span>FURTHER READING</span>${selected.sourceLinks.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} · ${escapeHtml(source.publisher)} ↗</a>`).join('')}</aside>` : ''}<footer><p>You received this preview because you opened it inside Zysham. Email delivery is not connected in this prototype.</p></footer></article></div>`;
   const account = currentAccount();
   const preferences = account?.communication || state.communications;
   return `<div class="view-enter editorial-view newsletter-view"><header class="editorial-hero newsletter-hero"><div><p class="eyebrow">NEWSLETTER · ${editorialMetadata.newsletterCount} SAMPLE ISSUES</p><h2>One useful field note. No manufactured urgency.</h2><p>Monthly decision prompts for students and families, with a separate preference for product announcements.</p></div><form id="newsletterSubscribeForm" class="newsletter-subscribe"><label>Email address<input name="email" type="email" required value="${escapeHtml(preferences.subscriberEmail || account?.email || '')}" placeholder="you@example.com"></label><label class="consent-line"><input name="consent" type="checkbox" required ${preferences.newsletterSubscribed ? 'checked' : ''}> Send me the career field-notes newsletter</label><button class="button-primary">${preferences.newsletterSubscribed ? 'Update subscription' : 'Subscribe'}</button><small>Consent is recorded separately. Unsubscribe anytime in Settings.</small></form></header>${renderAdminNewsletterComposer()}<section class="newsletter-status panel"><div><strong>${issues.filter((item) => item.status === 'sent').length}</strong><span>published issues</span></div><div><strong>${preferences.newsletterSubscribed ? 'On' : 'Off'}</strong><span>your subscription</span></div><div><strong>${state.communications.outbox.length}</strong><span>local outbox items</span></div></section><section class="newsletter-grid">${issues.map((issue) => `<button data-action="newsletter-open" data-id="${issue.id}"><span>ISSUE ${String(issue.issue || 'NEW').padStart(2, '0')} · ${issue.status.toUpperCase()}</span><h3>${escapeHtml(issue.title)}</h3><p>${escapeHtml(issue.summary)}</p><ul>${issue.sections.slice(0, 3).map((section) => `<li>${escapeHtml(section)}</li>`).join('')}</ul><small>${editorialDate(issue.publishedAt)} · Open issue →</small></button>`).join('')}</section></div>`;
@@ -1805,6 +2289,60 @@ function renderTraditionalCourses() {
   return `<div class="view-enter course-catalogue traditional-catalogue"><header class="catalogue-hero traditional-hero"><div><p class="eyebrow">HERITAGE AS LIVING PRACTICE</p><h2>Continuity is a skill you can train.</h2><p>Dance, music, language, yoga, theatre, craft, and living traditions—chosen with the same seriousness as any career skill.</p></div><div><strong>${traditionalCourses.length}</strong><span>credible starting routes</span><small>Teacher, practice, lineage</small></div></header><nav class="catalogue-categories">${traditionalCategories.map((category) => `<button data-action="traditional-category" data-value="${category}" class="${state.traditional.category === category ? 'active' : ''}">${escapeHtml(category)}<small>${traditionalCourses.filter((item) => item.category === category).length}</small></button>`).join('')}</nav><div class="catalogue-toolbar"><label>Search this tradition<input data-traditional-search type="search" value="${escapeHtml(state.traditional.search)}" placeholder="Art, institution, or skill"></label><span>${filtered.length} paths</span></div><section class="catalogue-list">${filtered.map((item) => `<button data-action="traditional-open" data-id="${item.id}"><span class="provider-mark heritage">ॐ</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.provider)}</small><p>${escapeHtml(item.path)}</p></span><span class="cost-tag">Practice-led</span><em>Details →</em></button>`).join('')}</section><p class="catalogue-disclosure">Tradition is not a decorative extracurricular. Choose a credible teacher, understand the lineage and safety requirements, and make room for sustained practice.</p></div>`;
 }
 
+function entranceExamTabs() {
+  return `<nav class="exam-workspace-tabs" aria-label="Entrance exam workspace">${[
+    ['catalogue', 'Exam catalogue'], ['planning', 'Decision guide'], ['handbook', 'Full PDF handbook'],
+  ].map(([value, label]) => `<button data-action="exam-section" data-value="${value}" class="${state.entranceExams.section === value ? 'active' : ''}">${label}</button>`).join('')}</nav>`;
+}
+
+function renderExamCatalogue() {
+  const selectedCategory = entranceExamCategories.find((item) => item.id === state.entranceExams.category) || entranceExamCategories[0];
+  const query = state.entranceExams.search.trim().toLowerCase();
+  const filtered = entranceExams.filter((item) => (selectedCategory.id === 'all' || item.category === selectedCategory.id)
+    && (!query || `${item.shortName} ${item.fullName} ${item.authority} ${item.route} ${item.subjects}`.toLowerCase().includes(query)));
+  return `<section class="exam-catalogue" aria-labelledby="examCatalogueTitle">
+    <div class="exam-category-strip" role="list" aria-label="Filter by pathway">${entranceExamCategories.filter((item) => item.id !== 'syllabus').map((item) => `<button role="listitem" data-action="exam-category" data-value="${item.id}" class="${selectedCategory.id === item.id ? 'active' : ''}"><strong>${escapeHtml(item.label)}</strong><small>${item.id === 'all' ? entranceExams.length : entranceExams.filter((examItem) => examItem.category === item.id).length} indexed</small></button>`).join('')}</div>
+    <form class="exam-search" id="entranceExamFilters"><label><span>Search exam, authority, course or subject</span><input id="entranceExamSearch" type="search" value="${escapeHtml(state.entranceExams.search)}" placeholder="Try JEE, design, law, biology, Tamil Nadu…"></label><div><strong>${filtered.length}</strong><span>decision-ready routes</span></div></form>
+    <header class="exam-section-head"><div><p class="eyebrow">${escapeHtml(selectedCategory.label)}</p><h3 id="examCatalogueTitle">Find the gate that serves the course.</h3><p>${escapeHtml(selectedCategory.description)}. Exam choice follows course fit, eligibility and affordability—not prestige alone.</p></div><button class="button-secondary" data-action="exam-guide-jump" data-page="${selectedCategory.page}">Open this handbook chapter →</button></header>
+    <div class="exam-card-grid">${filtered.map((item) => `<details class="exam-card"><summary><span class="exam-monogram">${escapeHtml(item.shortName.replace(/[^A-Z0-9]/gi, '').slice(0, 3).toUpperCase())}</span><span><small>${escapeHtml(entranceExamCategories.find((category) => category.id === item.category)?.label || item.category)} · ${escapeHtml(item.level)}</small><strong>${escapeHtml(item.shortName)}</strong><em>${escapeHtml(item.fullName)}</em></span><b aria-hidden="true">+</b></summary><div><dl><div><dt>Admission route</dt><dd>${escapeHtml(item.route)}</dd></div><div><dt>Conducting authority</dt><dd>${escapeHtml(item.authority)}</dd></div><div><dt>Subject / eligibility alert</dt><dd>${escapeHtml(item.subjects)}</dd></div><div><dt>Selection format</dt><dd>${escapeHtml(item.format)}</dd></div></dl><a href="${item.officialUrl}" target="_blank" rel="noopener noreferrer">Verify on official website ↗</a></div></details>`).join('') || '<div class="exam-empty"><strong>No indexed route matches.</strong><span>Try a broader term or open the full PDF handbook for all 400+ entries.</span><button data-action="exam-section" data-value="handbook">Open complete handbook</button></div>'}</div>
+  </section>`;
+}
+
+function renderExamPlanning() {
+  const steps = [
+    ['1', 'Start with the learner', 'Record interests, work-style preferences, subject aversions, health or accessibility needs, family boundaries and location constraints.', 'Career Compass', 'compass'],
+    ['2', 'Choose courses before exams', 'Compare the actual curriculum, compulsory subjects and ordinary work that follows. Keep one adjacent course route alive.', 'Explore careers', 'explore'],
+    ['3', 'Build an exam basket', 'Choose a primary route, an overlap route and a lower-risk fallback. Check whether one preparation plan genuinely serves all three.', 'Research eligibility', 'research'],
+    ['4', 'Prepare from the current syllabus', 'Use the official bulletin as the syllabus source, diagnose gaps, practise retrieval and timed application, then repair from evidence.', 'Open Study Guide', 'study-guide'],
+    ['5', 'Plan counselling before the score', 'Map counselling bodies, documents, quotas, choice filling, fees, refund rules and realistic college/course trade-offs before results day.', 'Open roadmap', 'roadmap'],
+    ['6', 'Keep a verification trail', 'Save the dated official notice, eligibility clause and application proof. A coaching post or search snippet is never the final authority.', 'Evidence wallet', 'evidence'],
+  ];
+  const counselling = [
+    ['JEE route', 'JEE Main/Advanced → rank evidence → JoSAA/other counselling → branch, institute, cost and fallback comparison'],
+    ['NEET route', 'NEET UG → score/rank evidence → AIQ and applicable state counselling → recognition, bond, fee and course checks'],
+    ['CUET route', 'Programme shortlist → university subject mapping → CUET paper choices → university portal/counselling requirements'],
+    ['Design route', 'Aptitude preparation → portfolio/studio evidence where required → exam and interview stages → programme and studio-culture fit'],
+  ];
+  return `<section class="exam-planning"><header class="exam-section-head"><div><p class="eyebrow">ORIGINAL GUIDANCE WORKFLOW · CLASS 9 ONWARD</p><h3>An exam is a gate, not a career.</h3><p>This workflow adapts the strongest useful pattern from modern career-guidance platforms: discovery, assessment, course research, preparation, counselling and evidence in one continuous student record.</p></div><button class="button-secondary" data-action="exam-guide-jump" data-page="101">Open syllabus library →</button></header>
+    <div class="exam-decision-steps">${steps.map(([number, title, copy, action, view]) => `<article><span>${number}</span><div><h4>${title}</h4><p>${copy}</p></div><button data-action="go" data-target="${view}">${action} →</button></article>`).join('')}</div>
+    <section class="exam-counselling-map"><header><p class="eyebrow">SCORE-TO-SEAT MAPS</p><h3>Prepare for admission, not only the test.</h3></header><div>${counselling.map(([title, copy]) => `<article><strong>${title}</strong><p>${copy}</p></article>`).join('')}</div></section>
+    <aside class="exam-family-check"><strong>Family checkpoint</strong><p>Agree on the maximum total cost, acceptable locations, repeat-year boundary and one valid alternative before application pressure peaks. Revisit the agreement when evidence changes.</p></aside>
+  </section>`;
+}
+
+function renderExamHandbook() {
+  const active = entranceExamCategories.find((item) => item.page === Number(state.entranceExams.guidePage)) || entranceExamCategories[0];
+  const pdfUrl = `${entranceExamGuide.file}#page=${state.entranceExams.guidePage}&view=FitH`;
+  return `<section class="exam-handbook"><header class="exam-section-head"><div><p class="eyebrow">COMPLETE SUPPLIED HANDBOOK · ${entranceExamGuide.pages} PAGES</p><h3>Every chapter, inside the workspace.</h3><p>${escapeHtml(entranceExamGuide.note)}</p></div><div class="exam-document-actions"><a class="button-primary" href="${entranceExamGuide.file}" target="_blank" rel="noopener noreferrer">Open PDF ↗</a><a class="button-secondary" href="${entranceExamGuide.file}" download>Download PDF</a></div></header>
+    <div class="exam-handbook-layout"><nav aria-label="Handbook chapter index"><p class="eyebrow">CHAPTER INDEX</p>${entranceExamCategories.map((item) => `<button data-action="exam-guide-page" data-page="${item.page}" class="${active.id === item.id ? 'active' : ''}"><span>${escapeHtml(item.id === 'all' ? 'Contents & guide overview' : item.label)}</span><small>Page ${item.page}</small></button>`).join('')}</nav><div class="exam-pdf-frame"><div><strong>${escapeHtml(active.id === 'all' ? 'Contents & guide overview' : active.label)}</strong><span>PDF page ${state.entranceExams.guidePage} of ${entranceExamGuide.pages}</span></div><iframe title="${escapeHtml(entranceExamGuide.title)} — ${escapeHtml(active.label)}" src="${pdfUrl}"></iframe><p>If the embedded reader is unavailable in your browser, use <a href="${pdfUrl}" target="_blank" rel="noopener noreferrer">Open PDF at this chapter</a>.</p></div></div>
+  </section>`;
+}
+
+function renderEntranceExams() {
+  const body = state.entranceExams.section === 'planning' ? renderExamPlanning() : state.entranceExams.section === 'handbook' ? renderExamHandbook() : renderExamCatalogue();
+  return `<div class="view-enter entrance-exams-view"><header class="entrance-exams-hero"><div><p class="eyebrow">INDIA · AFTER CLASS 12 · OFFICIAL VERIFICATION BUILT IN</p><h2>One exam map. Every serious route.</h2><p>Search high-utility entrance routes, move from career fit to counselling, and read the complete supplied 400+ exam handbook without leaving Zysham.</p><div><button class="button-primary" data-action="exam-section" data-value="catalogue">Search exams</button><button class="button-secondary" data-action="exam-section" data-value="planning">Build my plan</button></div></div><aside><span><strong>${entranceExamGuide.statedExamCount}</strong><small>handbook entries</small></span><span><strong>${entranceExamCategories.length - 2}</strong><small>career verticals</small></span><span><strong>${entranceExamGuide.pages}</strong><small>PDF pages</small></span></aside></header>${entranceExamTabs()}${body}<footer class="exam-source-notes"><div><strong>Source and freshness discipline</strong><p>The catalogue is an original decision-oriented index informed by the supplied handbook and reference catalogue. Volatile dates and fees are intentionally not frozen here; official notifications control.</p></div>${entranceExamSources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(source.type)}</span><strong>${escapeHtml(source.label)}</strong><em>Open ↗</em></a>`).join('')}</footer></div>`;
+}
+
 const pageVisualLibrary = {
   overview: ['assets/visuals/career-discovery-panorama.png', 'Indian college students testing career interests through projects, teaching and collaborative research', 'A calling becomes clearer through action', 'panorama'],
   compass: ['assets/backgrounds/design-studio.jpg', 'Students collaborating around a design project', 'Preferences become useful when tested against real work', 'bars'],
@@ -1851,6 +2389,113 @@ function placeContextVisual(host, view) {
   if (anchor) anchor.insertAdjacentHTML('afterend', visual);
 }
 
+function karmaTone(score) {
+  if (score <= 2) return { label: 'Bad Karma', className: 'bad' };
+  if (score < 5) return { label: 'Karmic risk', className: 'risk' };
+  if (score < 7) return { label: 'Neutral / conditional', className: 'neutral' };
+  if (score < 9) return { label: 'Good Karma', className: 'good' };
+  return { label: 'Seva-rich', className: 'seva' };
+}
+
+function salaryLabel(job) {
+  return `₹${job.salaryMin}L–₹${job.salaryMax}L`;
+}
+
+function renderKarmaMeter(score, compact = false) {
+  const tone = karmaTone(score);
+  return `<div class="karma-meter ${tone.className} ${compact ? 'compact' : ''}" aria-label="${score} out of 10, ${tone.label}"><div><i style="width:${score * 10}%"></i></div><strong>${score.toFixed(1)}</strong><span>${tone.label}</span></div>`;
+}
+
+function jobsHubTabs() {
+  const tabs = [['overview','Hub'],['atlas','Job atlas'],['framework','Karma lens'],['compare',`Compare · ${state.jobsHub.selectedIds.length}/3`],['improve','Improve the work'],['foundations','Vedic foundations']];
+  return `<nav class="jobs-tabs" aria-label="Master Jobs Hub pages">${tabs.map(([id, label]) => `<button class="${state.jobsHub.tab === id ? 'active' : ''}" data-action="jobs-tab" data-value="${id}">${label}</button>`).join('')}</nav>`;
+}
+
+function renderJobCard(job) {
+  const selected = state.jobsHub.selectedIds.includes(job.id);
+  return `<article class="karma-job-card">
+    <div class="karma-job-head"><span>${escapeHtml(job.category)}</span><strong>${salaryLabel(job)}<small>/ year</small></strong></div>
+    <h3>${escapeHtml(job.title)}</h3><p>${escapeHtml(job.summary)}</p>
+    ${renderKarmaMeter(job.score, true)}
+    <div class="karma-range"><span>Possible context range</span><b>${job.rangeMin.toFixed(1)}–${job.rangeMax.toFixed(1)}</b></div>
+    <div class="karma-job-actions"><button data-action="job-detail" data-id="${job.id}">Open role page →</button><button data-action="job-compare" data-id="${job.id}" aria-pressed="${selected}">${selected ? '✓ Comparing' : '+ Compare'}</button></div>
+  </article>`;
+}
+
+function renderJobsOverview() {
+  const high = karmicJobs.filter((job) => job.score >= 9).length;
+  const conditional = karmicJobs.filter((job) => job.rangeMax - job.rangeMin >= 5).length;
+  const examples = ['school-teacher','software-engineer','real-estate-agent','hospital-administrator','emergency-doctor','predatory-debt-collector'].map((id) => karmicJobs.find((job) => job.id === id));
+  return `<div class="jobs-overview">
+    <section class="jobs-hero"><div><p class="eyebrow">THE KARMIC GENIE SYSTEM</p><h2>Do not ask only, “What will I earn?” Ask, “What will my earning cause?”</h2><p>Salary and karma are deliberately separate. A modest income does not make work spiritually superior, and wealth is not impure when earned through honest value, fair exchange, and responsible consequence.</p><div class="jobs-hero-actions"><button class="button-primary" data-action="jobs-tab" data-value="atlas">Explore ${karmicJobs.length} roles →</button><button class="button-secondary" data-action="jobs-tab" data-value="framework">See the scoring method</button></div></div><aside><span class="karma-orbit">10</span><strong>Good Karma</strong><small>Seva · truth · non-harm</small><hr><span class="karma-orbit neutral">5</span><strong>Neutral / conditional</strong><small>Context decides</small><hr><span class="karma-orbit bad">0</span><strong>Bad Karma</strong><small>Exploitation · deception · harm</small></aside></section>
+    <section class="jobs-stat-grid"><article><strong>${karmicJobs.length}</strong><span>role pages</span></article><article><strong>${new Set(karmicJobs.map((job) => job.category)).size}</strong><span>work sectors</span></article><article><strong>${high}</strong><span>seva-rich starting profiles</span></article><article><strong>${conditional}</strong><span>strongly context-sensitive roles</span></article></section>
+    <section class="jobs-principle-callout panel"><div><p class="eyebrow">THE CENTRAL RULE</p><h3>No profession owns virtue. No salary proves vice.</h3></div><p>The score describes a normal pattern of actions and incentives—not the soul of a worker. A teacher can harm; a real-estate agent can protect a family; a hospital can heal while its billing system exploits. Inspect <strong>role × employer × conduct × intention × consequence</strong>.</p></section>
+    <section><div class="jobs-section-head"><div><p class="eyebrow">SEE THE CONTRAST</p><h3>Same money question. Deeper consequence question.</h3></div><button class="button-quiet" data-action="jobs-tab" data-value="atlas">View all roles →</button></div><div class="karma-card-grid">${examples.map(renderJobCard).join('')}</div></section>
+    <p class="jobs-disclaimer">${escapeHtml(karmicJobsMetadata.disclaimer)}</p>
+  </div>`;
+}
+
+function filteredKarmicJobs() {
+  const query = state.jobsHub.search.trim().toLowerCase();
+  return karmicJobs.filter((job) => {
+    const karmaMatch = state.jobsHub.karmaBand === 'All' || (state.jobsHub.karmaBand === 'Bad' ? job.score < 3 : state.jobsHub.karmaBand === 'Neutral' ? job.score >= 3 && job.score < 7 : job.score >= 7);
+    const salaryMatch = state.jobsHub.salaryBand === 'All' || (state.jobsHub.salaryBand === 'Under 10L' ? job.salaryMin < 10 : state.jobsHub.salaryBand === '10–25L' ? job.salaryMax >= 10 && job.salaryMin <= 25 : job.salaryMax > 25);
+    return (!query || `${job.title} ${job.category} ${job.summary} ${job.risks} ${job.uplift}`.toLowerCase().includes(query)) && (state.jobsHub.category === 'All' || job.category === state.jobsHub.category) && karmaMatch && salaryMatch;
+  }).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+}
+
+function renderJobsAtlas() {
+  const jobs = filteredKarmicJobs();
+  const categories = ['All', ...new Set(karmicJobs.map((job) => job.category))];
+  return `<div class="jobs-atlas"><header class="jobs-page-head"><div><p class="eyebrow">JOB ATLAS · INDIA PLANNING BANDS</p><h2>Compare livelihood and consequence.</h2><p>${escapeHtml(karmicJobsMetadata.salaryNote)}</p></div><strong>${jobs.length}<small>roles shown</small></strong></header>
+    <form class="jobs-filter-bar" id="jobsFilters"><label><span>Search roles or risks</span><input id="jobsSearch" type="search" value="${escapeHtml(state.jobsHub.search)}" placeholder="Teacher, hospital, honesty, surveillance…"></label><label><span>Sector</span><select name="category">${categories.map((value) => `<option ${state.jobsHub.category === value ? 'selected' : ''}>${escapeHtml(value)}</option>`).join('')}</select></label><label><span>Karma band</span><select name="karmaBand">${['All','Good','Neutral','Bad'].map((value) => `<option ${state.jobsHub.karmaBand === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label><label><span>Salary reach</span><select name="salaryBand">${['All','Under 10L','10–25L','25L+'].map((value) => `<option ${state.jobsHub.salaryBand === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label></form>
+    <div class="karma-legend"><span><i class="bad"></i>0 · bad karma</span><span><i class="neutral"></i>5 · neutral / conditional</span><span><i class="good"></i>10 · good karma</span></div>
+    <div class="karma-card-grid">${jobs.map(renderJobCard).join('') || '<div class="jobs-empty"><strong>No roles match.</strong><span>Broaden one filter to reopen the atlas.</span></div>'}</div>
+  </div>`;
+}
+
+function renderJobsFramework() {
+  return `<div class="jobs-framework"><header class="jobs-page-head"><div><p class="eyebrow">TRANSPARENT METHOD · NOT DIVINATION</p><h2>Six questions create the base score.</h2><p>The base is a weighted ethical profile of ordinary work. Context can move it by up to three points—because a title alone cannot see your actions or the employer’s business model.</p></div><span class="framework-formula">BASE<br>± CONTEXT<br>= 0–10</span></header>
+    <section class="framework-grid">${karmicFramework.principles.map((item, index) => `<article><span>0${index + 1}</span><div><h3>${escapeHtml(item.label)}</h3><p>${escapeHtml(item.question)}</p></div><strong>${item.weight}%</strong></article>`).join('')}</section>
+    <section class="context-modifiers panel"><div><p class="eyebrow">CONTEXT MODIFIERS</p><h3>The company matters. Your choices matter more.</h3></div>${karmicFramework.modifiers.map((item) => `<article><div><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.range)}</span></div><p>${escapeHtml(item.copy)}</p></article>`).join('')}</section>
+    <section class="karma-scenarios"><article><span class="scenario-score bad">1.2</span><h3>Property deception</h3><p>Hidden defects, illegal cash, manufactured urgency, and distress exploitation. High income does not cleanse a harmful method.</p></article><article><span class="scenario-score neutral">5.0</span><h3>Neutral technical work</h3><p>A competent IT role with no clear public benefit or major harm. Product choices, privacy, accessibility, and employer incentives move it.</p></article><article><span class="scenario-score good">9.2</span><h3>Emergency care</h3><p>Skilled action saves life. Fair treatment and honest consent lift the work; unnecessary procedures or profit-first billing pull it down.</p></article></section>
+    <section class="jobs-caution"><strong>Why there is no “cursed profession” label</strong><p>Vedic ethical ideas emphasise action, attachment, duty, truth, non-harm, and consequence. Calling a whole class of people cursed erases context and can become its own form of harm. Karmic Genie names risky systems and behaviours precisely so a person can change them.</p></section>
+  </div>`;
+}
+
+function renderJobsCompare() {
+  const selected = state.jobsHub.selectedIds.map((id) => karmicJobs.find((job) => job.id === id)).filter(Boolean);
+  if (!selected.length) return `<div class="jobs-compare-empty"><span>⇄</span><p class="eyebrow">ROLE COMPARISON</p><h2>Compare up to three forms of livelihood.</h2><p>Put salary, base karma, possible range, service potential, and corruption risks beside each other.</p><button class="button-primary" data-action="jobs-tab" data-value="atlas">Choose roles →</button></div>`;
+  const rows = [
+    ['Salary planning band', (job) => `${salaryLabel(job)} / year`],
+    ['Base karma', (job) => `${job.score.toFixed(1)} · ${karmaTone(job.score).label}`],
+    ['Context range', (job) => `${job.rangeMin.toFixed(1)}–${job.rangeMax.toFixed(1)}`],
+    ['Service path', (job) => job.uplift],
+    ['Karmic risks', (job) => job.risks],
+  ];
+  return `<div class="jobs-compare"><header class="jobs-page-head"><div><p class="eyebrow">SIDE-BY-SIDE</p><h2>Follow the money—and the consequence.</h2><p>A larger salary is neither a bonus nor a penalty in the karma score.</p></div><button class="button-secondary" data-action="jobs-tab" data-value="atlas">Add or change roles</button></header><div class="jobs-compare-table" style="--job-count:${selected.length}"><div class="compare-label">Role</div>${selected.map((job) => `<div class="compare-job-head"><small>${escapeHtml(job.category)}</small><strong>${escapeHtml(job.title)}</strong>${renderKarmaMeter(job.score, true)}<button data-action="job-compare" data-id="${job.id}">Remove</button></div>`).join('')}${rows.map(([label, getValue]) => `<div class="compare-label">${label}</div>${selected.map((job) => `<div class="compare-value">${escapeHtml(getValue(job))}</div>`).join('')}`).join('')}</div></div>`;
+}
+
+function renderJobsImprove() {
+  const examples = karmicJobs.filter((job) => ['real-estate-agent','hospital-administrator','software-engineer','financial-adviser','police-officer','influencer'].includes(job.id));
+  return `<div class="jobs-improve"><header class="jobs-page-head"><div><p class="eyebrow">KARMA IS PRACTICE</p><h2>Improve the way the work is done.</h2><p>You may not control an entire industry. You can still choose the employer, refuse specific harm, disclose conflicts, protect people, document objections, repair mistakes, or leave when complicity becomes the job.</p></div></header><section class="improve-path"><article><span>01</span><h3>See clearly</h3><p>Name who benefits, who pays, who carries risk, and what stays hidden.</p></article><article><span>02</span><h3>Reduce harm</h3><p>Remove deception, coercion, waste, discrimination, unsafe shortcuts, and needless suffering.</p></article><article><span>03</span><h3>Add service</h3><p>Increase access, dignity, truth, consent, fair value, and long-term capability.</p></article><article><span>04</span><h3>Accept consequence</h3><p>Measure outcomes, invite challenge, repair harm, and change course when evidence demands it.</p></article></section><div class="improve-role-list">${examples.map((job) => `<article><div><small>${escapeHtml(job.category)}</small><h3>${escapeHtml(job.title)}</h3>${renderKarmaMeter(job.score, true)}</div><section><strong>Move upward</strong><p>${escapeHtml(job.uplift)}</p></section><section><strong>Red lines</strong><p>${escapeHtml(job.risks)}</p></section><button data-action="job-detail" data-id="${job.id}">Full role page →</button></article>`).join('')}</div></div>`;
+}
+
+function renderJobsFoundations() {
+  return `<div class="jobs-foundations"><header class="jobs-page-head"><div><p class="eyebrow">VEDIC-INSPIRED · PLURAL · REFLECTIVE</p><h2>A dharmic lens for modern work.</h2><p>This system draws ethical questions from widely recognised Indic ideas without pretending that one formula can calculate metaphysical karma.</p></div></header><section class="foundation-grid"><article><span>धर्म</span><h3>Dharma</h3><p>Do the responsibility appropriate to your role with competence, courage, fairness, and awareness—not blind obedience to title or employer.</p></article><article><span>अहिंसा</span><h3>Ahimsa</h3><p>Reduce avoidable harm. Emergency force or surgery may protect life; intent, necessity, proportionality, and care still matter.</p></article><article><span>सत्य</span><h3>Satya</h3><p>Truth in claims, contracts, diagnosis, evidence, prices, risks, and advertising. Silence can become deception when another person relies on disclosure.</p></article><article><span>अस्तेय</span><h3>Asteya</h3><p>Do not take what is not freely and knowingly given—money, credit, time, attention, data, labour, land, or opportunity.</p></article><article><span>सेवा</span><h3>Seva + Lokasangraha</h3><p>Service and the holding-together of society: build capability, protect the vulnerable, and leave systems more trustworthy.</p></article><article><span>अपरिग्रह</span><h3>Aparigraha</h3><p>Question greed and needless accumulation. Earn well, but do not let commission, status, or fear make harm invisible.</p></article></section><section class="jobs-caution"><strong>Interpretive boundary</strong><p>Karma traditions are diverse and deeper than a product score. The 0–10 rating is a conversation aid: use it to ask better questions, never to rank human worth, predict rebirth, stigmatise workers, or outsource conscience.</p></section></div>`;
+}
+
+function renderJobDetail(job) {
+  const selected = state.jobsHub.selectedIds.includes(job.id);
+  return `<div class="job-detail-page"><button class="button-quiet" data-action="job-detail-close">← Back to ${state.jobsHub.tab === 'improve' ? 'improvement paths' : 'job atlas'}</button><header><div><p class="eyebrow">${escapeHtml(job.category)} · ROLE PAGE</p><h2>${escapeHtml(job.title)}</h2><p>${escapeHtml(job.summary)}</p></div><aside><small>INDIA SALARY PLANNING BAND</small><strong>${salaryLabel(job)}</strong><span>gross / year · indicative</span></aside></header><section class="job-detail-score panel"><div><p class="eyebrow">BASE KARMIC PROFILE</p><h3>${job.score.toFixed(1)} / 10 · ${karmaTone(job.score).label}</h3>${renderKarmaMeter(job.score)}</div><div><span>LOW-CONTEXT CASE <b>${job.rangeMin.toFixed(1)}</b></span><i></i><span>HIGH-CONTEXT CASE <b>${job.rangeMax.toFixed(1)}</b></span></div><p>The range is not uncertainty theatre: it represents how radically employer incentives and individual conduct can change the same title.</p></section><section class="dimension-list">${karmicFramework.principles.map((principle, index) => `<article><div><span>${escapeHtml(principle.label)}</span><strong>${job.dimensions[index].toFixed(1)}</strong></div><div><i style="width:${job.dimensions[index] * 10}%"></i></div><p>${escapeHtml(principle.question)}</p></article>`).join('')}</section><div class="job-detail-actions"><section class="uplift"><p class="eyebrow">GOOD-KARMA PRACTICE</p><h3>How to raise the work</h3><p>${escapeHtml(job.uplift)}</p></section><section class="risks"><p class="eyebrow">KARMIC RED LINES</p><h3>What pulls it downward</h3><p>${escapeHtml(job.risks)}</p></section></div><div class="job-detail-footer"><p>${escapeHtml(karmicJobsMetadata.salaryNote)}</p><button class="button-primary" data-action="job-compare" data-id="${job.id}">${selected ? 'Remove from comparison' : 'Add to comparison'}</button></div></div>`;
+}
+
+function renderJobsHub() {
+  const detail = karmicJobs.find((job) => job.id === state.jobsHub.detailId);
+  const body = detail ? renderJobDetail(detail) : ({ overview: renderJobsOverview, atlas: renderJobsAtlas, framework: renderJobsFramework, compare: renderJobsCompare, improve: renderJobsImprove, foundations: renderJobsFoundations }[state.jobsHub.tab] || renderJobsOverview)();
+  return `<div class="view-enter karmic-jobs-page">${jobsHubTabs()}${body}</div>`;
+}
+
 function render() {
   updateShell();
   renderJourneyRail();
@@ -1879,6 +2524,11 @@ function render() {
       'study-guide': renderStudyGuide,
       certifications: renderCertificationCourses,
       traditional: renderTraditionalCourses,
+      'entrance-exams': renderEntranceExams,
+      'dream-job': renderDreamJob,
+      jobs: renderJobsHub,
+      'vedic-prediction': renderVedicPrediction,
+      assessments: renderAssessments,
     })[state.view]();
   }
   placeContextVisual(host, state.view);
@@ -1918,6 +2568,7 @@ $('#sidebar').addEventListener('click', (event) => {
   const child = event.target.closest('[data-submenu-kind]');
   if (child) {
     const { submenuKind: kind, value } = child.dataset;
+    expandedSidebarGroup = child.closest('[data-nav-group]')?.dataset.navGroup || expandedSidebarGroup;
     if (kind === 'view') setView(value);
     if (kind === 'journey-stage') { state.activeJourneyStage = value; state.journeyStageTab = 'focus'; saveState(); setView('journey-stage'); }
     if (kind === 'community') { state.communityMode = value; state.detailDiscussion = ''; state.detailExperience = ''; state.newDiscussionOpen = false; state.shareExperienceOpen = false; saveState(); setView('discussions'); }
@@ -1925,7 +2576,19 @@ $('#sidebar').addEventListener('click', (event) => {
     if (kind === 'study') { state.studyGuide.track = value; state.studyGuide.subject = Object.keys(studyTracks[value].subjects)[0]; state.studyGuide.selectedChapterId = ''; state.studyGuide.search = ''; saveState(); setView('study-guide'); }
     if (kind === 'certification') { state.certifications.category = value; state.certifications.detailId = ''; state.certifications.search = ''; saveState(); setView('certifications'); }
     if (kind === 'traditional') { state.traditional.category = value; state.traditional.detailId = ''; state.traditional.search = ''; saveState(); setView('traditional'); }
-    if (kind === 'calling') { state.calling.activeQuestion = value; state.calling.search = ''; state.calling.limit = 18; saveState(); setView('calling'); }
+    if (kind === 'exam-section') { state.entranceExams.section = value; saveState(); setView('entrance-exams'); }
+    if (kind === 'exam-category') {
+      const category = entranceExamCategories.find((item) => item.id === value);
+      state.entranceExams.category = value;
+      state.entranceExams.search = '';
+      state.entranceExams.guidePage = category?.page || 5;
+      state.entranceExams.section = value === 'syllabus' ? 'handbook' : 'catalogue';
+      saveState(); setView('entrance-exams');
+    }
+    if (kind === 'dream-job') { state.dreamJob.tab = value; saveState(); setView('dream-job'); }
+    if (kind === 'jobs') { state.jobsHub.tab = value; state.jobsHub.detailId = ''; saveState(); setView('jobs'); }
+    if (kind === 'calling-mode') { state.calling.mode = value; saveState(); setView('calling'); }
+    if (kind === 'calling') { state.calling.mode = 'questions'; state.calling.activeQuestion = value; state.calling.search = ''; state.calling.limit = 18; saveState(); setView('calling'); }
     if (kind === 'blog') { state.editorial.blogCategory = value; state.editorial.selectedBlogId = ''; saveState(); setView('blog'); }
     if (kind === 'newsletter') {
       state.editorial.selectedNewsletterId = value === 'latest' ? ([...state.editorial.localNewsletters, ...newsletterIssues][0]?.id || '') : '';
@@ -1939,9 +2602,18 @@ $('#sidebar').addEventListener('click', (event) => {
   if (!button) return;
   const group = button.closest('[data-nav-group]');
   if (group) {
-    $$('[data-nav-group]').forEach((item) => item.classList.toggle('expanded', item === group));
+    const key = group.dataset.navGroup;
+    expandedSidebarGroup = expandedSidebarGroup === key ? '' : key;
+    $$('[data-nav-group]').forEach((item) => item.classList.toggle('expanded', item.dataset.navGroup === expandedSidebarGroup));
     $$('[data-menu]').forEach((item) => item.setAttribute('aria-expanded', String(item.closest('[data-nav-group]')?.classList.contains('expanded'))));
+    return;
   }
+  setView(button.dataset.view);
+});
+
+$('.header-actions').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-view]');
+  if (!button) return;
   setView(button.dataset.view);
 });
 
@@ -1956,9 +2628,21 @@ $('#viewHost').addEventListener('click', (event) => {
   const control = event.target.closest('[data-action]');
   if (!control) return;
   const { action, target, group, value, id } = control.dataset;
-  const profileOnlyActions = new Set(['signal', 'stream', 'milestone', 'task-toggle', 'evidence-remove', 'add-experiment', 'share-open', 'discussion-new', 'work-reality-reset', 'journey-page-milestone', 'calling-option', 'study-status', 'study-mastery-bump', 'study-assignment', 'study-block-done']);
-  if (profileOnlyActions.has(action) && !requireProfile(action === 'discussion-new' ? 'Create a profile to post in Discussions.' : action === 'share-open' ? 'Create a profile to share an experience.' : action === 'calling-option' ? 'Create a profile to save a private calling reflection.' : undefined)) return;
+  const profileOnlyActions = new Set(['stream', 'milestone', 'task-toggle', 'evidence-remove', 'add-experiment', 'share-open', 'discussion-new', 'journey-page-milestone', 'study-status', 'study-mastery-bump', 'study-assignment', 'study-block-done', 'assessment-complete', 'assessment-reset']);
+  if (profileOnlyActions.has(action) && !requireProfile(action === 'discussion-new' ? 'Create a profile to post in Discussions.' : action === 'share-open' ? 'Create a profile to share an experience.' : undefined)) return;
   if (action === 'go') setView(target);
+  if (action === 'vedic-reset') { state.vedicPrediction = structuredClone(defaultState.vedicPrediction); saveState(); render(); showToast('Vedic Prediction inputs cleared.'); }
+  if (action === 'assessment-open') { state.assessments.active = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'assessment-complete') {
+    const assessment = careerAssessments.find((item) => item.id === id);
+    if (!assessment || careerAssessmentProgress(assessment).answered < assessment.items.length) return showToast('Answer every statement before viewing results.');
+    state.assessments.completed[id] = new Date().toISOString(); state.assessments.updatedAt = new Date().toISOString(); saveState(); render(); showToast(`${assessment.title} complete.`);
+  }
+  if (action === 'assessment-reset') {
+    const assessment = careerAssessments.find((item) => item.id === id);
+    if (!assessment) return;
+    assessment.items.forEach((item) => { delete state.assessments.answers[item.id]; }); delete state.assessments.completed[id]; saveState(); render(); showToast(`${assessment.title} reset.`);
+  }
   if (action === 'research-open') openResearchShelf();
   if (action === 'signal') toggleSignal(group, value);
   if (action === 'work-reality-reset') { state.workReality = structuredClone(defaultState.workReality); saveState(); render(); showToast('Work Reality Scan cleared.'); }
@@ -1977,6 +2661,7 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'journey-edit') renderJourneyInspector(id);
   if (action === 'journey-stage-nav') { state.activeJourneyStage = id; state.journeyStageTab = 'focus'; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'stage-tab') { state.journeyStageTab = value; saveState(); render(); }
+  if (action === 'stage-phase') { state.journey.stagePhase ||= {}; state.journey.stagePhase[control.dataset.stage] = value; saveState(); render(); }
   if (action === 'stage-community') { state.communityMode = 'discussions'; state.discussionFilters.stage = discussionStageMap[id] || 'All'; setView('discussions'); }
   if (action === 'stream') { state.streamChoice = state.streamChoice === value ? '' : value; saveState(); render(); }
   if (action === 'filter') { state.careerFilter = value; saveState(); render(); }
@@ -2011,19 +2696,50 @@ $('#viewHost').addEventListener('click', (event) => {
   }
   if (action === 'research-compare-clear') { state.research.compare = []; saveState(); render(); }
   if (action === 'research-quick-save') { state.research.saved = state.research.saved.includes(id) ? state.research.saved.filter((item) => item !== id) : [...state.research.saved, id]; saveState(); render(); }
-  if (action === 'calling-question') { state.calling.activeQuestion = value; state.calling.search = ''; state.calling.limit = 18; saveState(); render(); }
+  if (action === 'jobs-tab') { state.jobsHub.tab = value; state.jobsHub.detailId = ''; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'job-detail') { state.jobsHub.detailId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'job-detail-close') { state.jobsHub.detailId = ''; saveState(); render(); }
+  if (action === 'job-compare') {
+    const selected = state.jobsHub.selectedIds.includes(id);
+    if (!selected && state.jobsHub.selectedIds.length >= 3) { showToast('Compare up to three roles at a time.'); return; }
+    state.jobsHub.selectedIds = selected ? state.jobsHub.selectedIds.filter((item) => item !== id) : [...state.jobsHub.selectedIds, id];
+    saveState(); render(); showToast(selected ? 'Role removed from comparison.' : 'Role added to comparison.');
+  }
+  if (action === 'dream-tab') { state.dreamJob.tab = value; saveState(); refreshDreamJob(`[data-action="dream-tab"][data-value="${CSS.escape(value)}"]`); }
+  if (action === 'dream-employer') { state.dreamJob.selectedId = id; state.dreamJob.selectedVocationId = ''; saveState(); refreshDreamJob(`[data-action="dream-employer"][data-id="${CSS.escape(id)}"]`); }
+  if (action === 'dream-vocation') { state.dreamJob.selectedVocationId = id; saveState(); refreshDreamJob(`[data-action="dream-vocation"][data-id="${CSS.escape(id)}"]`); }
+  if (action === 'dream-vocation-detail') { state.dreamJob.selectedVocationId = id; saveState(); renderDreamPathDrawer(); }
+  if (action === 'dream-role') { state.dreamJob.targetRole = value; state.dreamJob.selectedVocationId = ''; state.dreamJob.tab = 'evidence'; saveState(); refreshDreamJob('[data-action="dream-tab"][data-value="evidence"]'); }
+  if (action === 'dream-stage') { state.dreamJob.previewStage = value; saveState(); refreshDreamJob(`[data-action="dream-stage"][data-value="${CSS.escape(value)}"]`); }
+  if (action === 'dream-save') { state.dreamJob.saved = state.dreamJob.saved.includes(id) ? state.dreamJob.saved.filter((item) => item !== id) : [...state.dreamJob.saved, id]; saveState(); refreshDreamJob(`[data-action="dream-save"][data-id="${CSS.escape(id)}"]`); }
+  if (action === 'dream-go-evidence') setView('evidence');
+  if (action === 'calling-mode') { state.calling.mode = value; saveState(); render(); }
+  if (action === 'assessment-type') { state.calling.activeAssessment = value; saveState(); render(); }
+  if (action === 'assessment-next') { if (value === 'recommendations') state.calling.mode = 'recommendations'; else state.calling.activeAssessment = value; saveState(); render(); }
+  if (action === 'assessment-save') {
+    if (!requireProfile('Create a profile only to save this assessment. You can complete it as a guest.')) return;
+    captureWorkspace(); saveState(); showToast('Assessment saved to your profile.');
+  }
+  if (action === 'assessment-clear' && confirm(`Clear all 21 assessment answers ${isGuest() ? 'from this session' : 'saved on this device'}?`)) {
+    state.calling.assessment = structuredClone(defaultState.calling.assessment); state.calling.mode = 'assessment'; saveState(); render(); showToast('Assessment answers cleared.');
+  }
+  if (action === 'calling-question') { state.calling.mode = 'questions'; state.calling.activeQuestion = value; state.calling.search = ''; state.calling.limit = 18; saveState(); render(); }
   if (action === 'calling-option') {
     const list = state.calling.selections[state.calling.activeQuestion] || [];
     state.calling.selections[state.calling.activeQuestion] = list.includes(id) ? list.filter((item) => item !== id) : [...list, id];
     saveState(); render();
   }
   if (action === 'calling-more') { state.calling.limit += 18; saveState(); render(); }
+  if (action === 'calling-save') {
+    if (!requireProfile('Create a profile only to save these reflections. You can keep answering as a guest.')) return;
+    captureWorkspace(); saveState(); showToast('Calling reflections saved to your profile.');
+  }
   if (action === 'blog-open') { state.editorial.selectedBlogId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'blog-close') { state.editorial.selectedBlogId = ''; saveState(); render(); }
   if (action === 'newsletter-view') setView('newsletters');
   if (action === 'newsletter-open') { state.editorial.selectedNewsletterId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'newsletter-close') { state.editorial.selectedNewsletterId = ''; saveState(); render(); }
-  if (action === 'calling-clear' && confirm('Clear all three calling reflections saved on this device?')) {
+  if (action === 'calling-clear' && confirm(`Clear all three calling reflections ${isGuest() ? 'from this session' : 'saved on this device'}?`)) {
     state.calling = structuredClone(defaultState.calling); saveState(); render(); showToast('Calling reflections cleared.');
   }
   if (action === 'student-detail') { state.detailStudent = id; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -2061,6 +2777,10 @@ $('#viewHost').addEventListener('click', (event) => {
   if (action === 'cert-open') { state.certifications.detailId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'cert-close') { state.certifications.detailId = ''; saveState(); render(); }
   if (action === 'cert-save') { state.certifications.saved = state.certifications.saved.includes(id) ? state.certifications.saved.filter((item) => item !== id) : [...state.certifications.saved, id]; saveState(); render(); }
+  if (action === 'exam-section') { state.entranceExams.section = value; saveState(); render(); }
+  if (action === 'exam-category') { state.entranceExams.category = value; state.entranceExams.search = ''; saveState(); render(); }
+  if (action === 'exam-guide-jump') { state.entranceExams.guidePage = Number(control.dataset.page) || 5; state.entranceExams.section = 'handbook'; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (action === 'exam-guide-page') { state.entranceExams.guidePage = Number(control.dataset.page) || 5; saveState(); render(); }
   if (action === 'traditional-category') { state.traditional.category = value; state.traditional.detailId = ''; state.traditional.search = ''; saveState(); render(); }
   if (action === 'traditional-open') { state.traditional.detailId = id; saveState(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (action === 'traditional-close') { state.traditional.detailId = ''; saveState(); render(); }
@@ -2078,8 +2798,24 @@ $('#viewHost').addEventListener('keydown', (event) => {
 });
 
 $('#viewHost').addEventListener('input', (event) => {
+  if (event.target.matches('[data-assessment-answer]')) {
+    const itemId = event.target.dataset.assessmentAnswer;
+    const wasComplete = Boolean(state.assessments.completed[state.assessments.active]);
+    state.assessments.answers[itemId] = Number(event.target.value);
+    state.assessments.updatedAt = new Date().toISOString();
+    if (wasComplete) delete state.assessments.completed[state.assessments.active];
+    saveState();
+    if (wasComplete) { render(); return; }
+    event.target.closest('.assessment-question')?.classList.add('answered');
+    const assessment = careerAssessments.find((item) => item.id === state.assessments.active);
+    const progress = careerAssessmentProgress(assessment);
+    const ring = $('.assessment-progress-ring');
+    if (ring) { ring.style.setProperty('--progress', `${progress.percent * 3.6}deg`); ring.querySelector('strong').textContent = `${progress.percent}%`; }
+    const footer = $('.assessment-actions');
+    if (footer) { footer.querySelector('span').textContent = `${progress.answered} of ${progress.total} answered`; footer.querySelector('.button-primary').disabled = progress.answered < progress.total; }
+    return;
+  }
   if (event.target.matches('[data-work-reality]')) {
-    if (!requireProfile('Create a profile to save a personal Work Reality Scan.')) return;
     const id = event.target.dataset.workReality;
     state.workReality.answers[id] = Number(event.target.value);
     state.workReality.updatedAt = new Date().toISOString();
@@ -2151,21 +2887,49 @@ $('#viewHost').addEventListener('input', (event) => {
     $('#blogSearch')?.focus();
     $('#blogSearch')?.setSelectionRange(cursor, cursor);
   }
+  if (event.target.matches('[data-dream-input]')) {
+    const field = event.target.dataset.dreamInput;
+    state.dreamJob[field] = event.target.value;
+    saveState();
+    if (field === 'search') {
+      const cursor = event.target.selectionStart;
+      render();
+      const search = $('[data-dream-input="search"]');
+      search?.focus(); search?.setSelectionRange(cursor, cursor);
+    }
+  }
   if (event.target.matches('[data-calling-custom]')) {
-    if (!requireProfile('Create a profile to save a private calling reflection.')) return;
     state.calling.custom[event.target.dataset.callingCustom] = event.target.value;
+    saveState();
+  }
+  if (event.target.matches('[data-calling-assessment]')) {
+    const [type, trait] = event.target.dataset.callingAssessment.split(':');
+    state.calling.assessment[type][trait] = Number(event.target.value);
+    const readout = $(`#assessment-${type}-${trait}-readout`);
+    if (readout) readout.textContent = `${event.target.value}/10`;
+    event.target.closest('.assessment-trait-row')?.classList.add('answered');
     saveState();
   }
   if (event.target.matches('[data-study-notes]')) { if (!requireProfile('Create a profile to save personal study notes.')) return; state.studyGuide.notes[event.target.dataset.studyNotes] = event.target.value; saveState(); }
   if (event.target.matches('[data-study-search]')) { state.studyGuide.search = event.target.value; saveState(); const query = event.target.value.toLowerCase(); $$('.study-chapter-list > button', $('#viewHost')).forEach((row) => { row.hidden = !row.textContent.toLowerCase().includes(query); }); }
   if (event.target.matches('[data-cert-search]')) { state.certifications.search = event.target.value; saveState(); const query = event.target.value.toLowerCase(); $$('.catalogue-list > button', $('#viewHost')).forEach((row) => { row.hidden = !row.textContent.toLowerCase().includes(query); }); }
+  if (event.target.id === 'entranceExamSearch') {
+    state.entranceExams.search = event.target.value;
+    saveState();
+    const cursor = event.target.selectionStart;
+    render();
+    $('#entranceExamSearch')?.focus();
+    $('#entranceExamSearch')?.setSelectionRange(cursor, cursor);
+  }
   if (event.target.matches('[data-traditional-search]')) { state.traditional.search = event.target.value; saveState(); const query = event.target.value.toLowerCase(); $$('.catalogue-list > button', $('#viewHost')).forEach((row) => { row.hidden = !row.textContent.toLowerCase().includes(query); }); }
   if (event.target.id === 'researchPageSearch') { state.research.search = event.target.value; saveState(); const cursor = event.target.selectionStart; render(); $('#researchPageSearch')?.focus(); $('#researchPageSearch')?.setSelectionRange(cursor, cursor); }
+  if (event.target.id === 'jobsSearch') { state.jobsHub.search = event.target.value; saveState(); const cursor = event.target.selectionStart; render(); $('#jobsSearch')?.focus(); $('#jobsSearch')?.setSelectionRange(cursor, cursor); }
   if (event.target.matches('[data-study-mastery]')) { if (!requireProfile('Create a profile to save mastery evidence.')) return; const id = event.target.dataset.studyMastery; state.studyGuide.mastery[id] = Number(event.target.value); saveState(); event.target.closest('.mastery-control')?.querySelector('output')?.replaceChildren(`${event.target.value}%`); }
 });
 
 $('#viewHost').addEventListener('change', (event) => {
   if (event.target.matches('[data-work-reality]')) { render(); return; }
+  if (event.target.matches('[data-calling-assessment]')) { render(); return; }
   if (event.target.closest('#experienceFilters') && event.target.name) {
     state.experienceFilters[event.target.name] = event.target.value;
     state.experienceLimit = 12;
@@ -2191,6 +2955,7 @@ $('#viewHost').addEventListener('change', (event) => {
     saveState(); render();
   }
   if (event.target.closest('#researchPageFilters') && event.target.name === 'geography') { state.research.geography = event.target.value; saveState(); render(); }
+  if (event.target.closest('#jobsFilters') && ['category', 'karmaBand', 'salaryBand'].includes(event.target.name)) { state.jobsHub[event.target.name] = event.target.value; saveState(); render(); }
   if (event.target.matches('[data-study-subject]')) { state.studyGuide.subject = event.target.value; state.studyGuide.search = ''; state.studyGuide.selectedChapterId = ''; saveState(); render(); }
 });
 
@@ -2228,6 +2993,18 @@ async function backgroundFileToDataUrl(file) {
 
 $('#viewHost').addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (event.target.id === 'vedicPredictionForm') {
+    if (!requireProfile('Create a profile to save a private Vedic Prediction.')) return;
+    const data = new FormData(event.target);
+    state.vedicPrediction = {
+      ...state.vedicPrediction,
+      ...Object.fromEntries(['name','birthDate','birthTime','birthPlace','rashi','nakshatra','ascendant','tenthHouse','dominantPlanet','interest','workPreference','goal'].map((key) => [key, String(data.get(key) || '').trim()])),
+      generatedAt: new Date().toISOString(),
+    };
+    saveState(); render(); showToast('Reflective recommendations are ready.');
+    requestAnimationFrame(() => $('.vedic-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    return;
+  }
   if (event.target.id === 'studyBlockForm') {
     if (!requireProfile('Create a profile to save a study plan.')) return;
     const data = new FormData(event.target);
@@ -2375,6 +3152,18 @@ function closeActiveRightDrawer() {
 
 $('#rightDrawerClose').addEventListener('click', closeActiveRightDrawer);
 $('#rightDrawerScrim').addEventListener('click', closeActiveRightDrawer);
+dreamJobPanel.addEventListener('click', (event) => {
+  const milestone = event.target.closest('[data-dream-path-milestone]');
+  if (!milestone) return;
+  const { path, stage, dreamPathMilestone: value } = milestone.dataset;
+  state.dreamJob.vocationProgress ||= {};
+  state.dreamJob.vocationProgress[path] ||= {};
+  const list = state.dreamJob.vocationProgress[path][stage] || [];
+  state.dreamJob.vocationProgress[path][stage] = list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+  saveState();
+  renderDreamPathDrawer(dreamJobVocations.find((item) => item.id === path), stage);
+  showToast(isGuest() ? 'Tracked for this guest session. Create a profile when you want to retain it.' : 'Vocation milestone updated.');
+});
 
 $('#journeyInspectorClose').addEventListener('click', closeJourneyInspector);
 $('#journeyScrim').addEventListener('click', closeJourneyInspector);
@@ -2494,7 +3283,7 @@ function closeSettings() {
   closeRightDrawer('settings');
 }
 
-$('#settingsButton').addEventListener('click', () => {
+function openSettings(section = '') {
   closeNavigation();
   closeResearchShelf();
   renderAccountSettings();
@@ -2502,7 +3291,14 @@ $('#settingsButton').addEventListener('click', () => {
   renderGeneratedNames();
   document.body.classList.add('settings-open');
   openRightDrawer('settings');
-});
+  requestAnimationFrame(() => {
+    if (section === 'account') $('.account-settings')?.scrollIntoView({ block: 'start' });
+    else $('#settingsPanel').scrollTop = 0;
+  });
+}
+
+$('#settingsButton').addEventListener('click', () => openSettings());
+$('#headerProfileButton').addEventListener('click', () => openSettings('account'));
 $('#accountSettingsBody').addEventListener('click', (event) => {
   const action = event.target.closest('[data-account-action]')?.dataset.accountAction;
   if (action === 'signin' || action === 'signout') signOutToEntry();
@@ -2812,7 +3608,14 @@ $('#resetData').addEventListener('click', () => {
 let mentorSLMEngine = null;
 let mentorSLMModule = null;
 let mentorSLMBusy = false;
-let mentorSLMStatus = { state: 'idle', label: 'Local SLM not loaded', detail: 'Runs privately in this browser using the Zysham knowledge layer.', progress: 0, modelId: '' };
+const mentorSLMModelId = 'flan-t5-small';
+let mentorSLMStatus = {
+  state: 'idle',
+  label: 'Embedded SLM available',
+  detail: 'Flan-T5 Small · quantized CPU/WASM model · no GPU required.',
+  progress: 0,
+  modelId: '',
+};
 
 const mentorCopy = {
   miso: {
@@ -2882,7 +3685,10 @@ function mentorKnowledgeDocuments() {
   const studyDocs = Object.values(studyTracks).map((item) => ({ id: `study:${item.id}`, title: item.label, text: `${item.short}. Subjects: ${Object.keys(item.subjects).join(', ')}. Official source: ${item.sourceLabel}.` }));
   const certificationDocs = certificationCourses.map((item) => ({ id: `certification:${item.id}`, title: item.title, text: `${item.provider}. ${item.category}. ${item.level}. ${item.skills}. Cost: ${item.learningCost}. Credential: ${item.credential}.` }));
   const traditionalDocs = traditionalCourses.map((item) => ({ id: `traditional:${item.id}`, title: item.title, text: `${item.provider}. ${item.category}. Path: ${item.path}. Develops: ${item.skills}. Reality: ${item.reality}.` }));
-  return [...stageDocs, ...careerDocs, ...researchDocs, ...callingDocs, ...studyDocs, ...certificationDocs, ...traditionalDocs];
+  const dreamJobDocs = dreamJobEmployers.map((item) => ({ id: `dream:${item.id}`, title: `${item.name} career environment`, text: `${item.family}. Role worlds: ${item.roleWorlds.join(', ')}. Evidence: ${item.evidence.join('; ')}. Reality: ${item.reality} Official source: ${item.source}.` }));
+  const dreamVocationDocs = dreamJobVocations.map((item) => ({ id: `vocation:${item.id}`, title: `${item.name} purpose-led path`, text: `${item.promise} Daily work: ${item.dailyWork.join('; ')}. NO-NO tests: ${item.noNoTests.join('; ')}. Role worlds: ${item.roleWorlds.join(', ')}. Proof: ${item.proof.join('; ')}. Routes: ${item.routeOptions.join('; ')}. Mobility: ${item.mobilityRoutes.join('; ')}. Stage milestones: ${Object.entries(item.stageMilestones).map(([stage, milestones]) => `${stage}: ${milestones.join(', ')}`).join(' | ')}. Income design: ${item.incomeModel}. Sources: ${item.sources.map((source) => `${source.publisher}: ${source.url}`).join('; ')}` }));
+  const karmicJobDocs = karmicJobs.map((item) => ({ id: `karma:${item.id}`, title: `${item.title} · Karmic Genie`, text: `Indicative India salary band ${salaryLabel(item)} per year. Base karma ${item.score}/10 with a context range of ${item.rangeMin}–${item.rangeMax}. Good-karma practice: ${item.uplift} Karmic risks: ${item.risks} This rates patterns of action and consequence, not human worth.` }));
+  return [...stageDocs, ...careerDocs, ...researchDocs, ...callingDocs, ...studyDocs, ...certificationDocs, ...traditionalDocs, ...dreamJobDocs, ...dreamVocationDocs, ...karmicJobDocs];
 }
 
 function mentorRetrieve(query, stageId, limit = 8) {
@@ -2897,6 +3703,8 @@ function mentorRetrieve(query, stageId, limit = 8) {
 function mentorStudentContext(stageId) {
   const evidence = mentorEvidence(stageId);
   const work = workRealityResult();
+  const assessment = callingAssessmentResults();
+  const assessmentSummary = assessment.filter((trait) => trait.coverage).map((trait) => `${trait.short}: ${trait.score.toFixed(1)}/10 across ${trait.coverage}/3 lenses`).join('; ');
   const calling = callingQuestions.map((question) => {
     const chosen = (state.calling.selections[question.id] || []).map((id) => question.options.find((option) => option.id === id)?.text).filter(Boolean);
     const own = state.calling.custom[question.id]?.trim();
@@ -2904,12 +3712,19 @@ function mentorStudentContext(stageId) {
   }).filter(Boolean);
   const savedCareers = careers.filter((career) => state.saved.includes(career.id)).map((career) => career.title);
   const stageProgress = state.journey.milestoneProgress?.[stageId] || {};
+  const selectedVocation = dreamJobVocations.find((item) => item.id === state.dreamJob.selectedVocationId);
+  const vocationStage = state.dreamJob.previewStage || stageId;
+  const vocationMilestones = selectedVocation?.stageMilestones?.[vocationStage] || [];
+  const completedVocationMilestones = selectedVocation ? (state.dreamJob.vocationProgress?.[selectedVocation.id]?.[vocationStage] || []) : [];
   return [
     `Audience: ${state.audience}; active profile: ${state.session.activeRole}; stage: ${evidence.config.step}.`,
     `NO-NOs: ${evidence.noNos.join(', ') || 'none recorded'}. Work-reality profile: ${work.label || 'not completed'}; ${work.answered || 0} answers.`,
     `Completed milestones: ${evidence.milestones.join('; ') || 'none'}. In progress: ${Object.entries(stageProgress).filter(([, status]) => status === 'doing').map(([name]) => name).join('; ') || 'none'}.`,
     `Stage reflection: ${state.journey.stageNotes[stageId]?.trim() || 'none'}. Performance context: ${state.journey.ranks[stageId] || 'not recorded'}.`,
     `Calling reflections: ${calling.join(' | ') || 'none'}. Saved careers: ${savedCareers.join(', ') || 'none'}.`,
+    `Student assessment: ${assessmentSummary || 'no trait evidence yet'}. Treat personality, desire and capability as separate evidence; never diagnose or predict success from these scores.`,
+    `Dream-work north star: ${dreamJobNorthStar() || 'not recorded'}. Employer environment: ${dreamJobEmployers.find((item) => item.id === state.dreamJob.selectedId)?.name || 'none selected'}; role family: ${state.dreamJob.targetRole || 'not selected'}. Company prestige must never substitute for purpose or role fit.`,
+    `Selected vocation: ${selectedVocation?.name || 'none selected'}; vocation stage: ${vocationStage}; completed vocation milestones: ${completedVocationMilestones.join('; ') || 'none'}. Remaining vocation milestones: ${vocationMilestones.filter((item) => !completedVocationMilestones.includes(item)).join('; ') || 'none'}.`,
     `Evidence wallet: ${state.evidence.slice(-8).map((item) => `${item.title} (${item.type})`).join('; ') || 'empty'}. Shared needs detected: ${mentorSharedNeeds().join(', ') || 'none'}.`,
   ].join('\n');
 }
@@ -2938,37 +3753,37 @@ function updateMentorModelUI() {
   $('span', progress).style.width = `${Math.max(2, mentorSLMStatus.progress || 0)}%`;
   const button = $('#mentorModelButton');
   button.disabled = mentorSLMBusy || mentorSLMStatus.state === 'ready';
-  button.textContent = mentorSLMStatus.state === 'ready' ? 'Local AI ready' : mentorSLMStatus.state === 'loading' ? 'Loading…' : mentorSLMStatus.state === 'error' ? 'Retry local AI' : 'Load local AI';
+  button.textContent = mentorSLMStatus.state === 'ready' ? 'Embedded SLM active' : mentorSLMStatus.state === 'loading' ? 'Loading…' : mentorSLMStatus.state === 'fallback' ? 'Retry embedded SLM' : 'Load embedded SLM · 98 MB';
   $('#mentorChatInput').disabled = mentorSLMBusy;
   $('#mentorChatForm button').disabled = mentorSLMBusy;
 }
 
 async function initialiseMentorSLM() {
   if (mentorSLMEngine) return mentorSLMEngine;
-  if (!navigator.gpu) throw new Error('WebGPU is unavailable in this browser.');
   mentorSLMBusy = true;
-  mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading local SLM', detail: 'Preparing the browser engine…', progress: 2 };
+  mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading embedded SLM', detail: 'Preparing the CPU/WASM engine…', progress: 2 };
   updateMentorModelUI();
   try {
-    mentorSLMModule ||= await import('https://esm.run/@mlc-ai/web-llm');
-    const modelList = mentorSLMModule.prebuiltAppConfig?.model_list || [];
-    const preferences = [/Qwen2(?:\.5)?-0\.5B-Instruct-q4f16_1-MLC/i, /SmolLM2-1\.7B-Instruct-q4f16_1-MLC/i, /Qwen2(?:\.5)?-1\.5B-Instruct-q4f16_1-MLC/i];
-    const model = preferences.map((pattern) => modelList.find((item) => pattern.test(item.model_id))).find(Boolean) || modelList.find((item) => /0\.5B.*Instruct/i.test(item.model_id));
-    if (!model) throw new Error('No compatible small instruction model is available.');
-    mentorSLMStatus.modelId = model.model_id;
-    mentorSLMEngine = await mentorSLMModule.CreateMLCEngine(model.model_id, {
-      appConfig: { ...mentorSLMModule.prebuiltAppConfig, cacheBackend: 'indexeddb' },
-      initProgressCallback: (progress) => {
+    mentorSLMModule ||= await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
+    mentorSLMModule.env.allowLocalModels = true;
+    mentorSLMModule.env.allowRemoteModels = false;
+    mentorSLMModule.env.localModelPath = new URL('./assets/models/', import.meta.url).href;
+    mentorSLMEngine = await mentorSLMModule.pipeline('text2text-generation', mentorSLMModelId, {
+      device: 'wasm',
+      dtype: 'q8',
+      progress_callback: (progress) => {
         const fraction = Number(progress.progress || 0);
-        mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading local SLM', detail: progress.text || `Downloading ${model.model_id}`, progress: Math.round(fraction * 100) };
+        const percent = fraction > 1 ? Math.round(fraction) : Math.round(fraction * 100);
+        const file = progress.file ? String(progress.file).split('/').pop() : 'embedded model';
+        mentorSLMStatus = { ...mentorSLMStatus, state: 'loading', label: 'Loading embedded SLM', detail: `${progress.status || 'Loading'} · ${file}`, progress: Number.isFinite(percent) ? percent : mentorSLMStatus.progress };
         updateMentorModelUI();
       },
     });
-    mentorSLMStatus = { state: 'ready', label: 'Local SLM ready', detail: `${model.model_id} · private browser inference · Zysham grounded`, progress: 100, modelId: model.model_id };
+    mentorSLMStatus = { state: 'ready', label: 'Embedded SLM ready', detail: 'Flan-T5 Small · quantized CPU/WASM · Zysham grounded', progress: 100, modelId: mentorSLMModelId };
     return mentorSLMEngine;
   } catch (error) {
     mentorSLMEngine = null;
-    mentorSLMStatus = { ...mentorSLMStatus, state: 'error', label: 'Local SLM unavailable', detail: `${error.message} App-grounded guidance remains available.`, progress: 0 };
+    mentorSLMStatus = { ...mentorSLMStatus, state: 'fallback', label: 'Grounded counsellor ready', detail: 'The embedded SLM could not load. Zysham’s deterministic guidance remains available.', progress: 0 };
     throw error;
   } finally {
     mentorSLMBusy = false;
@@ -2978,21 +3793,35 @@ async function initialiseMentorSLM() {
 
 async function mentorSLMReply(message, stageId) {
   const engine = await initialiseMentorSLM();
-  const history = state.mentorChat.messages.slice(-8).map((item) => ({ role: item.role, content: item.text }));
+  const groundedDraft = mentorReply(message, stageId);
+  const prompt = `Paraphrase the grounded career-counselling draft in clear, humane English. Preserve every fact and caveat. Do not repeat these instructions. Do not add careers, marks, salaries, eligibility, rankings, diagnoses, or promises. Use no more than 140 words.
+
+Student: ${message.slice(0, 500)}
+Grounded draft: ${groundedDraft}
+Counsellor:`;
   mentorSLMBusy = true;
   mentorSLMStatus = { ...mentorSLMStatus, state: 'generating', label: 'Counsellor is reasoning', detail: `Grounded in ${mentorRetrieve(message, stageId).length} relevant Zysham records`, progress: 65 };
   updateMentorModelUI();
   try {
-    const completion = await engine.chat.completions.create({
-      messages: [{ role: 'system', content: mentorSystemPrompt(message, stageId) }, ...history],
-      temperature: 0.25, top_p: 0.85, max_tokens: 480, repetition_penalty: 1.08,
+    const completion = await engine(prompt, {
+      max_new_tokens: 190,
+      do_sample: false,
+      repetition_penalty: 1.08,
+      no_repeat_ngram_size: 3,
     });
-    const reply = completion.choices?.[0]?.message?.content?.trim();
-    if (!reply) throw new Error('The local model returned no response.');
-    return reply;
+    const reply = String(completion?.[0]?.generated_text || '').trim().replace(/^(?:test|grounded)\s+draft:\s*/i, '');
+    const words = reply.toLowerCase().match(/[a-z]{3,}/g) || [];
+    const uniqueRatio = words.length ? new Set(words).size / words.length : 0;
+    const draftWords = new Set((groundedDraft.toLowerCase().match(/[a-z]{4,}/g) || []).filter((word) => !['this', 'that', 'with', 'from', 'your', 'have', 'then', 'what'].includes(word)));
+    const overlap = new Set(words.filter((word) => draftWords.has(word))).size;
+    const replyNumbers = reply.match(/\b\d+(?:\.\d+)?\b/g) || [];
+    const inventedNumber = replyNumbers.some((number) => !groundedDraft.includes(number));
+    const repeatsInstructions = /grounded draft|student:|counsellor:|paraphrase the|rewrite the/i.test(reply);
+    const coherent = reply.length >= 60 && reply.length <= 1200 && words.length >= 10 && uniqueRatio >= 0.55 && overlap >= 3 && !inventedNumber && !repeatsInstructions;
+    return coherent ? reply : groundedDraft;
   } finally {
     mentorSLMBusy = false;
-    mentorSLMStatus = { ...mentorSLMStatus, state: 'ready', label: 'Local SLM ready', detail: `${mentorSLMStatus.modelId} · private browser inference · Zysham grounded`, progress: 100 };
+    mentorSLMStatus = { ...mentorSLMStatus, state: 'ready', label: 'Embedded SLM ready', detail: 'Flan-T5 Small · quantized CPU/WASM · Zysham grounded', progress: 100 };
     updateMentorModelUI();
   }
 }
@@ -3000,12 +3829,17 @@ async function mentorSLMReply(message, stageId) {
 async function runMentorTurn(message, stageId = mentorStageId()) {
   addMentorMessage('user', message, stageId);
   saveState(); updateMentor();
-  try {
-    const reply = await mentorSLMReply(message, stageId);
-    addMentorMessage('assistant', reply, stageId);
-  } catch (error) {
-    addMentorMessage('assistant', `The local model could not run (${error.message}). ${mentorReply(message, stageId)}`, stageId);
+  let reply = '';
+  if (mentorSLMEngine && mentorSLMStatus.state === 'ready') {
+    try {
+      reply = await mentorSLMReply(message, stageId);
+    } catch {
+      reply = mentorReply(message, stageId);
+    }
+  } else {
+    reply = mentorReply(message, stageId);
   }
+  addMentorMessage('assistant', reply, stageId);
   saveState(); updateMentor();
 }
 
@@ -3096,8 +3930,8 @@ $('#mentorPanel').addEventListener('click', async (event) => {
     state.activeJourneyStage = mentorStageId();
     setView('journey-stage');
   } else if (button.dataset.mentorAction === 'load-model') {
-    try { await initialiseMentorSLM(); showToast('Local SLM is ready and grounded in Zysham.'); }
-    catch (error) { showToast(`Local SLM unavailable: ${error.message}`); }
+    try { await initialiseMentorSLM(); showToast('The embedded SLM is loaded and grounded in Zysham.'); }
+    catch { showToast('The embedded SLM could not load. Grounded counselling remains active.'); }
   } else if (button.dataset.mentorAction === 'clear' && confirm('Clear this private counselling conversation?')) {
     state.mentorChat.messages = [];
     saveState(); updateMentor();
@@ -3127,8 +3961,20 @@ window.addEventListener('hashchange', () => {
 });
 
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'Tab' && document.body.classList.contains('right-drawer-open')) {
+    const drawer = $('#rightDrawer');
+    const focusable = $$('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), details > summary', drawer).filter((item) => !item.hidden && item.getClientRects().length);
+    if (focusable.length) {
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    return;
+  }
   if (event.key !== 'Escape') return;
-  if (document.body.classList.contains('research-open')) closeResearchShelf();
+  if (document.body.classList.contains('right-drawer-open')) closeActiveRightDrawer();
+  else if (document.body.classList.contains('research-open')) closeResearchShelf();
   else if (document.body.classList.contains('journey-open')) closeJourneyInspector();
   else if (document.body.classList.contains('settings-open')) closeSettings();
   else if (document.body.classList.contains('nav-open')) closeNavigation();

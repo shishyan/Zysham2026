@@ -60,35 +60,25 @@
       <aside class="sidebar" id="sidebar">
         <div class="brand-lockup">
           <span class="brand-mark" aria-hidden="true">Z</span>
-          <span><strong>ZYSHAM</strong><small>Career clarity</small></span>
+          <span><strong>ZYSHAM</strong></span>
           <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Close navigation">×</button>
         </div>
 
-        <div class="student-card">
-          <span class="student-avatar" id="studentAvatar">AN</span>
-          <span><strong id="studentPathName">Anya's path</strong><small id="studentPathMeta">Grade 10 · CBSE</small></span>
-          <span class="status-dot" title="Saved locally"></span>
-        </div>
-
         <nav class="primary-nav" aria-label="Career workspace">
-          <p class="nav-label">Your workspace</p>
-          <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" data-icon="calling" aria-hidden="true"></span><span><strong>Find Your Calling</strong><small>Begin here</small></span></button>
-          <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" data-icon="journey" aria-hidden="true"></span><span>My Journey</span><span class="nav-badge" id="compassBadge">0%</span></button>
-          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Discussions</span><span class="nav-badge">532</span></button>
+          <button class="nav-item calling-menu active" data-view="calling" data-menu="calling"><span class="nav-icon" data-icon="calling" aria-hidden="true"></span><span>Find Your Calling</span></button>
+          <button class="nav-item" data-view="overview" data-menu="journey"><span class="nav-icon" data-icon="journey" aria-hidden="true"></span><span>My Journey</span></button>
+          <button class="nav-item" data-view="dream-job" data-menu="dreamJob"><span class="nav-icon" data-icon="dream" aria-hidden="true"></span><span>The Dream Job</span></button>
+          <button class="nav-item" data-view="jobs" data-menu="jobs"><span class="nav-icon" data-icon="karma" aria-hidden="true"></span><span>Master Jobs Hub</span></button>
+          <button class="nav-item" data-view="discussions" data-menu="discussions"><span class="nav-icon" data-icon="discussions" aria-hidden="true"></span><span>Discussions</span></button>
           <button class="nav-item" data-view="research" data-menu="research"><span class="nav-icon" data-icon="research" aria-hidden="true"></span><span>Research</span></button>
         </nav>
 
         <nav class="learning-nav" aria-label="Learning and skill building">
-          <p class="nav-label">Learn & practise</p>
+          <button class="nav-item" data-view="entrance-exams" data-menu="exams"><span class="nav-icon" data-icon="exam" aria-hidden="true"></span><span>Entrance Exams</span></button>
           <button class="nav-item" data-view="study-guide" data-menu="study"><span class="nav-icon" data-icon="study" aria-hidden="true"></span><span>Study Guide</span></button>
           <button class="nav-item" data-view="certifications" data-menu="certifications"><span class="nav-icon" data-icon="certificate" aria-hidden="true"></span><span>Certification Courses</span></button>
           <button class="nav-item" data-view="traditional" data-menu="traditional"><span class="nav-icon" data-icon="traditional" aria-hidden="true"></span><span>Traditional Courses</span></button>
         </nav>
-
-        <div class="sidebar-note">
-          <span class="note-kicker">HONEST GUIDANCE</span>
-          <p>No path is a verdict. Test it, reflect, then decide.</p>
-        </div>
 
         <div class="sidebar-footer">
           <a href="prompts.html"><span class="utility-icon" data-icon="journal" aria-hidden="true"></span> Prompt journal</a>
@@ -109,11 +99,12 @@
             </div>
 
             <div class="header-actions">
-              <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
-              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Newsletter"><span aria-hidden="true">✉</span><em>Newsletter</em></button>
+              <button class="header-editorial-link" data-view="blog" aria-label="Open Team Blog" title="Team Blog"><span aria-hidden="true">✎</span><em>Team Blog</em></button>
+              <button class="header-editorial-link" data-view="newsletters" aria-label="Open Newsletter" title="Newsletter"><span aria-hidden="true">✉</span><em>Newsletter</em></button>
               <label class="global-region-picker" for="globalRegionSelect"><span>Region</span><select id="globalRegionSelect" aria-label="Filter regional content"><option value="All">All regions</option></select></label>
-              <button class="research-button" id="researchButton" aria-label="Open research shelf"><span aria-hidden="true">⌕</span><em>Research</em></button>
+              <button class="research-button" id="researchButton" aria-label="Open research drawer" aria-controls="rightDrawer"><span aria-hidden="true">⌕</span><em>Research</em></button>
               <button class="audience-switch" id="audienceSwitch" aria-label="Switch between student and parent view"><span>Student view</span><b>→</b></button>
+              <button class="header-profile-button" id="headerProfileButton" aria-label="Open profile and account settings" aria-controls="rightDrawer" title="Profile and account settings"><span id="headerProfileAvatar">GE</span><em id="headerProfileLabel">Guest</em><b aria-hidden="true">⌄</b></button>
             </div>
           </div>
         </header>
@@ -135,6 +126,18 @@
 
       <aside class="settings-panel" id="settingsPanel" aria-label="Settings" aria-hidden="true">
         <div class="settings-head"><div><span>PERSONALISE ZYSHAM</span><strong>Settings</strong></div><button class="icon-button" id="settingsClose" aria-label="Close settings">×</button></div>
+        <section class="settings-section android-settings">
+          <p class="eyebrow">ANDROID APP</p>
+          <h2>Zysham, ready to go.</h2>
+          <p>Get the newest Zysham app for Android. This same button stays current whenever a new version is published.</p>
+          <div class="android-download-card">
+            <span class="android-download-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3"></rect><path d="M12 7v7m-3-3 3 3 3-3M10 18h4"></path></svg></span>
+            <span><span class="android-latest-badge">LATEST</span><strong>Zysham for Android</strong><small>Android 7.0 or newer · Direct APK</small></span>
+            <a class="button-primary" href="https://github.com/shishyan/Zysham2026/releases/download/android-latest/zysham-latest.apk" download>Download latest APK</a>
+          </div>
+          <div class="android-release-facts"><span>Automatically refreshed</span><span>Official GitHub release</span><span>No account required</span></div>
+          <small class="android-install-note">Because this is a direct download rather than a Play Store install, Android may ask you to approve installation from your browser.</small>
+        </section>
         <section class="settings-section account-settings"><p class="eyebrow">PROFILE & COMMUNICATION</p><h2>Your account.</h2><p>Review identity, role, newsletter consent and communication preferences. Journey records remain separate from email choices.</p><div id="accountSettingsBody"></div></section>
         <section class="settings-section appearance-settings">
           <p class="eyebrow">APPEARANCE</p><h2>Default or make it yours.</h2><p>Use the calm Zysham default, or keep a personal theme and campus background override on this device.</p>
@@ -172,7 +175,7 @@
     <button class="right-drawer-scrim" id="rightDrawerScrim" aria-label="Close right drawer"></button>
 
     <aside class="mentor-dock" id="mentorDock" aria-label="Career mentor">
-      <button class="mentor-trigger" id="mentorTrigger" aria-expanded="false">
+      <button class="mentor-trigger" id="mentorTrigger" aria-expanded="false" aria-controls="rightDrawer">
         <span class="mentor-face mentor-animal cat" id="mentorFace"></span>
         <span><small>AI CAREER COUNSELLOR</small><strong><span id="mentorTriggerName">Miso</span> · Ask anything</strong></span>
         <b>←</b>
@@ -193,8 +196,8 @@
           <small id="mentorContextSummary"></small>
         </section>
         <section class="mentor-model" aria-label="Local AI model">
-          <div><span id="mentorModelDot"></span><strong id="mentorModelStatus">Local SLM not loaded</strong><small id="mentorModelDetail">Runs privately in this browser using the Zysham knowledge layer.</small></div>
-          <button type="button" data-mentor-action="load-model" id="mentorModelButton">Load local AI</button>
+          <div><span id="mentorModelDot"></span><strong id="mentorModelStatus">Embedded SLM available</strong><small id="mentorModelDetail">Flan-T5 Small · quantized CPU/WASM model · no GPU required.</small></div>
+          <button type="button" data-mentor-action="load-model" id="mentorModelButton">Load embedded SLM · 98 MB</button>
           <div class="mentor-model-progress" id="mentorModelProgress" hidden><span></span></div>
         </section>
         <section class="mentor-recommendation" id="mentorRecommendation" aria-label="Current recommendation"></section>
@@ -209,7 +212,7 @@
           <button data-mentor-action="switch">Switch to Ollie</button>
           <button data-mentor-action="clear">Clear chat</button>
         </div>
-        <p class="mentor-disclosure">When loaded, the small language model runs locally and receives only the Zysham context shown in this drawer. First use downloads model files to browser storage. Verify high-stakes decisions with current official sources and qualified people.</p>
+        <p class="mentor-disclosure">The embedded small language model runs locally on the CPU through WebAssembly and receives a grounded draft—not your complete workspace. Model files are cached after first load. Verify high-stakes decisions with current official sources and qualified people.</p>
       </div>
     </aside>
 
