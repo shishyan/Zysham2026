@@ -1663,7 +1663,7 @@ function legacyRenderCompass() {
 function renderCompass() {
   const reality = workRealityResult();
   const top = rankedCareers()[0];
-  const answerLabel = (question) => `${Number(state.workReality.answers[question.id] || 0)}/10`;
+  const answerLabel = (question) => Object.hasOwn(state.workReality.answers, question.id) ? `${Number(state.workReality.answers[question.id])}/10` : 'Not answered';
   return `
     <div class="view-enter">
       <header class="section-header compass-intro">
@@ -1675,14 +1675,14 @@ function renderCompass() {
         <div class="reality-scan-head"><div><p class="eyebrow">WHAT YOU DON'T LIKE · SERIES 01</p><h3 id="realityScanTitle">Work Reality Scan</h3><p>${isGuest() ? 'Answer freely in this session. Create a profile only when you want to save the result.' : 'Move every scale. A low answer is not a weakness; it is useful design information.'}</p></div><div class="scan-progress"><strong>${reality.answered}</strong><span>of ${workRealityQuestions.length}<br>answered</span></div></div>
         <div class="reality-question-grid">
           ${workRealityQuestions.map((question, index) => {
-            const answer = Number(state.workReality.answers[question.id] || 0);
-            return `<label class="reality-question ${answer ? 'answered' : ''}" style="--rating-color:${ratingColor(answer)}">
+            const answered = Object.hasOwn(state.workReality.answers, question.id);
+            const answer = Number(state.workReality.answers[question.id] ?? 0);
+            return `<article class="reality-question ${answered ? 'answered' : ''}" style="--rating-color:${ratingColor(answer)}">
               <span class="reality-question-number">${String(index + 1).padStart(2, '0')}</span>
               <strong>${question.question}</strong>
               <span class="range-readout" id="readout-${question.id}">${answerLabel(question)}</span>
-              <input type="range" min="0" max="10" step="1" value="${answer}" data-work-reality="${question.id}" aria-describedby="ends-${question.id}">
-              <span class="range-ends" id="ends-${question.id}"><span>0 · ${question.low}</span><span>10 · ${question.high}</span></span>
-            </label>`;
+              <div class="nps-scale" role="radiogroup" aria-label="${escapeHtml(question.question)}"><div class="nps-options">${Array.from({ length: 11 }, (_, score) => `<label class="nps-score" title="${score === 0 ? escapeHtml(question.low) : score === 10 ? escapeHtml(question.high) : `${score} out of 10`}"><input type="radio" name="work-reality-${question.id}" value="${score}" data-work-reality="${question.id}" ${answered && answer === score ? 'checked' : ''}><span>${score}</span></label>`).join('')}</div><div class="nps-anchors"><small>${escapeHtml(question.low)}</small><small>${escapeHtml(question.high)}</small></div></div>
+            </article>`;
           }).join('')}
         </div>
       </section>
